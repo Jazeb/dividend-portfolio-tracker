@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  BUY
+  SELL
+  DIVIDEND
+  BONUS
+}
+
+enum PortfolioStrategy {
+  DividendGrowth
+  Retirement
+  Speculative
+  Education
+  Other
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+
+  transactions  Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Sector {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  icon      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Stock {
+  id        Int      @id @default(autoincrement())
+  fullName  String
+  symbol    String   @unique
+  icon      String
+
+  transactions Transaction[]    // 1 stock may have many transactions
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  
+  quantity            Int
+  buyingPrice         Int
+  totalBuyingPrice    Int
+  broker              String
+
+  stockId   Int
+  stock     Stock         @relation(fields: [stockId], references: [id])
+
+  portfolioId   Int
+  portfolio     Portfolio         @relation(fields: [portfolioId], references: [id])
+
+  profileId   Int
+  profile     Profile         @relation(fields: [profileId], references: [id])
+
+  purchaseDate     DateTime     @db.Date 
+  transactionType  TransactionType
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+
+model Portfolio {
+  id            Int          @id @default(autoincrement())
+  title         String
+  strategy      PortfolioStrategy
+  currentWorth  Int
+
+  transactions  Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+
+model Goal {
+  id            Int      @id @default(autoincrement())
+  title         String
+  forcastYear   Int
+  
+  currentCorpus   Int
+  targetCorpus    Int
+  
+  expectedHoldingPeriod    Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+

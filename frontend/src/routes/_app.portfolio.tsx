@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PageHeader } from "@/components/stat-card";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,8 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, ArrowUpRight, TrendingUp } from "lucide-react";
+import { Plus, ArrowUpRight, TrendingUp, Loader2 } from "lucide-react";
 import { portfolios as seedPortfolios, pkr } from "@/lib/mock-data";
+import { portfoliosApi, type Portfolio } from "@/lib/api/portfolios";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/portfolio")({
@@ -30,12 +32,31 @@ export const Route = createFileRoute("/_app/portfolio")({
   head: () => ({ meta: [{ title: "Portfolios — PSX Dividend Tracker" }] }),
 });
 
-type Portfolio = (typeof seedPortfolios)[number] & { description?: string; strategy?: string };
-
 const STRATEGIES = ["Dividend Growth", "High Yield", "Retirement", "Education", "Speculative", "Other"];
 
+// When VITE_API_BASE_URL is unset (e.g. on Lovable preview), fall back to seed data.
+const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
+
 function PortfolioPage() {
-  const [portfolios, setPortfolios] = useState<Portfolio[]>(seedPortfolios);
+  const queryClient = useQueryClient();
+
+  const portfoliosQuery = useQuery<Portfolio[]>({
+    queryKey: ["portfolios"],
+    queryFn: () => portfoliosApi.list(),
+    enabled: API_ENABLED,
+    initialData: API_ENABLED ? undefined : (seedPortfolios as Portfolio[]),
+    // Gracefully fall back to seed data when the API is unreachable.
+    placeholderData: seedPortfolios as Portfolio[],
+    retry: 1,
+  });
+
+  const portfolios: Portfolio[] =
+    portfoliosQuery.data ?? (seedPortfolios as Portfolio[]);
+
+  // Local additions used only when the API is not configured.
+  const [localExtras, setLocalExtras] = useState<Portfolio[]>([]);
+  const allPortfolios = API_ENABLED ? portfolios : [...portfolios, ...localExtras];
+
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -47,6 +68,20 @@ function PortfolioPage() {
   const reset = () =>
     setForm({ name: "", strategy: "Dividend Growth", initialCapital: "", description: "" });
 
+  const createMutation = useMutation({
+    mutationFn: (dto: Omit<Portfolio, "id">) => portfoliosApi.create(dto),
+    onSuccess: (created) => {
+      toast.success(`"${created.name}" portfolio created`);
+      queryClient.invalidateQueries({ queryKey: ["portfolios"] });
+      setOpen(false);
+      reset();
+    },
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Failed to create portfolio";
+      toast.error(message);
+    },
+  });
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     const name = form.name.trim();
@@ -54,27 +89,38 @@ function PortfolioPage() {
       toast.error("Portfolio name is required");
       return;
     }
-    if (portfolios.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
+    if (allPortfolios.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
       toast.error("A portfolio with this name already exists");
       return;
     }
     const capital = Number(form.initialCapital) || 0;
-    const newPortfolio: Portfolio = {
-      id: name.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now().toString(36),
+    const dto: Omit<Portfolio, "id"> = {
       name,
-      value: capital,
-      cost: capital,
-      dividendIncome: 0,
-      holdings: 0,
-      yield: 0,
+      // value: capital,
+      // cost: capital,
+      // dividendIncome: 0,
+      // holdings: 0,
+      // yield: 0,
       strategy: form.strategy,
-      description: form.description.trim(),
+      description: form.description.trim() || undefined,
     };
-    setPortfolios((prev) => [...prev, newPortfolio]);
-    toast.success(`"${name}" portfolio created`);
-    setOpen(false);
-    reset();
+
+    if (API_ENABLED) {
+      createMutation.mutate(dto);
+    } else {
+      const newPortfolio: Portfolio = {
+        ...dto,
+        id: name.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now().toString(36),
+      };
+      setLocalExtras((prev) => [...prev, newPortfolio]);
+      toast.success(`"${name}" portfolio created`);
+      setOpen(false);
+      reset();
+    }
   };
+
+  const isLoading = API_ENABLED && portfoliosQuery.isLoading;
+  const isError = API_ENABLED && portfoliosQuery.isError && !portfoliosQuery.data;
 
   return (
     <>
@@ -88,54 +134,72 @@ function PortfolioPage() {
           </Button>
         }
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {portfolios.map((p) => {
-          const profit = p.value - p.cost;
-          const pct = p.cost > 0 ? (profit / p.cost) * 100 : 0;
-          const positive = profit >= 0;
-          return (
-            <Link key={p.id} to="/holdings" className="group">
-              <Card className="card-elevated p-6 h-full transition hover:shadow-glow hover:-translate-y-1">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
-                      {p.holdings} holdings
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-16 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+          Loading portfolios…
+        </div>
+      ) : isError ? (
+        <Card className="p-6 text-center">
+          <div className="text-sm text-destructive mb-3">
+            Could not load portfolios from the API.
+          </div>
+          <Button variant="outline" size="sm" onClick={() => portfoliosQuery.refetch()}>
+            Retry
+          </Button>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {allPortfolios.map((p) => {
+            // const profit = p.value - p.cost;
+            // const pct = p.cost > 0 ? (profit / p.cost) * 100 : 0;
+            const positive = true; // profit >= 0;
+            return (
+              <Link key={p.id} to="/holdings" className="group">
+                <Card className="card-elevated p-6 h-full transition hover:shadow-glow hover:-translate-y-1">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
+                      12 holdings  {/* {p.holdings} holdings */}
+                      </div>
+                      <div className="text-lg font-semibold">{p.name}</div>
                     </div>
-                    <div className="text-lg font-semibold">{p.name}</div>
+                    <div className="h-10 w-10 rounded-xl gradient-primary grid place-items-center text-white shadow-glow">
+                      <TrendingUp className="h-5 w-5" />
+                    </div>
                   </div>
-                  <div className="h-10 w-10 rounded-xl gradient-primary grid place-items-center text-white shadow-glow">
-                    <TrendingUp className="h-5 w-5" />
+                  <div className="text-3xl font-display font-semibold tabular-nums">PKR 1,234,567</div>
+                  {/* <div className="text-3xl font-display font-semibold tabular-nums">{pkr(p.value)}</div> */}
+                  <div
+                    className={`text-xs mt-1 tabular-nums ${positive ? "text-success" : "text-destructive"}`}
+                  >
+                    {positive ? "+" : ""}
+                    {/* {pkr(profit)} ({pct.toFixed(1)}%) */}
                   </div>
-                </div>
-                <div className="text-3xl font-display font-semibold tabular-nums">{pkr(p.value)}</div>
-                <div
-                  className={`text-xs mt-1 tabular-nums ${positive ? "text-success" : "text-destructive"}`}
-                >
-                  {positive ? "+" : ""}
-                  {pkr(profit)} ({pct.toFixed(1)}%)
-                </div>
-                <div className="grid grid-cols-3 gap-3 mt-6 pt-4 border-t">
-                  <div>
-                    <div className="text-[10px] uppercase text-muted-foreground">Cost</div>
-                    <div className="text-sm font-medium tabular-nums">{pkr(p.cost)}</div>
+                  <div className="grid grid-cols-3 gap-3 mt-6 pt-4 border-t">
+                    {/* <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Cost</div>
+                      <div className="text-sm font-medium tabular-nums">{pkr(p.cost)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Dividend</div>
+                      <div className="text-sm font-medium tabular-nums">{pkr(p.dividendIncome)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Yield</div>
+                      <div className="text-sm font-medium tabular-nums">{p.yield}%</div>
+                    </div> */}
                   </div>
-                  <div>
-                    <div className="text-[10px] uppercase text-muted-foreground">Dividend</div>
-                    <div className="text-sm font-medium tabular-nums">{pkr(p.dividendIncome)}</div>
+                  <div className="mt-4 flex items-center text-xs text-primary opacity-0 group-hover:opacity-100 transition">
+                    Open analytics <ArrowUpRight className="h-3 w-3 ml-1" />
                   </div>
-                  <div>
-                    <div className="text-[10px] uppercase text-muted-foreground">Yield</div>
-                    <div className="text-sm font-medium tabular-nums">{p.yield}%</div>
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center text-xs text-primary opacity-0 group-hover:opacity-100 transition">
-                  Open analytics <ArrowUpRight className="h-3 w-3 ml-1" />
-                </div>
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      )}
 
       <Dialog
         open={open}
@@ -204,11 +268,20 @@ function PortfolioPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={createMutation.isPending}
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="gap-1.5">
-                <Plus className="h-4 w-4" />
+              <Button type="submit" className="gap-1.5" disabled={createMutation.isPending}>
+                {createMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
                 Create Portfolio
               </Button>
             </DialogFooter>

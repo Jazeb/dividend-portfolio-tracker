@@ -31,9 +31,11 @@ enum PortfolioStrategy {
 }
 
 model Profile {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  phone       String
+  email       String   @unique
 
   transactions  Transaction[]
   portfolios    Portfolio[]

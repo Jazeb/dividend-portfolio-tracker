@@ -23,7 +23,7 @@ export interface Transaction {
   buyingPrice: number;
   totalBuyingPrice: number;
   portfolioId: string;
-  toPortfolioId?: string;
+  // toPortfolioId?: string;
   broker?: string;
   stock: Stock;
 }

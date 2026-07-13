@@ -130,8 +130,16 @@ export const portfolios = [
     value: 2_845_000,
     cost: 2_120_000,
     dividendIncome: 268_400,
-    holdings: 12,
+    // holdings: 12,
     yield: 9.4,
+    holdings: [
+      {
+        id: 1,
+        quantity: 1000,
+        avgPrice: 500,
+        totalCost: 450.4,
+      },
+    ],
   },
   {
     id: "retirement",
@@ -139,8 +147,16 @@ export const portfolios = [
     value: 1_620_000,
     cost: 1_380_000,
     dividendIncome: 142_800,
-    holdings: 8,
+    // holdings: 8,
     yield: 8.8,
+    holdings: [
+      {
+        id: 1,
+        quantity: 1000,
+        avgPrice: 500,
+        totalCost: 450.4,
+      },
+    ],
   },
   {
     id: "education",
@@ -148,8 +164,16 @@ export const portfolios = [
     value: 685_000,
     cost: 610_000,
     dividendIncome: 54_200,
-    holdings: 6,
+    // holdings: 6,
     yield: 7.9,
+    holdings: [
+      {
+        id: 1,
+        quantity: 1000,
+        avgPrice: 500,
+        totalCost: 450.4,
+      },
+    ],
   },
 ];
 

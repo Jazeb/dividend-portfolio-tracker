@@ -3,6 +3,13 @@
 //   POST   /portfolios       -> Portfolio
 //   DELETE /portfolios/:id   -> void
 import { http } from "@/lib/http";
+
+export interface Holding {
+  id: number;
+  quantity: number;
+  avgPrice: number;
+  totalCost: number;
+}
 export interface Portfolio {
   id: string;
   name: string;
@@ -13,6 +20,7 @@ export interface Portfolio {
   // yield: number;
   strategy?: string;
   description?: string;
+  holdings?: Holding[];
 }
 export type CreatePortfolioDto = Omit<Portfolio, "id">;
 export const portfoliosApi = {

@@ -32,7 +32,14 @@ export const Route = createFileRoute("/_app/portfolio")({
   head: () => ({ meta: [{ title: "Portfolios — PSX Dividend Tracker" }] }),
 });
 
-const STRATEGIES = ["Dividend Growth", "High Yield", "Retirement", "Education", "Speculative", "Other"];
+const STRATEGIES = [
+  "Dividend Growth",
+  "High Yield",
+  "Retirement",
+  "Education",
+  "Speculative",
+  "Other",
+];
 
 // When VITE_API_BASE_URL is unset (e.g. on Lovable preview), fall back to seed data.
 const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
@@ -153,6 +160,11 @@ function PortfolioPage() {
           {allPortfolios.map((p) => {
             // const profit = p.value - p.cost;
             // const pct = p.cost > 0 ? (profit / p.cost) * 100 : 0;
+            const totalCost = p.holdings?.reduce(
+              (acc, current) => acc + current.totalCost,
+              0,
+            ) as number;
+
             const positive = true; // profit >= 0;
             return (
               <Link key={p.id} to="/holdings" className="group">
@@ -160,7 +172,7 @@ function PortfolioPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
-                      12 holdings  {/* {p.holdings} holdings */}
+                        {p.holdings?.length} holdings
                       </div>
                       <div className="text-lg font-semibold">{p.name}</div>
                     </div>
@@ -168,7 +180,9 @@ function PortfolioPage() {
                       <TrendingUp className="h-5 w-5" />
                     </div>
                   </div>
-                  <div className="text-3xl font-display font-semibold tabular-nums">PKR 1,234,567</div>
+                  <div className="text-3xl font-display font-semibold tabular-nums">
+                    PKR 1,234,567
+                  </div>
                   {/* <div className="text-3xl font-display font-semibold tabular-nums">{pkr(p.value)}</div> */}
                   <div
                     className={`text-xs mt-1 tabular-nums ${positive ? "text-success" : "text-destructive"}`}
@@ -177,11 +191,11 @@ function PortfolioPage() {
                     {/* {pkr(profit)} ({pct.toFixed(1)}%) */}
                   </div>
                   <div className="grid grid-cols-3 gap-3 mt-6 pt-4 border-t">
-                    {/* <div>
-                      <div className="text-[10px] uppercase text-muted-foreground">Cost</div>
-                      <div className="text-sm font-medium tabular-nums">{pkr(p.cost)}</div>
-                    </div>
                     <div>
+                      <div className="text-[10px] uppercase text-muted-foreground">Cost</div>
+                      <div className="text-sm font-medium tabular-nums">{pkr(totalCost)}</div>
+                    </div>
+                    {/* <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Dividend</div>
                       <div className="text-sm font-medium tabular-nums">{pkr(p.dividendIncome)}</div>
                     </div>

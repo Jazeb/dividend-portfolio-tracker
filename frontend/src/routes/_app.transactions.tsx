@@ -61,6 +61,7 @@ import {
   ChevronsUpDown,
 } from "lucide-react";
 import { stocksApi, type Stock } from "@/lib/api/stocks";
+import { portfoliosApi, type Portfolio } from "@/lib/api/portfolios";
 
 const TX_TYPES: TxType[] = ["Buy", "Sell", "Dividend", "Bonus", "Rights", "Split", "Transfer"];
 const BROKERS = ["AKD Securities", "JS Global", "Arif Habib"];
@@ -89,6 +90,13 @@ function TransactionsPage() {
   });
   const stocks: Stock[] = stocksQuery.data ?? [];
 
+  const portfolioQuery = useQuery({
+    queryKey: ["portfolio"],
+    queryFn: () => portfoliosApi.list(),
+    staleTime: 5 * 60_000,
+  });
+  const portfolios: Portfolio[] = portfolioQuery.data ?? [];
+
   const txQuery = useQuery({
     queryKey: ["transactions"],
     queryFn: () => transactionsApi.list(),
@@ -99,11 +107,12 @@ function TransactionsPage() {
     onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       toast.success(
-        created.transactionType === "Transfer" && created.toPortfolioId
-          ? `Transferred ${created.quantity} ${created.stock.symbol}: ${portfolioName(
-              created.portfolioId,
-            )} → ${portfolioName(created.toPortfolioId)}`
-          : `${created.transactionType} ${created.stock.symbol} recorded in ${portfolioName(created.portfolioId)}`,
+        // created.transactionType === "Transfer" && created.toPortfolioId
+        //   ? `Transferred ${created.quantity} ${created.stock.symbol}: ${portfolioName(
+        //       created.portfolioId,
+        //     )} → ${portfolioName(created.toPortfolioId)}`
+        //   :
+        `${created.transactionType} ${created.stock.symbol} recorded in ${portfolioName(created.portfolioId)}`,
       );
       setOpen(false);
     },
@@ -121,19 +130,19 @@ function TransactionsPage() {
     quantity: "",
     buyingPrice: "",
     broker: BROKERS[0],
-    portfolioId: portfolioFilter !== "all" ? portfolioFilter : portfolios[0].id,
-    toPortfolioId: portfolios[1]?.id ?? portfolios[0].id,
+    portfolioId: portfolioFilter !== "all" ? portfolioFilter : portfolios[0]?.id,
+    // toPortfolioId: portfolios[1]?.id ?? portfolios[0].id,
   });
   const [form, setForm] = useState(defaultForm);
 
   const filtered = useMemo(() => {
     return txs.filter((t) => {
-      if (
-        portfolioFilter !== "all" &&
-        t.portfolioId !== portfolioFilter &&
-        t.toPortfolioId !== portfolioFilter
-      )
-        return false;
+      // if (
+      //   portfolioFilter !== "all" &&
+      //   t.portfolioId !== portfolioFilter &&
+      //   t.toPortfolioId !== portfolioFilter
+      // )
+      //   return false;
       if (typeFilter !== "All" && t.transactionType !== typeFilter.toUpperCase()) return false;
       if (search && !t.stock.symbol.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
@@ -150,9 +159,9 @@ function TransactionsPage() {
     const symbol = form.stock.symbol.trim().toUpperCase();
     if (!symbol) return toast.error("Stock symbol is required");
     if (!form.portfolioId) return toast.error("Portfolio is required");
-    if (form.transactionType === "Transfer" && form.portfolioId === form.toPortfolioId) {
-      return toast.error("Source and destination portfolios must differ");
-    }
+    // if (form.transactionType === "Transfer" && form.portfolioId === form.toPortfolioId) {
+    //   return toast.error("Source and destination portfolios must differ");
+    // }
     const quantity = Number(form.quantity) || 0;
     const buyingPrice = Number(form.buyingPrice) || 0;
     const noValueTypes: TxType[] = ["Transfer", "Bonus", "Rights", "Split"];
@@ -162,7 +171,7 @@ function TransactionsPage() {
       quantity,
       buyingPrice,
       totalBuyingPrice: noValueTypes.includes(form.transactionType) ? 0 : quantity * buyingPrice,
-      portfolioId: "1", //form.portfolioId,
+      portfolioId: form.portfolioId,
       broker: form.broker,
       symbol: form.stock.symbol,
       // toPortfolioId: form.transactionType === "Transfer" ? form.toPortfolioId : undefined,
@@ -301,15 +310,14 @@ function TransactionsPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm">
-                    {t.transactionType === "Transfer" && t.toPortfolioId ? (
+                    {/* {t.transactionType === "Transfer" && t.toPortfolioId ? (
                       <span className="inline-flex items-center gap-1.5">
                         <span>{portfolioName(t.portfolioId)}</span>
                         <ArrowRightLeft className="h-3 w-3 text-muted-foreground" />
                         <span>{portfolioName(t.toPortfolioId)}</span>
                       </span>
-                    ) : (
-                      portfolioName(t.portfolioId)
-                    )}
+                    ) : ()} */}
+                    {portfolioName(t.portfolioId)}
                   </TableCell>
                   <TableCell className="font-medium">{t.stock.symbol}</TableCell>
                   <TableCell className="font-medium">{t.stock.fullName}</TableCell>
@@ -382,7 +390,7 @@ function TransactionsPage() {
                 </Select>
               </div>
 
-              {isTransfer && (
+              {/* {isTransfer && (
                 <div>
                   <Label>To Portfolio</Label>
                   <Select
@@ -401,7 +409,7 @@ function TransactionsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-              )}
+              )} */}
 
               <div>
                 <Label>Stock</Label>

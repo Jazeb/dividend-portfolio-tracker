@@ -58,17 +58,18 @@ model Stock {
   icon      String
 
   transactions Transaction[]    // 1 stock may have many transactions
+  holdings    Holding[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
 
 model Transaction {
-  id        Int      @id @default(autoincrement())
+  id String @id @default(cuid())
   
-  quantity            Int
-  buyingPrice         Int
-  totalBuyingPrice    Int
+  quantity            Decimal @db.Decimal(18,4)
+  buyingPrice         Decimal @db.Decimal(18,4)
+  totalBuyingPrice    Decimal @db.Decimal(18,4)
   broker              String
 
   stockId   Int
@@ -95,6 +96,7 @@ model Portfolio {
   description   String
 
   transactions  Transaction[]
+  holdings      Holding[]
 
   profileId     Int
   profile       Profile      @relation(fields: [profileId], references: [id])
@@ -103,6 +105,23 @@ model Portfolio {
   updatedAt DateTime @default(now())
 }
 
+model Holding {
+  id        Int      @id @default(autoincrement())
+  quantity  Decimal   @db.Decimal(18,4)
+  avgPrice  Decimal   @db.Decimal(18,4)
+  totalCost Decimal   @db.Decimal(18,4)
+  
+  stockId   Int
+  stocks     Stock         @relation(fields: [stockId], references: [id])
+
+  portfolioId   Int
+  portfolio     Portfolio         @relation(fields: [portfolioId], references: [id])
+
+  @@unique([portfolioId, stockId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
 
 model Goal {
   id            Int      @id @default(autoincrement())

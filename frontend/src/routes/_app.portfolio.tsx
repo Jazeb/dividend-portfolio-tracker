@@ -50,8 +50,7 @@ function PortfolioPage() {
     retry: 1,
   });
 
-  const portfolios: Portfolio[] =
-    portfoliosQuery.data ?? (seedPortfolios as Portfolio[]);
+  const portfolios: Portfolio[] = portfoliosQuery.data ?? (seedPortfolios as Portfolio[]);
 
   // Local additions used only when the API is not configured.
   const [localExtras, setLocalExtras] = useState<Portfolio[]>([]);

@@ -39,15 +39,7 @@ model Profile {
 
   transactions  Transaction[]
   portfolios    Portfolio[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-}
-
-model Sector {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  icon      String
+  holdings      Holding[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -59,8 +51,26 @@ model Stock {
   symbol    String   @unique
   icon      String
 
+  currentPrice    Decimal   @db.Decimal(18,4)
+  dividendYield   Decimal   @db.Decimal(18,4)
+  annualDividend  Decimal   @db.Decimal(18,4)
+
   transactions Transaction[]    // 1 stock may have many transactions
   holdings    Holding[]
+
+  sectorId   Int
+  sector   Sector         @relation(fields: [sectorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Sector {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  icon      String
+
+  stocks     Stock[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -108,13 +118,16 @@ model Portfolio {
 }
 
 model Holding {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   quantity  Decimal   @db.Decimal(18,4)
   avgPrice  Decimal   @db.Decimal(18,4)
   totalCost Decimal   @db.Decimal(18,4)
   
   stockId   Int
-  stocks     Stock         @relation(fields: [stockId], references: [id])
+  stocks    Stock         @relation(fields: [stockId], references: [id])
+
+  profileId     Int
+  profile       Profile      @relation(fields: [profileId], references: [id])
 
   portfolioId   Int
   portfolio     Portfolio         @relation(fields: [portfolioId], references: [id])

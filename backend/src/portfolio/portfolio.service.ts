@@ -7,8 +7,8 @@ import { Portfolio } from 'generated/prisma/client';
 export class PortfolioService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getPortfolioByProfile(profileId: string): Promise<Portfolio[]> {
-    return this.prismaService.portfolio.findMany({
+  async getPortfolioByProfile(profileId: string): Promise<Portfolio[]> {
+    const portfolio = await  this.prismaService.portfolio.findMany({
       where: {
         profileId: Number(profileId),
       },
@@ -16,6 +16,12 @@ export class PortfolioService {
         holdings: true,
       },
     });
+    const totalCost = portfolio[0].holdings.reduce(
+        (acc, current) => acc + Number(current.totalCost),
+        0,
+    )
+    console.log(totalCost)
+    return portfolio
   }
 
   create(body: CreatePortfolioDTO, profileId: string) {

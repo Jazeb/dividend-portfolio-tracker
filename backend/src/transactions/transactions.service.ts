@@ -48,6 +48,7 @@ export class TransactionsService {
   private async addNewHolding(transaction: Transaction) {
     await this.prisma.holding.create({
       data: {
+        profileId: transaction.profileId,
         quantity: transaction.quantity,
         avgPrice: transaction.buyingPrice,
         totalCost: transaction.totalBuyingPrice,

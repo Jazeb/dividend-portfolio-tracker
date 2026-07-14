@@ -160,10 +160,13 @@ function PortfolioPage() {
           {allPortfolios.map((p) => {
             // const profit = p.value - p.cost;
             // const pct = p.cost > 0 ? (profit / p.cost) * 100 : 0;
-            const totalCost = p.holdings?.reduce(
-              (acc, current) => acc + current.totalCost,
+            const holdings = p.holdings;
+            console.log({holdings})
+            const totalCost = holdings?.reduce(
+              (acc, current) => acc + Number(current.totalCost),
               0,
             ) as number;
+            console.log({totalCost})
 
             const positive = true; // profit >= 0;
             return (
@@ -181,7 +184,8 @@ function PortfolioPage() {
                     </div>
                   </div>
                   <div className="text-3xl font-display font-semibold tabular-nums">
-                    PKR 1,234,567
+                    {/* PKR {pkr(totalCost)} */}
+                    PKR {(totalCost)}
                   </div>
                   {/* <div className="text-3xl font-display font-semibold tabular-nums">{pkr(p.value)}</div> */}
                   <div

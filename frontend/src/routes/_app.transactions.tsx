@@ -71,10 +71,6 @@ export const Route = createFileRoute("/_app/transactions")({
   head: () => ({ meta: [{ title: "Transactions — PSX Dividend Tracker" }] }),
 });
 
-function portfolioName(id: string) {
-  return portfolios.find((p) => p.id === id)?.name ?? id;
-}
-
 function TransactionsPage() {
   const queryClient = useQueryClient();
   const [portfolioFilter, setPortfolioFilter] = useState<string>("all");
@@ -101,6 +97,8 @@ function TransactionsPage() {
     queryKey: ["transactions"],
     queryFn: () => transactionsApi.list(),
   });
+
+  const portfolioName = (id: string) => portfolios.find((p) => p.id === id)?.name ?? id;
 
   const createMutation = useMutation({
     mutationFn: (dto: CreateTransactionDto) => transactionsApi.create(dto),
@@ -137,12 +135,7 @@ function TransactionsPage() {
 
   const filtered = useMemo(() => {
     return txs.filter((t) => {
-      // if (
-      //   portfolioFilter !== "all" &&
-      //   t.portfolioId !== portfolioFilter &&
-      //   t.toPortfolioId !== portfolioFilter
-      // )
-      //   return false;
+      if (portfolioFilter !== "all" && t.portfolioId !== portfolioFilter) return false;
       if (typeFilter !== "All" && t.transactionType !== typeFilter.toUpperCase()) return false;
       if (search && !t.stock.symbol.toLowerCase().includes(search.toLowerCase())) return false;
       return true;

@@ -1,7 +1,7 @@
 export type Sector = {
   id: number;
   name: string;
-}
+};
 
 export type Stock = {
   id: number;
@@ -11,7 +11,7 @@ export type Stock = {
   annualDividend: number;
   dividendYield: number;
   sector: Sector;
-}
+};
 
 export type Holding = {
   symbol: string;
@@ -23,6 +23,7 @@ export type Holding = {
   dividendYield: number;
   yieldOnCost: number;
   annualDividend: number;
+  portfolioId: number;
   stocks: Stock;
 };
 

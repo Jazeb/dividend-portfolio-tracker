@@ -161,12 +161,12 @@ function PortfolioPage() {
             // const profit = p.value - p.cost;
             // const pct = p.cost > 0 ? (profit / p.cost) * 100 : 0;
             const holdings = p.holdings;
-            console.log({holdings})
+            console.log({ holdings });
             const totalCost = holdings?.reduce(
               (acc, current) => acc + Number(current.totalCost),
               0,
             ) as number;
-            console.log({totalCost})
+            console.log({ totalCost });
 
             const positive = true; // profit >= 0;
             return (
@@ -185,7 +185,7 @@ function PortfolioPage() {
                   </div>
                   <div className="text-3xl font-display font-semibold tabular-nums">
                     {/* PKR {pkr(totalCost)} */}
-                    PKR {(totalCost)}
+                    PKR {totalCost}
                   </div>
                   {/* <div className="text-3xl font-display font-semibold tabular-nums">{pkr(p.value)}</div> */}
                   <div

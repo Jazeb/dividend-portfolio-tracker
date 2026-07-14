@@ -8,20 +8,20 @@ export class PortfolioService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getPortfolioByProfile(profileId: string): Promise<Portfolio[]> {
-    const portfolio = await  this.prismaService.portfolio.findMany({
+    const portfolio = await this.prismaService.portfolio.findMany({
       where: {
         profileId: Number(profileId),
       },
       include: {
-        holdings: true,
+        holdings: {
+          include: {
+            stocks: true,
+          },
+        },
       },
     });
-    const totalCost = portfolio[0].holdings.reduce(
-        (acc, current) => acc + Number(current.totalCost),
-        0,
-    )
-    console.log(totalCost)
-    return portfolio
+    // const totalCost = portfolio[0].holdings.reduce((acc, current) => acc + Number(current.totalCost), 0);
+    return portfolio;
   }
 
   create(body: CreatePortfolioDTO, profileId: string) {

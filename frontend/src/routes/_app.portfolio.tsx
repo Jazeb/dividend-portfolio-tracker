@@ -44,6 +44,21 @@ const STRATEGIES = [
 // When VITE_API_BASE_URL is unset (e.g. on Lovable preview), fall back to seed data.
 const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
 
+function calculateProfitFromPortfolio(portfolio: Portfolio) {
+  const holdings = portfolio.holdings;
+  let profit = 0;
+  let pct = 0;
+  // let dividendYield = 0;
+
+  holdings?.forEach((holding) => {
+    const _profit = holding.quantity * holding.stocks.currentPrice - holding.totalCost;
+    profit += _profit;
+    pct = holding.totalCost > 0 ? (profit / holding.totalCost) * 100 : 0;
+    // dividendYield = holding.stocks.dividendYield
+  });
+  return { profit, pct };
+}
+
 function PortfolioPage() {
   const queryClient = useQueryClient();
 
@@ -158,17 +173,14 @@ function PortfolioPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {allPortfolios.map((p) => {
-            // const profit = p.value - p.cost;
-            // const pct = p.cost > 0 ? (profit / p.cost) * 100 : 0;
+            const { profit, pct } = calculateProfitFromPortfolio(p);
             const holdings = p.holdings;
-            console.log({ holdings });
             const totalCost = holdings?.reduce(
               (acc, current) => acc + Number(current.totalCost),
               0,
             ) as number;
-            console.log({ totalCost });
 
-            const positive = true; // profit >= 0;
+            const positive = profit >= 0;
             return (
               <Link key={p.id} to="/holdings" className="group">
                 <Card className="card-elevated p-6 h-full transition hover:shadow-glow hover:-translate-y-1">
@@ -184,29 +196,30 @@ function PortfolioPage() {
                     </div>
                   </div>
                   <div className="text-3xl font-display font-semibold tabular-nums">
-                    {/* PKR {pkr(totalCost)} */}
-                    PKR {totalCost}
+                    {pkr(totalCost)}
                   </div>
-                  {/* <div className="text-3xl font-display font-semibold tabular-nums">{pkr(p.value)}</div> */}
                   <div
                     className={`text-xs mt-1 tabular-nums ${positive ? "text-success" : "text-destructive"}`}
                   >
                     {positive ? "+" : ""}
-                    {/* {pkr(profit)} ({pct.toFixed(1)}%) */}
+                    {pkr(profit)} ({pct.toFixed(1)}%)
                   </div>
                   <div className="grid grid-cols-3 gap-3 mt-6 pt-4 border-t">
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Cost</div>
                       <div className="text-sm font-medium tabular-nums">{pkr(totalCost)}</div>
                     </div>
-                    {/* <div>
+                    <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Dividend</div>
-                      <div className="text-sm font-medium tabular-nums">{pkr(p.dividendIncome)}</div>
+                      <div className="text-sm font-medium tabular-nums">
+                        56000{/* {pkr(p.dividendIncome)} */}
+                      </div>
                     </div>
+
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Yield</div>
-                      <div className="text-sm font-medium tabular-nums">{p.yield}%</div>
-                    </div> */}
+                      <div className="text-sm font-medium tabular-nums">6%</div>
+                    </div>
                   </div>
                   <div className="mt-4 flex items-center text-xs text-primary opacity-0 group-hover:opacity-100 transition">
                     Open analytics <ArrowUpRight className="h-3 w-3 ml-1" />

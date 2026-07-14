@@ -1,3 +1,5 @@
+import { Portfolio } from "./api/portfolios";
+
 export type Sector = {
   id: number;
   name: string;
@@ -190,58 +192,63 @@ export const holdings: Holding[] = [
   // },
 ];
 
-export const portfolios = [
-  {
-    id: "dividend",
-    name: "Dividend Portfolio",
-    value: 2_845_000,
-    cost: 2_120_000,
-    dividendIncome: 268_400,
-    // holdings: 12,
-    yield: 9.4,
-    holdings: [
-      {
-        id: 1,
-        quantity: 1000,
-        avgPrice: 500,
-        totalCost: 450.4,
-      },
-    ],
-  },
-  {
-    id: "retirement",
-    name: "Retirement Portfolio",
-    value: 1_620_000,
-    cost: 1_380_000,
-    dividendIncome: 142_800,
-    // holdings: 8,
-    yield: 8.8,
-    holdings: [
-      {
-        id: 1,
-        quantity: 1000,
-        avgPrice: 500,
-        totalCost: 450.4,
-      },
-    ],
-  },
-  {
-    id: "education",
-    name: "Children Education",
-    value: 685_000,
-    cost: 610_000,
-    dividendIncome: 54_200,
-    // holdings: 6,
-    yield: 7.9,
-    holdings: [
-      {
-        id: 1,
-        quantity: 1000,
-        avgPrice: 500,
-        totalCost: 450.4,
-      },
-    ],
-  },
+export const portfolios: Portfolio[] = [
+  // {
+  //   id: "dividend",
+  //   name: "Dividend Portfolio",
+  //   value: 2_845_000,
+  //   cost: 2_120_000,
+  //   dividendIncome: 268_400,
+  //   // holdings: 12,
+  //   yield: 9.4,
+  //   holdings: [
+  //     {
+  //       id: 1,
+  //       quantity: 1000,
+  //       avgPrice: 500,
+  //       totalCost: 450.4,
+  //       stocks: {
+  //         id: 1,
+  //         symbol: "MEBL",
+  //         currentPrice:
+  //       },
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "retirement",
+  //   name: "Retirement Portfolio",
+  //   value: 1_620_000,
+  //   cost: 1_380_000,
+  //   dividendIncome: 142_800,
+  //   // holdings: 8,
+  //   yield: 8.8,
+  //   holdings: [
+  //     {
+  //       id: 1,
+  //       quantity: 1000,
+  //       avgPrice: 500,
+  //       totalCost: 450.4,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "education",
+  //   name: "Children Education",
+  //   value: 685_000,
+  //   cost: 610_000,
+  //   dividendIncome: 54_200,
+  //   // holdings: 6,
+  //   yield: 7.9,
+  //   holdings: [
+  //     {
+  //       id: 1,
+  //       quantity: 1000,
+  //       avgPrice: 500,
+  //       totalCost: 450.4,
+  //     },
+  //   ],
+  // },
 ];
 
 export const monthLabels = [

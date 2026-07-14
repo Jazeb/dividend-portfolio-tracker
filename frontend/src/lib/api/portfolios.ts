@@ -4,12 +4,29 @@
 //   DELETE /portfolios/:id   -> void
 import { http } from "@/lib/http";
 
+export interface Sector {
+  id: number;
+  name: string;
+}
+
+export interface Stock {
+  id: number;
+  fullName: string;
+  symbol: string;
+  currentPrice: number;
+  annualDividend: number;
+  dividendYield: number;
+  sector: Sector;
+}
+
 export interface Holding {
   id: number;
   quantity: number;
   avgPrice: number;
   totalCost: number;
+  stocks: Stock;
 }
+
 export interface Portfolio {
   id: string;
   name: string;

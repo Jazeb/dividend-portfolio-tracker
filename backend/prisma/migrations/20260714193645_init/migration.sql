@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "DividendDeclaration" ALTER COLUMN "updatedAt" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "DividendPayment" ALTER COLUMN "updatedAt" SET DEFAULT CURRENT_TIMESTAMP;

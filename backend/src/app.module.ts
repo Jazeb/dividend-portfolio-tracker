@@ -7,9 +7,19 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { StocksModule } from './stocks/stocks.module';
 import { HoldingModule } from './holding/holding.module';
+import { DividendService } from './dividend/dividend.service';
+import { DividendModule } from './dividend/dividend.module';
 
 @Module({
-  imports: [PrismaModule, ProfileModule, PortfolioModule, TransactionsModule, StocksModule, HoldingModule],
+  imports: [
+    PrismaModule,
+    ProfileModule,
+    PortfolioModule,
+    TransactionsModule,
+    StocksModule,
+    HoldingModule,
+    DividendModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -30,6 +30,26 @@ enum PortfolioStrategy {
   Other
 }
 
+enum DividendQuarter {
+  Q1
+  Q2
+  Q3
+  Q4
+  SPECIAL
+}
+
+enum DividendStatus {
+  ANNOUNCED
+  CANCELLED
+  PAID
+}
+
+enum DividendPaymentStatus {
+  UPCOMING
+  PAID
+  MISSED
+}
+
 model Profile {
   id          Int      @id @default(autoincrement())
   firstName   String
@@ -40,6 +60,7 @@ model Profile {
   transactions  Transaction[]
   portfolios    Portfolio[]
   holdings      Holding[]
+  dividendPayments  DividendPayment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -57,6 +78,7 @@ model Stock {
 
   transactions Transaction[]    // 1 stock may have many transactions
   holdings    Holding[]
+  dividendDeclaration  DividendDeclaration[]
 
   sectorId   Int
   sector   Sector         @relation(fields: [sectorId], references: [id])
@@ -109,6 +131,7 @@ model Portfolio {
 
   transactions  Transaction[]
   holdings      Holding[]
+  dividendPayments  DividendPayment[]
 
   profileId     Int
   profile       Profile      @relation(fields: [profileId], references: [id])
@@ -116,6 +139,7 @@ model Portfolio {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
+
 
 model Holding {
   id        Int       @id @default(autoincrement())
@@ -132,11 +156,72 @@ model Holding {
   portfolioId   Int
   portfolio     Portfolio         @relation(fields: [portfolioId], references: [id])
 
+  dividendPayments  DividendPayment[]
+
   @@unique([portfolioId, stockId])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
+
+
+model DividendDeclaration {
+  id String @id @default(cuid())
+
+  stockId     Int
+  stock       Stock @relation(fields: [stockId], references: [id])
+
+  dividendPerShare    Decimal     @db.Decimal(18,4)
+
+  announcementDate    DateTime?
+  exDividendDate      DateTime
+
+  bookClosureDate     DateTime
+
+  paymentDate       DateTime
+  financialYear     Int?
+
+  quarter       DividendQuarter?
+  status        DividendStatus      @default(ANNOUNCED)
+
+  payments DividendPayment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+}
+
+
+model DividendPayment {
+  id      String      @id     @default(cuid())
+
+  eligibleShares    Decimal     @db.Decimal(18,4)
+  grossDividend     Decimal @db.Decimal(18,4)
+
+  taxRate       Decimal?    @db.Decimal(5,2)
+  taxAmount     Decimal?    @db.Decimal(18,4)
+  netDividend   Decimal     @db.Decimal(18,4)
+
+  status    DividendPaymentStatus   @default(UPCOMING)
+  paidAt    DateTime?
+
+  profileId     Int
+  profile       Profile      @relation(fields: [profileId], references: [id])
+
+  declarationId     String
+  declaration       DividendDeclaration   @relation(fields: [declarationId], references: [id])
+
+  portfolioId     Int
+  portfolio       Portfolio     @relation(fields: [portfolioId], references: [id])
+
+  holdingId       Int
+  holding         Holding       @relation(fields: [holdingId], references: [id])
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
 
 model Goal {
   id            Int      @id @default(autoincrement())
@@ -145,7 +230,7 @@ model Goal {
   
   currentCorpus   Int
   targetCorpus    Int
-  
+
   expectedHoldingPeriod    Int
 
   createdAt DateTime @default(now())

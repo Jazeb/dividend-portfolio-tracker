@@ -61,8 +61,6 @@ function HoldingsPage() {
   });
 
   const portfolios: Portfolio[] = portfolioQuery.data ?? [];
-  console.log("###############");
-  console.log({ portfolios });
 
   const holdings: Holding[] = holdingsQuery.data ?? (seedHoldings as Holding[]);
 

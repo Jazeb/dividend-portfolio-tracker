@@ -196,7 +196,7 @@ model DividendPayment {
   id      String      @id     @default(cuid())
 
   eligibleShares    Decimal     @db.Decimal(18,4)
-  grossDividend     Decimal @db.Decimal(18,4)
+  grossDividend     Decimal     @db.Decimal(18,4)
 
   taxRate       Decimal?    @db.Decimal(5,2)
   taxAmount     Decimal?    @db.Decimal(18,4)

@@ -15,19 +15,19 @@ export type Stock = {
   sector: Sector;
 };
 
-export type Holding = {
-  symbol: string;
-  name: string;
-  sector: string;
-  quantity: number;
-  avgPrice: number;
-  currentPrice: number;
-  dividendYield: number;
-  yieldOnCost: number;
-  annualDividend: number;
-  portfolioId: number;
-  stocks: Stock;
-};
+// export type Holding = {
+//   symbol: string;
+//   name: string;
+//   sector: string;
+//   quantity: number;
+//   avgPrice: number;
+//   currentPrice: number;
+//   dividendYield: number;
+//   yieldOnCost: number;
+//   annualDividend: number;
+//   portfolioId: number;
+//   stocks: Stock;
+// };
 
 export const holdings: Holding[] = [
   // {

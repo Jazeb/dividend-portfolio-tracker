@@ -3,7 +3,7 @@ import { DividendDeclaration } from 'generated/prisma/client';
 import { DividendService } from './dividend.service';
 import { CreateDividendDeclarationDto } from './dto/declaration.dto';
 
-@Controller('dividend')
+@Controller('dividends')
 export class DividendController {
   constructor(private readonly dividendService: DividendService) {}
 
@@ -11,6 +11,11 @@ export class DividendController {
   //   getPortfoliosByProfile(@Headers('UserId') userId: string): Promise<DividendDeclaration[]> {
   //     // return this.portfolioService.getPortfolioByProfile(userId);
   //   }
+
+  @Get('/upcoming')
+  getUpcomingDividends(){
+    return this.dividendService.getUpcomingDividends();
+  }
 
   @Post('declaration')
   createDividendDeclaration(@Body() body: CreateDividendDeclarationDto): Promise<DividendDeclaration> {

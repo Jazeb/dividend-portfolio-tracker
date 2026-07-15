@@ -216,7 +216,7 @@ function Dashboard() {
           <CardContent className="p-0">
             <div className="divide-y">
               {topDividendStocks.map((h) => {
-                const income = h.annualDividend * h.qty;
+                const income = h.annualDividend * h.quantity;
                 const share = (income / 465400) * 100;
                 return (
                   <div key={h.symbol} className="px-6 py-3">

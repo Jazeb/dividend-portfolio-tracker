@@ -13,8 +13,13 @@ export class DividendController {
   //   }
 
   @Get('/upcoming')
-  getUpcomingDividends(){
+  getUpcomingDividends() {
     return this.dividendService.getUpcomingDividends();
+  }
+
+  @Get('/history')
+  getDividendsHistory() {
+    return this.dividendService.getDividendsHistory();
   }
 
   @Post('declaration')

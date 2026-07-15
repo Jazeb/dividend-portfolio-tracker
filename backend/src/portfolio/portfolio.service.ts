@@ -20,7 +20,6 @@ export class PortfolioService {
         },
       },
     });
-    // const totalCost = portfolio[0].holdings.reduce((acc, current) => acc + Number(current.totalCost), 0);
     return portfolio;
   }
 
@@ -28,11 +27,7 @@ export class PortfolioService {
     return this.prismaService.portfolio.create({
       data: {
         ...body,
-        profile: {
-          connect: {
-            id: Number(profileId),
-          },
-        },
+        profile: { connect: { id: Number(profileId) } },
       },
     });
   }

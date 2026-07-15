@@ -80,6 +80,7 @@ import {
   type SectorAllocation,
   Portfolio,
   Holding,
+  DividendHistory,
 } from "@/types";
 import { portfoliosApi } from "@/lib/api/portfolios";
 import { dividendsApi } from "@/lib/api/dividends";
@@ -131,33 +132,27 @@ type DividendRecord = {
 };
 
 // ---- Synthetic history (12 months of paid dividends) --------------------
-function buildHistory(holdings: Holding[]): DividendRecord[] {
+function buildHistory(history: DividendHistory[]): DividendRecord[] {
   const records: DividendRecord[] = [];
-  const now = new Date(2026, 6, 14); // Jul 14 2026
-  holdings.forEach((h, hi) => {
-    // 2 to 4 payouts across the last 18 months
-    const payouts = 2 + (hi % 3);
-    for (let i = 0; i < payouts; i++) {
-      const monthsAgo = 2 + i * 4 + (hi % 2);
-      const d = new Date(now.getFullYear(), now.getMonth() - monthsAgo, 8 + (hi % 18));
-      const dps = +(h.stocks.annualDividend / payouts).toFixed(2);
-      const gross = +(dps * h.quantity).toFixed(0);
-      const tax = +(gross * TAX_RATE).toFixed(0);
-      records.push({
-        id: `${h.stocks.symbol}-${d.getTime()}`,
-        payDate: d.toISOString().slice(0, 10),
-        exDate: new Date(d.getTime() - 15 * 86400000).toISOString().slice(0, 10),
-        bookClosure: new Date(d.getTime() - 10 * 86400000).toISOString().slice(0, 10),
-        symbol: h.stocks.symbol,
-        company: h.stocks.fullName,
-        dps,
-        shares: h.quantity,
-        gross,
-        tax,
-        net: gross - tax,
-        status: monthsAgo <= 1 ? "Processing" : "Paid",
-      });
-    }
+  history.forEach((h, hi) => {
+    const d = new Date(); // (now.getFullYear(), now.getMonth() - monthsAgo, 8 + (hi % 18));
+    const dps = Number(h.dividendPerShare); //+(h.annualDividend / payouts).toFixed(2);
+    const gross = Number(h.grossDividend); //+(dps * h.eligibleShares).toFixed(0);
+    const tax = +(gross * TAX_RATE).toFixed(0);
+    records.push({
+      id: `${h.symbol}-${d.getTime()}`,
+      payDate: d.toISOString().slice(0, 10),
+      exDate: new Date(d.getTime() - 15 * 86400000).toISOString().slice(0, 10),
+      bookClosure: new Date(d.getTime() - 10 * 86400000).toISOString().slice(0, 10),
+      symbol: h.symbol,
+      company: h.fullName,
+      dps,
+      shares: Number(h.eligibleShares),
+      gross,
+      tax,
+      net: gross - tax,
+      status: "Paid",
+    });
   });
   return records.sort((a, b) => (a.payDate < b.payDate ? 1 : -1));
 }
@@ -180,29 +175,33 @@ type UpcomingRow = {
 
 function calculateAnnualIncome(holdings: Holding[]) {
   let annualIncome = 0;
-  holdings.map(holding => annualIncome += Number(holding.quantity) * holding.stocks.annualDividend);
+  holdings.map(
+    (holding) => (annualIncome += Number(holding.quantity) * holding.stocks.annualDividend),
+  );
   return annualIncome;
 }
 
 function buildUpcomingRows(source: UpcomingDividend[], holdings: Holding[]): UpcomingRow[] {
   return (source ?? []).map((u, i) => {
     const dps = parseFloat(u.dividendPerShare.replace(/[^0-9.]/g, ""));
-    const h = holdings.find((x) => x.stocks.symbol === u.stock.symbol);
+    const h = holdings.find((x) => x.stocks.symbol === u.symbol);
     if (!h) return {};
     const shares = h.quantity;
     const gross = Math.round(dps * shares);
     const tax = Math.round(gross * TAX_RATE);
     return {
-      id: `up-${u.stock.symbol}`,
-      symbol: u.stock.symbol,
-      company: u.stock.fullName,
+      id: `up-${u.symbol}-${u.paymentDate}`,
+      symbol: u.symbol,
+      company: u.fullName,
       dps,
       shares,
       gross,
       tax,
       net: gross - tax,
       exDate: u.exDividendDate,
-      bookClosure: new Date(new Date(u.exDividendDate).getTime() + 5 * 86400000).toISOString().slice(0, 10),
+      bookClosure: new Date(new Date(u.exDividendDate).getTime() + 5 * 86400000)
+        .toISOString()
+        .slice(0, 10),
       payDate: u.paymentDate,
       status: i === 0 ? "Processing" : "Upcoming",
     };
@@ -232,7 +231,9 @@ function DividendsPage() {
   const [trendRange, setTrendRange] = useState<"1Y" | "3Y" | "5Y" | "ALL">("1Y");
   const [historySearch, setHistorySearch] = useState("");
   const [historyStatus, setHistoryStatus] = useState<string>("all");
-  const [historySort, setHistorySort] = useState<"date-desc" | "date-asc" | "net-desc">("date-desc");
+  const [historySort, setHistorySort] = useState<"date-desc" | "date-asc" | "net-desc">(
+    "date-desc",
+  );
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const [drawer, setDrawer] = useState<DividendRecord | UpcomingRow | null>(null);
@@ -284,15 +285,21 @@ function DividendsPage() {
     enabled: API_ENABLED,
     retry: 1,
   });
+  const dividendHistoryQuery = useQuery({
+    queryKey: ["history"],
+    queryFn: () => dividendsApi.history(),
+    enabled: API_ENABLED,
+    retry: 1,
+  });
 
-  const upcomingSource = upcomingQuery.data as any; // ?? seedUpcoming;
+  const upcomingSource = upcomingQuery.data ?? [];
   const monthlySource = monthlyQuery.data ?? seedMonthly;
   const growthSource = growthQuery.data ?? seedGrowth;
   const sectorsSource = sectorsQuery.data ?? seedSectors;
   const holdings: Holding[] = holdingsQuery.data ?? [];
   const portfolios: Portfolio[] = portfolioQuery.data ?? [];
+  const dividendHistory = dividendHistoryQuery.data ?? [];
 
-  console.log({ growthSource })
   const upcomingRows = useMemo(() => buildUpcomingRows(upcomingSource, holdings), [upcomingSource]);
 
   // Deterministically assign each holding to a portfolio
@@ -314,11 +321,15 @@ function DividendsPage() {
     [filteredHoldings],
   );
 
-  const history = buildHistory(holdings);
+  const history = buildHistory(dividendHistory);
+  console.log("history", history);
 
   const scale = useMemo(() => {
     if (portfolioFilter === "all") return 1;
-    const total = holdingsWithPortfolio?.reduce((s, h) => s + h.stocks.annualDividend * h.quantity, 0);
+    const total = holdingsWithPortfolio?.reduce(
+      (s, h) => s + h.stocks.annualDividend * h.quantity,
+      0,
+    );
     const filtered = filteredHoldings.reduce((s, h) => s + h.stocks.annualDividend * h.quantity, 0);
     return total > 0 ? filtered / total : 0;
   }, [portfolioFilter, filteredHoldings]);
@@ -354,6 +365,7 @@ function DividendsPage() {
     return rows;
   }, [portfolioFilter, symbolSet, historySearch, historyStatus, historySort]);
 
+  console.log("filteredHistory", filteredHistory);
   const pagedHistory = filteredHistory.slice((page - 1) * pageSize, page * pageSize);
   const totalPages = Math.max(1, Math.ceil(filteredHistory.length / pageSize));
 
@@ -367,10 +379,13 @@ function DividendsPage() {
     filteredHoldings.reduce((s, h) => s + h.quantity * h.stocks.currentPrice, 0) || 1;
   const totalCost = filteredHoldings.reduce((s, h) => s + h.quantity * h.avgPrice, 0) || 1;
   const avgYield =
-    filteredHoldings.reduce((s, h) => s + h.stocks.dividendYield * h.quantity * h.stocks.currentPrice, 0) /
-    totalMarketValue;
+    filteredHoldings.reduce(
+      (s, h) => s + h.stocks.dividendYield * h.quantity * h.stocks.currentPrice,
+      0,
+    ) / totalMarketValue;
   const yieldOnCost =
-    (filteredHoldings.reduce((s, h) => s + h.stocks.annualDividend * h.quantity, 0) / totalCost) * 100;
+    (filteredHoldings.reduce((s, h) => s + h.stocks.annualDividend * h.quantity, 0) / totalCost) *
+    100;
 
   // --- Chart data ---
   const scaledGrowth = useMemo(
@@ -385,7 +400,10 @@ function DividendsPage() {
     if (portfolioFilter === "all") return sectorsSource;
     const bySector = new Map<string, number>();
     filteredHoldings.forEach((h) => {
-      bySector.set(h.stocks.sector.name, (bySector.get(h.stocks.sector.name) ?? 0) + h.stocks.annualDividend * h.quantity);
+      bySector.set(
+        h.stocks.sector.name,
+        (bySector.get(h.stocks.sector.name) ?? 0) + h.stocks.annualDividend * h.quantity,
+      );
     });
     const total = [...bySector.values()].reduce((a, b) => a + b, 0) || 1;
     return [...bySector.entries()].map(([name, value]) => ({
@@ -399,7 +417,6 @@ function DividendsPage() {
     return scaledGrowth.slice(-years);
   }, [trendRange, scaledGrowth, growthSource.length]);
 
-  console.log({ trendData })
   // --- Projections ---
   const nextMonth = Math.round(annualIncome / 12);
   const nextQuarter = Math.round(annualIncome / 4);
@@ -830,15 +847,17 @@ function DividendsPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           {filteredHoldings.map((h) => {
-            console.log({ filteredHoldings })
             const income = h.stocks.annualDividend * h.quantity;
             const total =
               filteredHoldings.reduce((s, x) => s + x.stocks.annualDividend * x.quantity, 0) || 1;
             const shareOfPortfolio = (income / total) * 100;
             const yoc = ((h.stocks.annualDividend / h.avgPrice) * 100).toFixed(2);
-            const dYield = (h.stocks.annualDividend / h.stocks.currentPrice).toFixed(2);
+            const dYield = ((h.stocks.annualDividend / h.stocks.currentPrice) * 100).toFixed(2);
             return (
-              <div key={h.stocks.symbol} className="grid grid-cols-[110px_1fr_auto] gap-3 items-center">
+              <div
+                key={h.stocks.symbol}
+                className="grid grid-cols-[110px_1fr_auto] gap-3 items-center"
+              >
                 <div>
                   <div className="text-sm font-semibold">{h.stocks.symbol}</div>
                   <div className="text-[10px] text-muted-foreground">{h.stocks.sector.name}</div>

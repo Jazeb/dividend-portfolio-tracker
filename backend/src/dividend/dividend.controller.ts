@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Headers, Query } from '@nestjs/common';
 import { DividendDeclaration } from 'generated/prisma/client';
 import { DividendService } from './dividend.service';
 import { CreateDividendDeclarationDto } from './dto/declaration.dto';
@@ -12,9 +12,14 @@ export class DividendController {
   //     // return this.portfolioService.getPortfolioByProfile(userId);
   //   }
 
+  @Get('/dashboard')
+  getDashboard(@Query() query: { portfolioId: string }, @Headers('UserId') userId: string) {
+    return this.dividendService.getDashboardData(query.portfolioId, userId);
+  }
+
   @Get('/upcoming')
-  getUpcomingDividends() {
-    return this.dividendService.getUpcomingDividends();
+  getUpcomingDividends(@Query() query: { portfolioId: string }, @Headers('UserId') userId: string) {
+    return this.dividendService.getUpcomingDividends(query.portfolioId, userId);
   }
 
   @Get('/history')

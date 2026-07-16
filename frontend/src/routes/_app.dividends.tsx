@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader, StatCard } from "@/components/stat-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -21,7 +22,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Sheet,
   SheetContent,
@@ -33,7 +33,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   Coins,
   CalendarDays,
-  CheckCircle2,
   Clock,
   TrendingUp,
   Wallet,
@@ -41,15 +40,13 @@ import {
   Target,
   Search,
   Download,
-  ArrowUpRight,
-  ArrowDownRight,
   ChevronLeft,
   ChevronRight,
   Sparkles,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -62,32 +59,16 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-  Legend,
 } from "recharts";
-import {
-  dividendGrowth as seedGrowth,
-  sectorAllocation as seedSectors,
-  holdings as seedHoldings,
-  monthlyDividends as seedMonthly,
-  pkr,
-  monthLabels,
-  // holdings,
-} from "@/lib/mock-data";
-import {
-  type UpcomingDividend,
-  type MonthlyDividend,
-  type DividendGrowthPoint,
-  type SectorAllocation,
-  Portfolio,
-  Holding,
-  DividendHistory,
-} from "@/types";
+import { portfolios as seedPortfolios, pkr, monthLabels } from "@/lib/mock-data";
+import { dividendsApi, type DividendDashboard, type DividendItem } from "@/lib/api/dividends";
 import { portfoliosApi } from "@/lib/api/portfolios";
-import { dividendsApi } from "@/lib/api/dividends";
-import { holdingsApi } from "@/lib/api/holdings";
+import { buildMockDividendDashboard } from "@/lib/mock/dividend-dashbord";
 import { cn } from "@/lib/utils";
 
-// When VITE_API_BASE_URL is unset (e.g. on Lovable preview), fall back to seed data.
+import { Portfolio } from "@/types";
+
+// const API_ENABLED = false;
 const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
 
 export const Route = createFileRoute("/_app/dividends")({
@@ -98,13 +79,13 @@ export const Route = createFileRoute("/_app/dividends")({
       {
         name: "description",
         content:
-          "Track dividend income, upcoming payments, history, projections, and growth across your PSX portfolios.",
+          "Track dividend income, upcoming payments, history, projections, and growth for the selected portfolio.",
       },
     ],
   }),
 });
 
-const rawColors = [
+const chartColors = [
   "#10b981",
   "#3b82f6",
   "#f59e0b",
@@ -114,50 +95,7 @@ const rawColors = [
   "#ec4899",
   "#64748b",
 ];
-const TAX_RATE = 0.15;
 
-type DividendRecord = {
-  id: string;
-  payDate: string;
-  exDate: string;
-  bookClosure: string;
-  symbol: string;
-  company: string;
-  dps: number;
-  shares: number;
-  gross: number;
-  tax: number;
-  net: number;
-  status: "Paid" | "Processing" | "Upcoming";
-};
-
-// ---- Synthetic history (12 months of paid dividends) --------------------
-function buildHistory(history: DividendHistory[]): DividendRecord[] {
-  const records: DividendRecord[] = [];
-  history.forEach((h, hi) => {
-    const d = new Date(); // (now.getFullYear(), now.getMonth() - monthsAgo, 8 + (hi % 18));
-    const dps = Number(h.dividendPerShare); //+(h.annualDividend / payouts).toFixed(2);
-    const gross = Number(h.grossDividend); //+(dps * h.eligibleShares).toFixed(0);
-    const tax = +(gross * TAX_RATE).toFixed(0);
-    records.push({
-      id: `${h.symbol}-${d.getTime()}`,
-      payDate: d.toISOString().slice(0, 10),
-      exDate: new Date(d.getTime() - 15 * 86400000).toISOString().slice(0, 10),
-      bookClosure: new Date(d.getTime() - 10 * 86400000).toISOString().slice(0, 10),
-      symbol: h.symbol,
-      company: h.fullName,
-      dps,
-      shares: Number(h.eligibleShares),
-      gross,
-      tax,
-      net: gross - tax,
-      status: "Paid",
-    });
-  });
-  return records.sort((a, b) => (a.payDate < b.payDate ? 1 : -1));
-}
-
-// Enrich upcoming with tax breakdown
 type UpcomingRow = {
   id: string;
   symbol: string;
@@ -173,40 +111,20 @@ type UpcomingRow = {
   status: "Upcoming" | "Processing";
 };
 
-function calculateAnnualIncome(holdings: Holding[]) {
-  let annualIncome = 0;
-  holdings.map(
-    (holding) => (annualIncome += Number(holding.quantity) * holding.stocks.annualDividend),
-  );
-  return annualIncome;
-}
-
-function buildUpcomingRows(source: UpcomingDividend[], holdings: Holding[]): UpcomingRow[] {
-  return (source ?? []).map((u, i) => {
-    const dps = parseFloat(u.dividendPerShare.replace(/[^0-9.]/g, ""));
-    const h = holdings.find((x) => x.stocks.symbol === u.symbol);
-    if (!h) return {};
-    const shares = h.quantity;
-    const gross = Math.round(dps * shares);
-    const tax = Math.round(gross * TAX_RATE);
-    return {
-      id: `up-${u.symbol}-${u.paymentDate}`,
-      symbol: u.symbol,
-      company: u.fullName,
-      dps,
-      shares,
-      gross,
-      tax,
-      net: gross - tax,
-      exDate: u.exDividendDate,
-      bookClosure: new Date(new Date(u.exDividendDate).getTime() + 5 * 86400000)
-        .toISOString()
-        .slice(0, 10),
-      payDate: u.paymentDate,
-      status: i === 0 ? "Processing" : "Upcoming",
-    };
-  });
-}
+type HistoryRow = {
+  id: string;
+  symbol: string;
+  company: string;
+  dps: number;
+  shares: number;
+  gross: number;
+  tax: number;
+  net: number;
+  exDate: string;
+  bookClosure: string;
+  payDate: string;
+  status: "Paid";
+};
 
 const statusStyles: Record<string, string> = {
   Paid: "bg-success/12 text-success border-success/20",
@@ -225,10 +143,64 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+function toDisplayStatus(s: DividendItem["status"]): UpcomingRow["status"] | "Paid" {
+  if (s === "PAID") return "Paid";
+  if (s === "PROCESSING") return "Processing";
+  return "Upcoming";
+}
+
+function mapUpcoming(items: DividendItem[]): UpcomingRow[] {
+  return items.map((u) => {
+    const pay = new Date(u.paymentDate);
+    const ex = new Date(pay);
+    ex.setDate(ex.getDate() - 15);
+    const book = new Date(pay);
+    book.setDate(book.getDate() - 10);
+    const d = {
+      id: u.id,
+      symbol: u.stock,
+      company: u.company,
+      dps: u.dividendPerShare,
+      shares: u.eligibleShares,
+      gross: u.grossDividend,
+      tax: u.taxAmount,
+      net: u.netDividend,
+      exDate: ex.toISOString().slice(0, 10),
+      bookClosure: book.toISOString().slice(0, 10),
+      payDate: u.paymentDate,
+      status: (toDisplayStatus(u.status) as UpcomingRow["status"]) ?? "Upcoming",
+    };
+    return d;
+  });
+}
+
+function mapHistory(items: DividendItem[]): HistoryRow[] {
+  return items.map((u) => {
+    const pay = new Date(u.paymentDate);
+    const ex = new Date(pay);
+    ex.setDate(ex.getDate() - 15);
+    const book = new Date(pay);
+    book.setDate(book.getDate() - 10);
+    return {
+      id: u.id,
+      symbol: u.stock,
+      company: u.company,
+      dps: u.dividendPerShare,
+      shares: u.eligibleShares,
+      gross: u.grossDividend,
+      tax: u.taxAmount,
+      net: u.netDividend,
+      exDate: ex.toISOString().slice(0, 10),
+      bookClosure: book.toISOString().slice(0, 10),
+      payDate: u.paymentDate,
+      status: "Paid",
+    };
+  });
+}
+
 // ---- Component ---------------------------------------------------------
 function DividendsPage() {
-  const [portfolioFilter, setPortfolioFilter] = useState<string>("all");
-  const [trendRange, setTrendRange] = useState<"1Y" | "3Y" | "5Y" | "ALL">("1Y");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [historySearch, setHistorySearch] = useState("");
   const [historyStatus, setHistoryStatus] = useState<string>("all");
   const [historySort, setHistorySort] = useState<"date-desc" | "date-asc" | "net-desc">(
@@ -236,120 +208,86 @@ function DividendsPage() {
   );
   const [page, setPage] = useState(1);
   const pageSize = 8;
-  const [drawer, setDrawer] = useState<DividendRecord | UpcomingRow | null>(null);
+  const [drawer, setDrawer] = useState<UpcomingRow | HistoryRow | null>(null);
   const [calMonth, setCalMonth] = useState(new Date(2026, 6, 1));
   const [upcomingSort, setUpcomingSort] = useState<"payDate" | "net">("payDate");
 
-  // --- API queries (fallback to seed data when API is disabled) ---
-
-  const upcomingQuery = useQuery<UpcomingDividend[]>({
-    queryKey: ["dividends", "upcoming"],
-    queryFn: () => dividendsApi.upcoming(),
-    enabled: API_ENABLED,
-    // initialData: API_ENABLED ? undefined : seedUpcoming,
-    // placeholderData: seedUpcoming,
-    retry: 1,
-  });
-  const monthlyQuery = useQuery<MonthlyDividend[]>({
-    queryKey: ["dividends", "monthly"],
-    queryFn: () => dividendsApi.monthly(),
-    enabled: API_ENABLED,
-    initialData: API_ENABLED ? undefined : seedMonthly,
-    placeholderData: seedMonthly,
-    retry: 1,
-  });
-  const growthQuery = useQuery<DividendGrowthPoint[]>({
-    queryKey: ["dividends", "growth"],
-    queryFn: () => dividendsApi.growth(),
-    enabled: API_ENABLED,
-    initialData: API_ENABLED ? undefined : seedGrowth,
-    placeholderData: seedGrowth,
-    retry: 1,
-  });
-  const sectorsQuery = useQuery<SectorAllocation[]>({
-    queryKey: ["dividends", "sectors"],
-    queryFn: () => dividendsApi.sectors(),
-    enabled: API_ENABLED,
-    initialData: API_ENABLED ? undefined : seedSectors,
-    placeholderData: seedSectors,
-    retry: 1,
-  });
-  const portfolioQuery = useQuery({
-    queryKey: ["portfolio"],
+  // --- Portfolios ---
+  const portfoliosQuery = useQuery<Portfolio[]>({
+    queryKey: ["portfolios"],
     queryFn: () => portfoliosApi.list(),
+    enabled: API_ENABLED,
+    // initialData: API_ENABLED ? undefined : (seedPortfolios as Portfolio[]),
+    // placeholderData: seedPortfolios as Portfolio[],
+    retry: 1,
     staleTime: 5 * 60_000,
   });
-  const holdingsQuery = useQuery({
-    queryKey: ["holdings"],
-    queryFn: () => holdingsApi.list(),
-    enabled: API_ENABLED,
+
+  const portfolios: Portfolio[] = portfoliosQuery.data ?? (seedPortfolios as Portfolio[]);
+
+  // Auto-select first portfolio once available.
+  useEffect(() => {
+    if (!selectedId && portfolios.length > 0) {
+      setSelectedId(portfolios[0].id);
+    }
+  }, [selectedId, portfolios]);
+
+  // --- Dashboard (per portfolio, cached) ---
+  const dashboardQuery = useQuery<DividendDashboard>({
+    queryKey: ["dividends", "dashboard", selectedId],
+    queryFn: () => {
+      if (!selectedId) throw new Error("No portfolio selected");
+      return dividendsApi.dashboard(selectedId);
+    },
+    enabled: !!selectedId,
+    staleTime: 5 * 60_000,
     retry: 1,
   });
-  const dividendHistoryQuery = useQuery({
-    queryKey: ["history"],
-    queryFn: () => dividendsApi.history(),
-    enabled: API_ENABLED,
-    retry: 1,
-  });
 
-  const upcomingSource = upcomingQuery.data ?? [];
-  const monthlySource = monthlyQuery.data ?? seedMonthly;
-  const growthSource = growthQuery.data ?? seedGrowth;
-  const sectorsSource = sectorsQuery.data ?? seedSectors;
-  const holdings: Holding[] = holdingsQuery.data ?? [];
-  const portfolios: Portfolio[] = portfolioQuery.data ?? [];
-  const dividendHistory = dividendHistoryQuery.data ?? [];
+  // --- Dashboard (per portfolio, cached) ---
+  // const upcomingQuery = useQuery<DividendDashboard>({
+  //   queryKey: ["dividends", selectedId],
+  //   queryFn: () => {
+  //     if (!selectedId) throw new Error("No portfolio selected");
+  //     return API_ENABLED
+  //       ? dividendsApi.upcoming(selectedId)
+  //       : Promise.resolve(buildMockDividendDashboard(selectedId));
+  //   },
+  //   enabled: !!selectedId,
+  //   staleTime: 5 * 60_000,
+  //   retry: 1,
+  // });
 
-  const upcomingRows = useMemo(() => buildUpcomingRows(upcomingSource, holdings), [upcomingSource]);
+  // Reset paging when switching portfolios.
+  useEffect(() => {
+    setPage(1);
+    setHistorySearch("");
+    setHistoryStatus("all");
+  }, [selectedId]);
 
-  // Deterministically assign each holding to a portfolio
-  const holdingsWithPortfolio = holdings?.map((h, i) => ({
-    ...h,
-    portfolioId: portfolios[i % portfolios.length].id,
-  }));
+  const activePortfolio = portfolios.find((p) => p.id === selectedId);
+  const isLoading = dashboardQuery.isLoading || dashboardQuery.isFetching;
+  const isError = dashboardQuery.isError;
 
-  const activePortfolio = portfolios.find((p) => p.id === portfolioFilter);
-  const filteredHoldings = useMemo(
-    () =>
-      portfolioFilter === "all"
-        ? holdingsWithPortfolio
-        : holdingsWithPortfolio?.filter((h) => h.portfolioId === portfolioFilter),
-    [portfolioFilter],
+  const dashboard = dashboardQuery.data;
+
+  const upcomingRows = useMemo(
+    () => (dashboard ? mapUpcoming(dashboard.upcoming) : []),
+    [dashboard],
   );
-  const symbolSet = useMemo(
-    () => new Set(filteredHoldings?.map((h) => h.stocks.symbol)),
-    [filteredHoldings],
-  );
-
-  const history = buildHistory(dividendHistory);
-  console.log("history", history);
-
-  const scale = useMemo(() => {
-    if (portfolioFilter === "all") return 1;
-    const total = holdingsWithPortfolio?.reduce(
-      (s, h) => s + h.stocks.annualDividend * h.quantity,
-      0,
-    );
-    const filtered = filteredHoldings.reduce((s, h) => s + h.stocks.annualDividend * h.quantity, 0);
-    return total > 0 ? filtered / total : 0;
-  }, [portfolioFilter, filteredHoldings]);
-
-  const scaled = (n: number) => Math.round(n * scale);
+  console.log("upcomingRows");
+  console.log(upcomingRows);
+  const historyRows = useMemo(() => (dashboard ? mapHistory(dashboard.history) : []), [dashboard]);
 
   const filteredUpcoming = useMemo(() => {
-    const rows =
-      portfolioFilter === "all"
-        ? upcomingRows
-        : upcomingRows.filter((r) => symbolSet.has(r.symbol));
-
-    return [...rows].sort((a, b) => {
+    return [...upcomingRows].sort((a, b) => {
       if (upcomingSort === "net") return b.net - a.net;
       return a.payDate < b.payDate ? -1 : 1;
     });
-  }, [portfolioFilter, symbolSet, upcomingSort, upcomingRows]);
+  }, [upcomingRows, upcomingSort]);
 
   const filteredHistory = useMemo(() => {
-    let rows = portfolioFilter === "all" ? history : history.filter((r) => symbolSet.has(r.symbol));
+    let rows = historyRows;
     if (historySearch.trim()) {
       const q = historySearch.toLowerCase();
       rows = rows.filter(
@@ -357,110 +295,39 @@ function DividendsPage() {
       );
     }
     if (historyStatus !== "all") rows = rows.filter((r) => r.status === historyStatus);
-    rows = [...rows].sort((a, b) => {
+    return [...rows].sort((a, b) => {
       if (historySort === "net-desc") return b.net - a.net;
       if (historySort === "date-asc") return a.payDate < b.payDate ? -1 : 1;
       return a.payDate < b.payDate ? 1 : -1;
     });
-    return rows;
-  }, [portfolioFilter, symbolSet, historySearch, historyStatus, historySort]);
+  }, [historyRows, historySearch, historyStatus, historySort]);
 
-  console.log("filteredHistory", filteredHistory);
-  const pagedHistory = filteredHistory.slice((page - 1) * pageSize, page * pageSize);
   const totalPages = Math.max(1, Math.ceil(filteredHistory.length / pageSize));
+  const pagedHistory = filteredHistory.slice((page - 1) * pageSize, page * pageSize);
 
-  // --- KPI calculations ---
-  const annualIncome = calculateAnnualIncome(holdings);
-  const monthlyAvg = Math.round(annualIncome / 12);
-  const upcomingAmount = filteredUpcoming.reduce((s, r) => s + r.net, 0);
-  const pendingAmount = filteredUpcoming.reduce((s, r) => s + r.net, 0);
-  const lifetimeReceived = scaled(growthSource.slice(0, -1).reduce((s, d) => s + d.amount, 0));
-  const totalMarketValue =
-    filteredHoldings.reduce((s, h) => s + h.quantity * h.stocks.currentPrice, 0) || 1;
-  const totalCost = filteredHoldings.reduce((s, h) => s + h.quantity * h.avgPrice, 0) || 1;
-  const avgYield =
-    filteredHoldings.reduce(
-      (s, h) => s + h.stocks.dividendYield * h.quantity * h.stocks.currentPrice,
-      0,
-    ) / totalMarketValue;
-  const yieldOnCost =
-    (filteredHoldings.reduce((s, h) => s + h.stocks.annualDividend * h.quantity, 0) / totalCost) *
-    100;
-
-  // --- Chart data ---
-  const scaledGrowth = useMemo(
-    () => growthSource.map((d) => ({ ...d, amount: scaled(d.amount) })),
-    [scale, growthSource],
-  );
-  const scaledMonthly = useMemo(
-    () => monthlySource.map((d) => ({ ...d, amount: scaled(d.amount) })),
-    [scale, monthlySource],
-  );
-  const sectorData = useMemo<SectorAllocation[]>(() => {
-    if (portfolioFilter === "all") return sectorsSource;
-    const bySector = new Map<string, number>();
-    filteredHoldings.forEach((h) => {
-      bySector.set(
-        h.stocks.sector.name,
-        (bySector.get(h.stocks.sector.name) ?? 0) + h.stocks.annualDividend * h.quantity,
-      );
-    });
-    const total = [...bySector.values()].reduce((a, b) => a + b, 0) || 1;
-    return [...bySector.entries()].map(([name, value]) => ({
-      name,
-      value: Math.round((value / total) * 100),
+  const sectorPie = useMemo(() => {
+    if (!dashboard) return [] as { name: string; value: number }[];
+    const total = dashboard.breakdownBySector.reduce((s, x) => s + x.annualIncome, 0) || 1;
+    return dashboard.breakdownBySector.map((s) => ({
+      name: s.sector,
+      value: Math.round((s.annualIncome / total) * 100),
     }));
-  }, [portfolioFilter, filteredHoldings, sectorsSource]);
+  }, [dashboard]);
 
-  const trendData = useMemo(() => {
-    const years = { "1Y": 1, "3Y": 3, "5Y": 5, ALL: growthSource.length }[trendRange];
-    return scaledGrowth.slice(-years);
-  }, [trendRange, scaledGrowth, growthSource.length]);
-
-  // --- Projections ---
-  const nextMonth = Math.round(annualIncome / 12);
-  const nextQuarter = Math.round(annualIncome / 4);
-  const nextYearProjected = Math.round(annualIncome * 1.12);
-
-  // --- Calendar events ---
   const calendarEvents = useMemo(() => {
     const map = new Map<string, { type: "ex" | "book" | "pay"; row: UpcomingRow }[]>();
-    const push = (date: string, type: "ex" | "book" | "pay", row: UpcomingRow) => {
-      const arr = map.get(date) ?? [];
-      arr.push({ type, row });
-      map.set(date, arr);
-    };
     filteredUpcoming.forEach((r) => {
-      push(r.exDate, "ex", r);
-      push(r.bookClosure, "book", r);
-      push(r.payDate, "pay", r);
+      const push = (date: string, type: "ex" | "book" | "pay") => {
+        const arr = map.get(date) ?? [];
+        arr.push({ type, row: r });
+        map.set(date, arr);
+      };
+      push(r.exDate, "ex");
+      push(r.bookClosure, "book");
+      push(r.payDate, "pay");
     });
     return map;
   }, [filteredUpcoming]);
-
-  // --- Empty state ---
-  // if (filteredHoldings.length === 0) {
-  //   return (
-  //     <>
-  //       <PageHeader title="Dividends" description="Your dividend income at a glance" />
-  //       <Card className="card-elevated p-12 text-center flex flex-col items-center gap-4">
-  //         <div className="h-14 w-14 rounded-2xl gradient-primary grid place-items-center">
-  //           <Coins className="h-7 w-7 text-primary-foreground" />
-  //         </div>
-  //         <div>
-  //           <h2 className="text-lg font-semibold">No dividend income yet.</h2>
-  //           <p className="text-sm text-muted-foreground mt-1">
-  //             Add your first transaction to start tracking dividend payments.
-  //           </p>
-  //         </div>
-  //         <Button className="gap-2">
-  //           <Sparkles className="h-4 w-4" />
-  //           Add Your First Transaction
-  //         </Button>
-  //       </Card>
-  //     </>
-  //   );
-  // }
 
   // --- Export ---
   const exportCSV = () => {
@@ -491,540 +358,615 @@ function DividendsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "dividend-history.csv";
+    a.download = `dividend-history-${activePortfolio?.name ?? "portfolio"}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
+  const PortfolioSelector = (
+    <Select
+      value={selectedId ?? undefined}
+      onValueChange={setSelectedId}
+      disabled={isLoading && !dashboard}
+    >
+      <SelectTrigger className="h-9 w-[240px]">
+        <SelectValue placeholder="Select portfolio" />
+      </SelectTrigger>
+      <SelectContent>
+        {portfolios.map((p) => (
+          <SelectItem key={p.id} value={p.id}>
+            {p.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+
+  const header = (
+    <PageHeader
+      title="Dividends"
+      description="Track income, upcoming payments, history & projections"
+      actions={PortfolioSelector}
+    />
+  );
+
+  // --- Error state ---
+  if (isError && !dashboard) {
+    return (
+      <>
+        {header}
+        <Card className="card-elevated p-10 text-center flex flex-col items-center gap-4">
+          <div className="h-12 w-12 rounded-2xl bg-destructive/10 grid place-items-center">
+            <AlertCircle className="h-6 w-6 text-destructive" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">Couldn't load dividend data</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {(dashboardQuery.error as Error)?.message ??
+                "Something went wrong fetching the dashboard."}
+            </p>
+          </div>
+          <Button className="gap-2" onClick={() => dashboardQuery.refetch()}>
+            <RefreshCw className="h-4 w-4" />
+            Retry
+          </Button>
+        </Card>
+      </>
+    );
+  }
+
+  // --- Loading state ---
+  if (isLoading && !dashboard) {
+    return (
+      <>
+        {header}
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4 mb-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-28 rounded-xl" />
+          ))}
+        </div>
+        <Skeleton className="h-64 rounded-xl mb-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <Skeleton className="h-72 rounded-xl lg:col-span-2" />
+          <Skeleton className="h-72 rounded-xl" />
+        </div>
+        <Skeleton className="h-96 rounded-xl" />
+      </>
+    );
+  }
+
+  if (!dashboard) {
+    return <>{header}</>;
+  }
+
+  const { summary } = dashboard;
+  // const isEmpty =
+  //   dashboard.breakdownByStock.length === 0 &&
+  //   dashboard.history.length === 0 &&
+  //   dashboard.upcoming.length === 0;
+
+  // if (isEmpty) {
+  //   return (
+  //     <>
+  //       {header}
+  //       <Card className="card-elevated p-12 text-center flex flex-col items-center gap-4">
+  //         <div className="h-14 w-14 rounded-2xl gradient-primary grid place-items-center">
+  //           <Coins className="h-7 w-7 text-primary-foreground" />
+  //         </div>
+  //         <div>
+  //           <h2 className="text-lg font-semibold">
+  //             No dividend data available for this portfolio.
+  //           </h2>
+  //           <p className="text-sm text-muted-foreground mt-1">
+  //             Add transactions to start tracking dividend payments.
+  //           </p>
+  //         </div>
+  //         <Button className="gap-2">
+  //           <Sparkles className="h-4 w-4" />
+  //           Add Transactions
+  //         </Button>
+  //       </Card>
+  //     </>
+  //   );
+  // }
+
+  const nextMonth = Math.round(summary.annualIncome / 12);
+  const nextQuarter = Math.round(summary.annualIncome / 4);
+  const nextYearProjected = Math.round(summary.annualIncome * 1.12);
+
   return (
     <>
-      <PageHeader
-        title="Dividends"
-        description="Track income, upcoming payments, history & projections"
-        actions={
-          <Select value={portfolioFilter} onValueChange={setPortfolioFilter}>
-            <SelectTrigger className="h-9 w-[220px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Portfolios</SelectItem>
-              {portfolios.map((p) => (
-                <SelectItem key={p.id} value={p.id}>
-                  {p.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        }
-      />
+      {header}
       {activePortfolio && (
-        <div className="mb-4 text-xs text-muted-foreground">
-          Showing dividends for{" "}
-          <span className="font-medium text-foreground">{activePortfolio.name}</span> ·{" "}
-          {filteredHoldings.length} holdings
+        <div className="mb-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <span>
+            Showing dividends for{" "}
+            <span className="font-medium text-foreground">{activePortfolio.name}</span>
+          </span>
+          {dashboardQuery.isFetching && (
+            <span className="inline-flex items-center gap-1">
+              <RefreshCw className="h-3 w-3 animate-spin" /> Refreshing…
+            </span>
+          )}
         </div>
       )}
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4 mb-6">
-        <StatCard
-          label="Annual Income"
-          value={pkr(annualIncome)}
-          delta={24.2}
-          icon={<Coins className="h-4 w-4" />}
-          tone="primary"
-        />
-        <StatCard
-          label="Monthly Avg"
-          value={pkr(monthlyAvg)}
-          delta={6.4}
-          icon={<CalendarDays className="h-4 w-4" />}
-        />
-        <StatCard
-          label="Upcoming"
-          value={pkr(upcomingAmount)}
-          sub="next 30d"
-          icon={<Clock className="h-4 w-4" />}
-        />
-        <StatCard
-          label="Pending"
-          value={pkr(pendingAmount)}
-          sub={`${filteredUpcoming.length} events`}
-          icon={<TrendingUp className="h-4 w-4" />}
-        />
-        <StatCard
-          label="Received (Lifetime)"
-          value={pkr(lifetimeReceived)}
-          delta={18.4}
-          icon={<Wallet className="h-4 w-4" />}
-        />
-        <StatCard
-          label="Avg Yield"
-          value={`${avgYield.toFixed(2)}%`}
-          sub="portfolio"
-          icon={<Percent className="h-4 w-4" />}
-        />
-        <StatCard
-          label="Yield on Cost"
-          value={`${yieldOnCost.toFixed(2)}%`}
-          sub="on invested"
-          icon={<Target className="h-4 w-4" />}
-        />
-      </div>
+      <div
+        className={cn("transition-opacity duration-200", dashboardQuery.isFetching && "opacity-60")}
+      >
+        {/* KPIs */}
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+          <StatCard
+            label="Annual Income"
+            value={pkr(summary?.annualIncome || 0)}
+            icon={<Coins className="h-4 w-4" />}
+            tone="primary"
+          />
+          <StatCard
+            label="Monthly Avg"
+            value={pkr(summary.monthlyIncome || 0)}
+            icon={<CalendarDays className="h-4 w-4" />}
+          />
+          <StatCard
+            label="Upcoming"
+            value={pkr(summary.upcomingDividend || 0)}
+            sub={`${filteredUpcoming.length} events`}
+            icon={<Clock className="h-4 w-4" />}
+          />
+          <StatCard
+            label="Lifetime Income"
+            value={pkr(summary.lifetimeIncome || 0)}
+            icon={<Wallet className="h-4 w-4" />}
+          />
+          <StatCard
+            label="Yield"
+            value={`${summary?.yield?.toFixed(2)}%`}
+            sub="portfolio"
+            icon={<Percent className="h-4 w-4" />}
+          />
+          <StatCard
+            label="Yield on Cost"
+            value={`${summary?.yieldOnCost?.toFixed(2)}%`}
+            sub="on invested"
+            icon={<Target className="h-4 w-4" />}
+          />
+        </div>
 
-      {/* Upcoming Dividends */}
-      <Card className="card-elevated mb-6">
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <div>
-            <CardTitle className="text-base">Upcoming Dividends</CardTitle>
-            <CardDescription>Next payouts across your holdings</CardDescription>
-          </div>
-          <Select value={upcomingSort} onValueChange={(v: "payDate" | "net") => setUpcomingSort(v)}>
-            <SelectTrigger className="h-8 w-[160px] text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="payDate">Sort by pay date</SelectItem>
-              <SelectItem value="net">Sort by amount</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardHeader>
-        <CardContent className="overflow-x-auto p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>Stock</TableHead>
-                <TableHead className="text-right">DPS</TableHead>
-                <TableHead className="text-right">Shares</TableHead>
-                <TableHead className="text-right">Gross</TableHead>
-                <TableHead className="text-right">Tax (15%)</TableHead>
-                <TableHead className="text-right">Net</TableHead>
-                <TableHead>Ex-Date</TableHead>
-                <TableHead>Book Closure</TableHead>
-                <TableHead>Pay Date</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUpcoming.map((r) => (
-                <TableRow key={r.id} className="cursor-pointer" onClick={() => setDrawer(r)}>
-                  <TableCell>
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-8 w-8 rounded-lg bg-accent grid place-items-center text-[10px] font-bold">
-                        {r.symbol}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="font-medium text-sm">{r.symbol}</div>
-                        <div className="text-xs text-muted-foreground truncate max-w-[180px]">
-                          {r.company}
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">{r.dps.toFixed(2)}</TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {r.shares.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {r.gross.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums text-muted-foreground">
-                    −{r.tax.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums font-semibold text-success">
-                    {r.net.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{r.exDate}</TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{r.bookClosure}</TableCell>
-                  <TableCell className="text-xs">{r.payDate}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={r.status} />
-                  </TableCell>
+        {/* Upcoming Dividends */}
+        <Card className="card-elevated mb-6">
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-base">Upcoming Dividends</CardTitle>
+              <CardDescription>Next payouts across your holdings</CardDescription>
+            </div>
+            <Select
+              value={upcomingSort}
+              onValueChange={(v: "payDate" | "net") => setUpcomingSort(v)}
+            >
+              <SelectTrigger className="h-8 w-[160px] text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="payDate">Sort by pay date</SelectItem>
+                <SelectItem value="net">Sort by amount</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardHeader>
+          <CardContent className="overflow-x-auto p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead>Stock</TableHead>
+                  <TableHead className="text-right">DPS</TableHead>
+                  <TableHead className="text-right">Shares</TableHead>
+                  <TableHead className="text-right">Gross</TableHead>
+                  <TableHead className="text-right">Tax</TableHead>
+                  <TableHead className="text-right">Net</TableHead>
+                  <TableHead>Ex-Date</TableHead>
+                  <TableHead>Book Closure</TableHead>
+                  <TableHead>Pay Date</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {filteredUpcoming.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={10}
+                      className="text-center py-8 text-sm text-muted-foreground"
+                    >
+                      No upcoming dividends.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredUpcoming.map((r) => (
+                    <TableRow key={r.id} className="cursor-pointer" onClick={() => setDrawer(r)}>
+                      <TableCell>
+                        <div className="flex items-center gap-2.5">
+                          <div className="h-8 w-8 rounded-lg bg-accent grid place-items-center text-[10px] font-bold">
+                            {r.symbol}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-medium text-sm">{r.symbol}</div>
+                            <div className="text-xs text-muted-foreground truncate max-w-[180px]">
+                              {r.company}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">{r.dps.toFixed(2)}</TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {r.shares.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {r.gross.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums text-muted-foreground">
+                        −{r.tax.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums font-semibold text-success">
+                        {r.net.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{r.exDate}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {r.bookClosure}
+                      </TableCell>
+                      <TableCell className="text-xs">{r.payDate}</TableCell>
+                      <TableCell>
+                        <StatusBadge status={r.status} />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      {/* Calendar + Sector */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <Card className="card-elevated lg:col-span-2">
-          <CardHeader className="flex-row items-center justify-between space-y-0">
-            <div>
-              <CardTitle className="text-base">Dividend Calendar</CardTitle>
-              <CardDescription>Ex-date, book closure & payment events</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() =>
-                  setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1))
-                }
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <div className="text-sm font-medium w-32 text-center">
-                {monthLabels[calMonth.getMonth()]} {calMonth.getFullYear()}
+        {/* Calendar + Sector */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <Card className="card-elevated lg:col-span-2">
+            <CardHeader className="flex-row items-center justify-between space-y-0">
+              <div>
+                <CardTitle className="text-base">Dividend Calendar</CardTitle>
+                <CardDescription>Ex-date, book closure & payment events</CardDescription>
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() =>
-                  setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1))
-                }
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <CalendarGrid month={calMonth} events={calendarEvents} onSelect={setDrawer} />
-            <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-warning" /> Ex-Date
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-primary" /> Book Closure
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-success" /> Payment
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="card-elevated">
-          <CardHeader>
-            <CardTitle className="text-base">By Sector</CardTitle>
-            <CardDescription>Income breakdown</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={sectorData}
-                  innerRadius={50}
-                  outerRadius={90}
-                  dataKey="value"
-                  paddingAngle={3}
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() =>
+                    setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1))
+                  }
                 >
-                  {sectorData.map((_, i) => (
-                    <Cell key={i} fill={rawColors[i % rawColors.length]} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ borderRadius: 12 }} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="mt-2 space-y-1.5">
-              {sectorData.map((s, i) => (
-                <div key={s.name} className="flex items-center justify-between text-xs">
-                  <span className="inline-flex items-center gap-2">
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{ background: rawColors[i % rawColors.length] }}
-                    />
-                    {s.name}
-                  </span>
-                  <span className="tabular-nums font-medium">{s.value}%</span>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <div className="text-sm font-medium w-32 text-center">
+                  {monthLabels[calMonth.getMonth()]} {calMonth.getFullYear()}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() =>
+                    setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1))
+                  }
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <CalendarGrid month={calMonth} events={calendarEvents} onSelect={setDrawer} />
+              <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-warning" /> Ex-Date
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-primary" /> Book Closure
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-success" /> Payment
+                </span>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Income Trend + Growth */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <Card className="card-elevated lg:col-span-2">
-          <CardHeader className="flex-row items-center justify-between space-y-0">
-            <div>
+          <Card className="card-elevated">
+            <CardHeader>
+              <CardTitle className="text-base">By Sector</CardTitle>
+              <CardDescription>Income breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={sectorPie}
+                    innerRadius={50}
+                    outerRadius={90}
+                    dataKey="value"
+                    paddingAngle={3}
+                  >
+                    {sectorPie.map((_, i) => (
+                      <Cell key={i} fill={chartColors[i % chartColors.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ borderRadius: 12 }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="mt-2 space-y-1.5">
+                {sectorPie.map((s, i) => (
+                  <div key={s.name} className="flex items-center justify-between text-xs">
+                    <span className="inline-flex items-center gap-2">
+                      <span
+                        className="h-2 w-2 rounded-full"
+                        style={{ background: chartColors[i % chartColors.length] }}
+                      />
+                      {s.name}
+                    </span>
+                    <span className="tabular-nums font-medium">{s.value}%</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Income Trend + Sector Income */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <Card className="card-elevated lg:col-span-2">
+            <CardHeader>
               <CardTitle className="text-base">Dividend Income Trend</CardTitle>
-              <CardDescription>Track how your income evolves</CardDescription>
-            </div>
-            <Tabs value={trendRange} onValueChange={(v) => setTrendRange(v as typeof trendRange)}>
-              <TabsList className="h-8">
-                <TabsTrigger value="1Y" className="text-xs h-6">
-                  1Y
-                </TabsTrigger>
-                <TabsTrigger value="3Y" className="text-xs h-6">
-                  3Y
-                </TabsTrigger>
-                <TabsTrigger value="5Y" className="text-xs h-6">
-                  5Y
-                </TabsTrigger>
-                <TabsTrigger value="ALL" className="text-xs h-6">
-                  All
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={260}>
-              <LineChart data={trendRange === "1Y" ? scaledMonthly : trendData}>
-                <defs>
-                  <linearGradient id="gLine" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
-                <XAxis
-                  dataKey={trendRange === "1Y" ? "month" : "year"}
-                  tickLine={false}
-                  axisLine={false}
-                  className="text-xs"
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  className="text-xs"
-                  tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
-                />
-                <Tooltip contentStyle={{ borderRadius: 12 }} formatter={(v: number) => pkr(v)} />
-                <Line
-                  type="monotone"
-                  dataKey="amount"
-                  stroke="#10b981"
-                  strokeWidth={2.5}
-                  dot={{ r: 3, fill: "#10b981" }}
-                  activeDot={{ r: 5 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+              <CardDescription>Monthly income across the year</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={dashboard.incomeTrend}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} className="text-xs" />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    className="text-xs"
+                    tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+                  />
+                  <Tooltip contentStyle={{ borderRadius: 12 }} formatter={(v: number) => pkr(v)} />
+                  <Line
+                    type="monotone"
+                    dataKey="income"
+                    stroke="#10b981"
+                    strokeWidth={2.5}
+                    dot={{ r: 3, fill: "#10b981" }}
+                    activeDot={{ r: 5 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-        <Card className="card-elevated">
+          <Card className="card-elevated">
+            <CardHeader>
+              <CardTitle className="text-base">Income by Sector</CardTitle>
+              <CardDescription>Annual (PKR)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={dashboard.breakdownBySector}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
+                  <XAxis dataKey="sector" tickLine={false} axisLine={false} className="text-xs" />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    className="text-xs"
+                    tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+                  />
+                  <Tooltip contentStyle={{ borderRadius: 12 }} formatter={(v: number) => pkr(v)} />
+                  <Bar dataKey="annualIncome" fill="#3b82f6" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Projections */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <ProjectionCard
+            label="Next Month"
+            amount={nextMonth}
+            hint="Based on scheduled payouts"
+            tone="primary"
+          />
+          <ProjectionCard
+            label="Next Quarter"
+            amount={nextQuarter}
+            hint="Assumes no new purchases"
+          />
+          <ProjectionCard
+            label="Next Year (Projected)"
+            amount={nextYearProjected}
+            hint="+12% growth assumption"
+          />
+        </div>
+
+        {/* Breakdown by Stock */}
+        <Card className="card-elevated mb-6">
           <CardHeader>
-            <CardTitle className="text-base">Dividend Growth</CardTitle>
-            <CardDescription>Year over year</CardDescription>
+            <CardTitle className="text-base">Breakdown by Stock</CardTitle>
+            <CardDescription>Annual contribution, yield & YoC</CardDescription>
           </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={scaledGrowth.slice(-5)}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
-                <XAxis dataKey="year" tickLine={false} axisLine={false} className="text-xs" />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  className="text-xs"
-                  tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
-                />
-                <Tooltip contentStyle={{ borderRadius: 12 }} formatter={(v: number) => pkr(v)} />
-                <Bar dataKey="amount" fill="#3b82f6" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Projections */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <ProjectionCard
-          label="Next Month"
-          amount={nextMonth}
-          hint="Based on scheduled payouts"
-          tone="primary"
-        />
-        <ProjectionCard label="Next Quarter" amount={nextQuarter} hint="Assumes no new purchases" />
-        <ProjectionCard
-          label="Next Year (Projected)"
-          amount={nextYearProjected}
-          hint="+12% growth assumption"
-          delta={12}
-        />
-      </div>
-
-      {/* Breakdown by Stock */}
-      <Card className="card-elevated mb-6">
-        <CardHeader>
-          <CardTitle className="text-base">Breakdown by Stock</CardTitle>
-          <CardDescription>Annual contribution, yield & YoC</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {filteredHoldings.map((h) => {
-            const income = h.stocks.annualDividend * h.quantity;
-            const total =
-              filteredHoldings.reduce((s, x) => s + x.stocks.annualDividend * x.quantity, 0) || 1;
-            const shareOfPortfolio = (income / total) * 100;
-            const yoc = ((h.stocks.annualDividend / h.avgPrice) * 100).toFixed(2);
-            const dYield = ((h.stocks.annualDividend / h.stocks.currentPrice) * 100).toFixed(2);
-            return (
-              <div
-                key={h.stocks.symbol}
-                className="grid grid-cols-[110px_1fr_auto] gap-3 items-center"
-              >
+          <CardContent className="space-y-3">
+            {dashboard.breakdownByStock.map((h) => (
+              <div key={h.symbol} className="grid grid-cols-[110px_1fr_auto] gap-3 items-center">
                 <div>
-                  <div className="text-sm font-semibold">{h.stocks.symbol}</div>
-                  <div className="text-[10px] text-muted-foreground">{h.stocks.sector.name}</div>
+                  <div className="text-sm font-semibold">{h.symbol}</div>
+                  <div className="text-[10px] text-muted-foreground truncate max-w-[100px]">
+                    {h.company}
+                  </div>
                 </div>
                 <div>
                   <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div
                       className="h-full gradient-primary rounded-full"
-                      style={{ width: `${Math.min(shareOfPortfolio, 100)}%` }}
+                      style={{ width: `${Math.min(h.contribution, 100)}%` }}
                     />
                   </div>
                   <div className="mt-1 flex gap-3 text-[10px] text-muted-foreground">
-                    <span>Yield {dYield}%</span>
-                    <span className="text-primary">YoC {yoc}%</span>
+                    <span>Yield {h.yield}%</span>
+                    <span className="text-primary">YoC {h.yieldOnCost}%</span>
                   </div>
                 </div>
                 <div className="text-right tabular-nums">
-                  <div className="text-sm font-semibold">{pkr(income)}</div>
+                  <div className="text-sm font-semibold">{pkr(h.annualIncome)}</div>
                   <Badge variant="secondary" className="text-[10px]">
-                    {shareOfPortfolio.toFixed(1)}%
+                    {h.contribution.toFixed(1)}%
                   </Badge>
                 </div>
               </div>
-            );
-          })}
-        </CardContent>
-      </Card>
+            ))}
+          </CardContent>
+        </Card>
 
-      {/* History */}
-      <Card className="card-elevated">
-        <CardHeader className="flex-row items-center justify-between space-y-0 flex-wrap gap-3">
-          <div>
-            <CardTitle className="text-base">Dividend History</CardTitle>
-            <CardDescription>
-              {filteredHistory.length} payment{filteredHistory.length !== 1 && "s"}
-            </CardDescription>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search…"
-                className="pl-9 h-8 w-[180px]"
-                value={historySearch}
-                onChange={(e) => {
-                  setHistorySearch(e.target.value);
+        {/* History */}
+        <Card className="card-elevated">
+          <CardHeader className="flex-row items-center justify-between space-y-0 flex-wrap gap-3">
+            <div>
+              <CardTitle className="text-base">Dividend History</CardTitle>
+              <CardDescription>
+                {filteredHistory.length} payment
+                {filteredHistory.length !== 1 && "s"}
+              </CardDescription>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search…"
+                  className="pl-9 h-8 w-[180px]"
+                  value={historySearch}
+                  onChange={(e) => {
+                    setHistorySearch(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </div>
+              <Select
+                value={historyStatus}
+                onValueChange={(v) => {
+                  setHistoryStatus(v);
                   setPage(1);
                 }}
-              />
+              >
+                <SelectTrigger className="h-8 w-[130px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All statuses</SelectItem>
+                  <SelectItem value="Paid">Paid</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
+                value={historySort}
+                onValueChange={(v: typeof historySort) => setHistorySort(v)}
+              >
+                <SelectTrigger className="h-8 w-[150px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date-desc">Newest first</SelectItem>
+                  <SelectItem value="date-asc">Oldest first</SelectItem>
+                  <SelectItem value="net-desc">Highest net</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" size="sm" className="h-8 gap-1.5" onClick={exportCSV}>
+                <Download className="h-3.5 w-3.5" />
+                Export
+              </Button>
             </div>
-            <Select
-              value={historyStatus}
-              onValueChange={(v) => {
-                setHistoryStatus(v);
-                setPage(1);
-              }}
-            >
-              <SelectTrigger className="h-8 w-[130px] text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                <SelectItem value="Paid">Paid</SelectItem>
-                <SelectItem value="Processing">Processing</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={historySort}
-              onValueChange={(v: typeof historySort) => setHistorySort(v)}
-            >
-              <SelectTrigger className="h-8 w-[150px] text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="date-desc">Newest first</SelectItem>
-                <SelectItem value="date-asc">Oldest first</SelectItem>
-                <SelectItem value="net-desc">Highest net</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" size="sm" className="h-8 gap-1.5" onClick={exportCSV}>
-              <Download className="h-3.5 w-3.5" />
-              Export
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0 overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>Payment Date</TableHead>
-                <TableHead>Stock</TableHead>
-                <TableHead className="text-right">DPS</TableHead>
-                <TableHead className="text-right">Shares</TableHead>
-                <TableHead className="text-right">Gross</TableHead>
-                <TableHead className="text-right">Tax</TableHead>
-                <TableHead className="text-right">Net</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {pagedHistory.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={8}
-                    className="text-center py-10 text-sm text-muted-foreground"
-                  >
-                    No dividend records found.
-                  </TableCell>
+          </CardHeader>
+          <CardContent className="p-0 overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead>Payment Date</TableHead>
+                  <TableHead>Stock</TableHead>
+                  <TableHead className="text-right">DPS</TableHead>
+                  <TableHead className="text-right">Shares</TableHead>
+                  <TableHead className="text-right">Gross</TableHead>
+                  <TableHead className="text-right">Tax</TableHead>
+                  <TableHead className="text-right">Net</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ) : (
-                pagedHistory.map((r) => (
-                  <TableRow key={r.id} className="cursor-pointer" onClick={() => setDrawer(r)}>
-                    <TableCell className="text-xs">{r.payDate}</TableCell>
-                    <TableCell>
-                      <div className="font-medium text-sm">{r.symbol}</div>
-                      <div className="text-[10px] text-muted-foreground truncate max-w-[160px]">
-                        {r.company}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">{r.dps.toFixed(2)}</TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {r.shares.toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {r.gross.toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums text-muted-foreground">
-                      −{r.tax.toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums font-semibold text-success">
-                      {r.net.toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status={r.status} />
+              </TableHeader>
+              <TableBody>
+                {pagedHistory.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={8}
+                      className="text-center py-10 text-sm text-muted-foreground"
+                    >
+                      No dividend records found.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <div className="flex items-center justify-between px-4 py-3 border-t">
-          <div className="text-xs text-muted-foreground">
-            Page {page} of {totalPages}
+                ) : (
+                  pagedHistory.map((r) => (
+                    <TableRow key={r.id} className="cursor-pointer" onClick={() => setDrawer(r)}>
+                      <TableCell className="text-xs">{r.payDate}</TableCell>
+                      <TableCell>
+                        <div className="font-medium text-sm">{r.symbol}</div>
+                        <div className="text-[10px] text-muted-foreground truncate max-w-[160px]">
+                          {r.company}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">{r.dps.toFixed(2)}</TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {r.shares.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {r.gross.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums text-muted-foreground">
+                        −{r.tax.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums font-semibold text-success">
+                        {r.net.toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={r.status} />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+          <div className="flex items-center justify-between px-4 py-3 border-t">
+            <div className="text-xs text-muted-foreground">
+              Page {page} of {totalPages}
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7"
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7"
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-1">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7"
-              disabled={page === 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7"
-              disabled={page === totalPages}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
 
       {/* Drawer */}
       <Sheet open={!!drawer} onOpenChange={(o) => !o && setDrawer(null)}>
@@ -1085,13 +1027,11 @@ function ProjectionCard({
   label,
   amount,
   hint,
-  delta,
   tone = "default",
 }: {
   label: string;
   amount: number;
   hint: string;
-  delta?: number;
   tone?: "default" | "primary";
 }) {
   return (
@@ -1113,17 +1053,6 @@ function ProjectionCard({
         {pkr(amount)}
       </div>
       <div className="flex items-center gap-2 mt-2">
-        {delta !== undefined && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2 py-0.5 text-xs font-medium text-success">
-            {delta >= 0 ? (
-              <ArrowUpRight className="h-3 w-3" />
-            ) : (
-              <ArrowDownRight className="h-3 w-3" />
-            )}
-            {delta >= 0 ? "+" : ""}
-            {delta}%
-          </span>
-        )}
         <span className="text-xs text-muted-foreground">{hint}</span>
       </div>
     </Card>

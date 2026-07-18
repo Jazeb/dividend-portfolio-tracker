@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Stock" ALTER COLUMN "icon" DROP NOT NULL,
+ALTER COLUMN "annualDividend" DROP NOT NULL,
+ALTER COLUMN "currentPrice" DROP NOT NULL,
+ALTER COLUMN "dividendYield" DROP NOT NULL;

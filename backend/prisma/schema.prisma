@@ -75,11 +75,11 @@ model Stock {
   id        Int      @id @default(autoincrement())
   fullName  String
   symbol    String   @unique
-  icon      String
+  icon      String?
 
-  currentPrice    Decimal   @db.Decimal(18,4)
-  dividendYield   Decimal   @db.Decimal(18,4)
-  annualDividend  Decimal   @db.Decimal(18,4)
+  currentPrice    Decimal?   @db.Decimal(18,4)
+  dividendYield   Decimal?   @db.Decimal(18,4)
+  annualDividend  Decimal?   @db.Decimal(18,4)
 
   transactions Transaction[]    // 1 stock may have many transactions
   holdings    Holding[]

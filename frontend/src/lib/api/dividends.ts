@@ -62,6 +62,8 @@ export interface DividendItem {
   taxAmount: number;
   netDividend: number;
   paymentDate: string;
+  exDividendDate: string;
+  bookClosureDate: string;
   status: DividendItemStatus;
 }
 

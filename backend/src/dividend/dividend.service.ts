@@ -12,7 +12,7 @@ import {
 
 @Injectable()
 export class DividendService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   TAX_RATE = 0.15;
 
@@ -85,7 +85,7 @@ export class DividendService {
   async getDashboardData(portfolioId: string, profileId: string) {
     // const upcomingDividends = await this.getUpcomingDividends(portfolioId, profileId);
     const dividendPayments = await this.getDividendPayments(portfolioId, profileId);
-    
+
     const portfolio = await this.prismaService.portfolio.findFirst({
       where: { profileId: Number(profileId), id: Number(portfolioId) },
       include: { holdings: { include: { stocks: { include: { sector: true } } } } },
@@ -111,7 +111,7 @@ export class DividendService {
     };
   }
 
-  async getDividendPayments(portfolioId: string, profileId: string):Promise<DividendPayment[]> {
+  async getDividendPayments(portfolioId: string, profileId: string): Promise<DividendPayment[]> {
     const diviendPayments = await this.prismaService.dividendPayment.findMany({
       where: {
         portfolioId: Number(portfolioId),
@@ -121,7 +121,7 @@ export class DividendService {
       include: { declaration: { include: { stock: true } } },
       orderBy: { declaration: { paymentDate: 'asc' } },
     });
-    return diviendPayments
+    return diviendPayments;
   }
 
   private calculateBrealdownBySector(portfolio) {
@@ -131,18 +131,15 @@ export class DividendService {
       const sector = holding.stocks.sector;
       const annualIncome = holding.quantity * holding.stocks.annualDividend;
       let key = sector.name;
-      console.log(sector)
-      sectorMap.set(
-        key,
-        (sectorMap.get(sector) ?? 0) + annualIncome
-      );
+      console.log(sector);
+      sectorMap.set(key, (sectorMap.get(sector) ?? 0) + annualIncome);
     }
 
     const breakdownBySector = Array.from(sectorMap, ([sector, annualIncome]) => ({
-      sector:sector,
+      sector: sector,
       annualIncome,
     }));
-    return breakdownBySector
+    return breakdownBySector;
   }
 
   private getSummaryData(_portfolio) {
@@ -168,9 +165,9 @@ export class DividendService {
     const holdings = portfolio.holdings;
     const totalAnnualIncome = holdings.reduce(
       (sum, holding) => sum + holding.quantity * holding.stocks.annualDividend,
-      0
+      0,
     );
-    return holdings.map((holding) => {
+    return holdings.map(holding => {
       const annualIncome = holding.quantity * holding.stocks.annualDividend;
       const currentYield = holding.stocks.annualDividend / holding.stocks.currentPrice;
       const yoc = holding.stocks.annualDividend / holding.avgPrice;
@@ -180,9 +177,9 @@ export class DividendService {
         annualIncome: annualIncome,
         yield: (currentYield * 100).toFixed(2),
         yieldOnCost: (yoc * 100).toFixed(2),
-        contribution: ((annualIncome / totalAnnualIncome) * 100).toFixed(1)
-      }
-    })
+        contribution: ((annualIncome / totalAnnualIncome) * 100).toFixed(1),
+      };
+    });
   }
 
   calculateMarketValueOfHoldings(holdings: any[]) {

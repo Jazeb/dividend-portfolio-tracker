@@ -1,0 +1,4474 @@
+[
+  {
+    "id": 1,
+    "symbol": "786",
+    "fullName": "786 Investments Limited",
+    "icon": "test.svg",
+    "sectorId": 0,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 3,
+    "symbol": "AABS",
+    "fullName": "Al-Abbas Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 1,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 4,
+    "symbol": "AAL",
+    "fullName": "Agro Allianz Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 2,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 5,
+    "symbol": "AASM",
+    "fullName": "Al-Abid Silk Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 3,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 6,
+    "symbol": "AATM",
+    "fullName": "Ali Asghar Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 4,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 7,
+    "symbol": "ABL",
+    "fullName": "Allied Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 5,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 8,
+    "symbol": "ABOT",
+    "fullName": "Abbott Laboratories (Pakistan) Limited",
+    "icon": "test.svg",
+    "sectorId": 6,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 9,
+    "symbol": "ABSON",
+    "fullName": "Abson Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 7,
+    "sector": "Engineering"
+  },
+  {
+    "id": 10,
+    "symbol": "ACIETF",
+    "fullName": "Alfalah Consumer Index (ETF)(XD)",
+    "icon": "test.svg",
+    "sectorId": 8,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 11,
+    "symbol": "ACPL",
+    "fullName": "Attock Cement Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 9,
+    "sector": "Cement"
+  },
+  {
+    "id": 12,
+    "symbol": "ADAMS",
+    "fullName": "Adam Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 10,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 13,
+    "symbol": "ADMM",
+    "fullName": "Artistic Denim Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 11,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 14,
+    "symbol": "AGHA",
+    "fullName": "Agha Steel Ind.Ltd",
+    "icon": "test.svg",
+    "sectorId": 12,
+    "sector": "Engineering"
+  },
+  {
+    "id": 15,
+    "symbol": "AGIC",
+    "fullName": "Askari General Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 13,
+    "sector": "Insurance"
+  },
+  {
+    "id": 17,
+    "symbol": "AGIL",
+    "fullName": "Agriauto Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 14,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 18,
+    "symbol": "AGL",
+    "fullName": "Agritech Limited",
+    "icon": "test.svg",
+    "sectorId": 15,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 19,
+    "symbol": "AGLNCPS",
+    "fullName": "Agritech Non-Voting (Pref) Class A",
+    "icon": "test.svg",
+    "sectorId": 16,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 20,
+    "symbol": "AGP",
+    "fullName": "AGP Limited",
+    "icon": "test.svg",
+    "sectorId": 17,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 21,
+    "symbol": "AGSML",
+    "fullName": "Abdullah Shah Ghazi Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 18,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 22,
+    "symbol": "AGTL",
+    "fullName": "Al-Ghazi Tractors Limited",
+    "icon": "test.svg",
+    "sectorId": 19,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 23,
+    "symbol": "AHCL",
+    "fullName": "Arif Habib Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 20,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 24,
+    "symbol": "AHL",
+    "fullName": "Arif Habib Limited",
+    "icon": "test.svg",
+    "sectorId": 21,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 25,
+    "symbol": "AHTM",
+    "fullName": "Ahmad Hassan Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 22,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 26,
+    "symbol": "AICL",
+    "fullName": "Adamjee Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 23,
+    "sector": "Insurance"
+  },
+  {
+    "id": 27,
+    "symbol": "AIRLINK",
+    "fullName": "Air Link Communication Limited",
+    "icon": "test.svg",
+    "sectorId": 24,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 28,
+    "symbol": "AKBL",
+    "fullName": "Askari Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 25,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 29,
+    "symbol": "AKDHL",
+    "fullName": "AKD Hospitality Limited",
+    "icon": "test.svg",
+    "sectorId": 26,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 30,
+    "symbol": "AKDSL",
+    "fullName": "AKD Securities Limited",
+    "icon": "test.svg",
+    "sectorId": 27,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 31,
+    "symbol": "AKGL",
+    "fullName": "Al-Khair Gadoon Limited",
+    "icon": "test.svg",
+    "sectorId": 28,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 32,
+    "symbol": "ALAC",
+    "fullName": "Askari Life Assurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 29,
+    "sector": "Insurance"
+  },
+  {
+    "id": 33,
+    "symbol": "ALIFE",
+    "fullName": "Adamjee Life Assurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 30,
+    "sector": "Insurance"
+  },
+  {
+    "id": 34,
+    "symbol": "ALNRS",
+    "fullName": "Al-Noor Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 31,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 35,
+    "symbol": "ALTN",
+    "fullName": "Altern Energy Limited",
+    "icon": "test.svg",
+    "sectorId": 32,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 36,
+    "symbol": "AMBL",
+    "fullName": "Apna Microfinance Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 33,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 37,
+    "symbol": "AMSL",
+    "fullName": "Al-Mal Securities & Services Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 34,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 38,
+    "symbol": "AMTEX",
+    "fullName": "Amtex Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 35,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 39,
+    "symbol": "ANL",
+    "fullName": "Azgard Nine Limited",
+    "icon": "test.svg",
+    "sectorId": 36,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 40,
+    "symbol": "ANLNV",
+    "fullName": "Azgard Nine Non-Voting Ordinary Shares",
+    "icon": "test.svg",
+    "sectorId": 37,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 41,
+    "symbol": "ANLPS",
+    "fullName": "Azgard Nine 8.95%(Pref)",
+    "icon": "test.svg",
+    "sectorId": 38,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 42,
+    "symbol": "ANNT",
+    "fullName": "Annoor Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 39,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 43,
+    "symbol": "ANSM",
+    "fullName": "Ansari Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 40,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 44,
+    "symbol": "ANTM",
+    "fullName": "AN Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 41,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 45,
+    "symbol": "APL",
+    "fullName": "Attock Petroleum Limited",
+    "icon": "test.svg",
+    "sectorId": 42,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 46,
+    "symbol": "APOT",
+    "fullName": "Apollo Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 43,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 47,
+    "symbol": "ARCTM",
+    "fullName": "Arctic Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 44,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 48,
+    "symbol": "ARMG",
+    "fullName": "ARM Green Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 45,
+    "sector": "Engineering"
+  },
+  {
+    "id": 49,
+    "symbol": "ARPAK",
+    "fullName": "Arpak International Investments Ltd.",
+    "icon": "test.svg",
+    "sectorId": 46,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 50,
+    "symbol": "ARPL",
+    "fullName": "Archroma Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 47,
+    "sector": "Chemical"
+  },
+  {
+    "id": 51,
+    "symbol": "ARUJ",
+    "fullName": "Aruj Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 48,
+    "sector": "Engineering"
+  },
+  {
+    "id": 52,
+    "symbol": "ASC",
+    "fullName": "Al Shaheer Corporation Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 49,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 53,
+    "symbol": "ASHT",
+    "fullName": "Ashfaq Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 50,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 54,
+    "symbol": "ASIC",
+    "fullName": "Asia Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 51,
+    "sector": "Insurance"
+  },
+  {
+    "id": 55,
+    "symbol": "ASL",
+    "fullName": "Aisha Steel Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 52,
+    "sector": "Engineering"
+  },
+  {
+    "id": 57,
+    "symbol": "ASLPS",
+    "fullName": "Aisha Steel Convertible (Pref)",
+    "icon": "test.svg",
+    "sectorId": 53,
+    "sector": "Engineering"
+  },
+  {
+    "id": 58,
+    "symbol": "ASTL",
+    "fullName": "Amreli Steels Limited",
+    "icon": "test.svg",
+    "sectorId": 54,
+    "sector": "Engineering"
+  },
+  {
+    "id": 59,
+    "symbol": "ASTM",
+    "fullName": "Asim Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 55,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 60,
+    "symbol": "ATBA",
+    "fullName": "Atlas Battery Limited",
+    "icon": "test.svg",
+    "sectorId": 56,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 61,
+    "symbol": "ATIL",
+    "fullName": "Atlas Insurance Limited",
+    "icon": "test.svg",
+    "sectorId": 57,
+    "sector": "Insurance"
+  },
+  {
+    "id": 62,
+    "symbol": "ATLH",
+    "fullName": "Atlas Honda Limited",
+    "icon": "test.svg",
+    "sectorId": 58,
+    "sector": "Automobile Assembler"
+  },
+  {
+    "id": 63,
+    "symbol": "ATRL",
+    "fullName": "Attock Refinery Limited",
+    "icon": "test.svg",
+    "sectorId": 59,
+    "sector": "Refinery"
+  },
+  {
+    "id": 64,
+    "symbol": "AVN",
+    "fullName": "Avanceon Limited",
+    "icon": "test.svg",
+    "sectorId": 60,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 65,
+    "symbol": "AWTX",
+    "fullName": "Allawasaya Tex. & Finishing Mills Ltd",
+    "icon": "test.svg",
+    "sectorId": 61,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 66,
+    "symbol": "AZMT",
+    "fullName": "Azmat Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 62,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 67,
+    "symbol": "BAFL",
+    "fullName": "Bank Alfalah Limited",
+    "icon": "test.svg",
+    "sectorId": 63,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 68,
+    "symbol": "BAFS",
+    "fullName": "Baba Farid Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 64,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 69,
+    "symbol": "BAHL",
+    "fullName": "Bank AL Habib Limited",
+    "icon": "test.svg",
+    "sectorId": 65,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 70,
+    "symbol": "BAPL",
+    "fullName": "Bawany Air Products Limited",
+    "icon": "test.svg",
+    "sectorId": 66,
+    "sector": "Chemical"
+  },
+  {
+    "id": 71,
+    "symbol": "BATA",
+    "fullName": "Bata Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 67,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 72,
+    "symbol": "BBFL",
+    "fullName": "Big Bird Foods Limited",
+    "icon": "test.svg",
+    "sectorId": 68,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 73,
+    "symbol": "BCL",
+    "fullName": "Bolan Castings Limited",
+    "icon": "test.svg",
+    "sectorId": 69,
+    "sector": "Engineering"
+  },
+  {
+    "id": 74,
+    "symbol": "BECO",
+    "fullName": "Beco Steel Limited",
+    "icon": "test.svg",
+    "sectorId": 70,
+    "sector": "Engineering"
+  },
+  {
+    "id": 75,
+    "symbol": "BELA",
+    "fullName": "Bela Automotives Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 71,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 76,
+    "symbol": "BERG",
+    "fullName": "Berger Paints Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 72,
+    "sector": "Chemical"
+  },
+  {
+    "id": 77,
+    "symbol": "BFAGRO",
+    "fullName": "Barkat Frisian Agro Limited",
+    "icon": "test.svg",
+    "sectorId": 73,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 78,
+    "symbol": "BFBIO",
+    "fullName": "BF Biosciences Limited",
+    "icon": "test.svg",
+    "sectorId": 74,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 79,
+    "symbol": "BFMOD",
+    "fullName": "B.F. Modaraba",
+    "icon": "test.svg",
+    "sectorId": 75,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 80,
+    "symbol": "BGL",
+    "fullName": "Baluchistan Glass Limited",
+    "icon": "test.svg",
+    "sectorId": 76,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 81,
+    "symbol": "BHAT",
+    "fullName": "Bhanero Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 77,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 82,
+    "symbol": "BIFO",
+    "fullName": "Biafo Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 78,
+    "sector": "Engineering"
+  },
+  {
+    "id": 83,
+    "symbol": "BIIC",
+    "fullName": "Business & Industrial Insurance Company(DEF)",
+    "icon": "test.svg",
+    "sectorId": 79,
+    "sector": "Insurance"
+  },
+  {
+    "id": 84,
+    "symbol": "BIPL",
+    "fullName": "BankIslami Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 80,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 85,
+    "symbol": "BLUEX",
+    "fullName": "Blue-Ex Limited",
+    "icon": "test.svg",
+    "sectorId": 81,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 86,
+    "symbol": "BML",
+    "fullName": "Bank Makramah Limited",
+    "icon": "test.svg",
+    "sectorId": 82,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 87,
+    "symbol": "BNL",
+    "fullName": "Bunnys Limited",
+    "icon": "test.svg",
+    "sectorId": 83,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 88,
+    "symbol": "BNWM",
+    "fullName": "Bannu Woollen Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 84,
+    "sector": "Woollen"
+  },
+  {
+    "id": 89,
+    "symbol": "BOK",
+    "fullName": "The Bank of Khyber",
+    "icon": "test.svg",
+    "sectorId": 85,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 90,
+    "symbol": "BOP",
+    "fullName": "The Bank of Punjab",
+    "icon": "test.svg",
+    "sectorId": 86,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 91,
+    "symbol": "BPL",
+    "fullName": "Burshane LPG (Pakistan) Limited",
+    "icon": "test.svg",
+    "sectorId": 87,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 92,
+    "symbol": "BRRG",
+    "fullName": "B.R.R Guardian Limited",
+    "icon": "test.svg",
+    "sectorId": 88,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 93,
+    "symbol": "BTL",
+    "fullName": "Blessed Textiles Limited",
+    "icon": "test.svg",
+    "sectorId": 89,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 94,
+    "symbol": "BUXL",
+    "fullName": "Buxly Paints Limited",
+    "icon": "test.svg",
+    "sectorId": 90,
+    "sector": "Chemical"
+  },
+  {
+    "id": 95,
+    "symbol": "BWCL",
+    "fullName": "Bestway Cement Limited",
+    "icon": "test.svg",
+    "sectorId": 91,
+    "sector": "Cement"
+  },
+  {
+    "id": 96,
+    "symbol": "BWHL",
+    "fullName": "Baluchistan Wheels Limited",
+    "icon": "test.svg",
+    "sectorId": 92,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 97,
+    "symbol": "CCM",
+    "fullName": "Crescent Cotton Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 93,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 98,
+    "symbol": "CENI",
+    "fullName": "Century Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 94,
+    "sector": "Insurance"
+  },
+  {
+    "id": 99,
+    "symbol": "CEPB",
+    "fullName": "Century Paper & Board Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 95,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 100,
+    "symbol": "CFL",
+    "fullName": "Crescent Fibres Limited",
+    "icon": "test.svg",
+    "sectorId": 96,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 101,
+    "symbol": "CHAS",
+    "fullName": "Chashma Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 97,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 102,
+    "symbol": "CHBL",
+    "fullName": "Chenab Limited",
+    "icon": "test.svg",
+    "sectorId": 98,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 103,
+    "symbol": "CHCC",
+    "fullName": "Cherat Cement Company Limited",
+    "icon": "test.svg",
+    "sectorId": 99,
+    "sector": "Cement"
+  },
+  {
+    "id": 104,
+    "symbol": "CJPL",
+    "fullName": "Crescent Jute Products Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 100,
+    "sector": "Jute"
+  },
+  {
+    "id": 105,
+    "symbol": "CLCPS",
+    "fullName": "Chenab Limited (Pref)",
+    "icon": "test.svg",
+    "sectorId": 101,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 106,
+    "symbol": "CLOV",
+    "fullName": "Clover Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 102,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 107,
+    "symbol": "CLVL",
+    "fullName": "Cordoba Logistics & Ventures Limited",
+    "icon": "test.svg",
+    "sectorId": 103,
+    "sector": "Transport"
+  },
+  {
+    "id": 108,
+    "symbol": "CNERGY",
+    "fullName": "Cnergyico PK  Limited",
+    "icon": "test.svg",
+    "sectorId": 104,
+    "sector": "Refinery"
+  },
+  {
+    "id": 109,
+    "symbol": "COLG",
+    "fullName": "Colgate-Palmolive (Pakistan) Limited",
+    "icon": "test.svg",
+    "sectorId": 105,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 110,
+    "symbol": "CPHL",
+    "fullName": "Citi Pharma Ltd.",
+    "icon": "test.svg",
+    "sectorId": 106,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 111,
+    "symbol": "CPPL",
+    "fullName": "Cherat Packaging Limited",
+    "icon": "test.svg",
+    "sectorId": 107,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 112,
+    "symbol": "CRTM",
+    "fullName": "The Crescent Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 108,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 113,
+    "symbol": "CSAP",
+    "fullName": "Crescent Steel & Allied Products Limited",
+    "icon": "test.svg",
+    "sectorId": 109,
+    "sector": "Engineering"
+  },
+  {
+    "id": 114,
+    "symbol": "CSIL",
+    "fullName": "Crescent Star Insurance Limited",
+    "icon": "test.svg",
+    "sectorId": 110,
+    "sector": "Insurance"
+  },
+  {
+    "id": 115,
+    "symbol": "CTM",
+    "fullName": "Colony Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 111,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 116,
+    "symbol": "DAAG",
+    "fullName": "Data Agro Limited",
+    "icon": "test.svg",
+    "sectorId": 112,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 117,
+    "symbol": "DADX",
+    "fullName": "Dadex Eternit Limited",
+    "icon": "test.svg",
+    "sectorId": 113,
+    "sector": "Cement"
+  },
+  {
+    "id": 118,
+    "symbol": "DBCI",
+    "fullName": "Dadabhoy Cement Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 114,
+    "sector": "Cement"
+  },
+  {
+    "id": 119,
+    "symbol": "DBSL",
+    "fullName": "Dadabhoy Sack Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 115,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 120,
+    "symbol": "DCL",
+    "fullName": "Dewan Cement Limited",
+    "icon": "test.svg",
+    "sectorId": 116,
+    "sector": "Cement"
+  },
+  {
+    "id": 121,
+    "symbol": "DCR",
+    "fullName": "Dolmen City REIT",
+    "icon": "test.svg",
+    "sectorId": 117,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 122,
+    "symbol": "DCTL",
+    "fullName": "Dadabhoy Construction Technology Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 118,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 123,
+    "symbol": "DEL",
+    "fullName": "Dawood Equities Limited",
+    "icon": "test.svg",
+    "sectorId": 119,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 124,
+    "symbol": "DFML",
+    "fullName": "Dewan Farooque Motors Limited",
+    "icon": "test.svg",
+    "sectorId": 120,
+    "sector": "Automobile Assembler"
+  },
+  {
+    "id": 125,
+    "symbol": "DFSM",
+    "fullName": "Dewan Farooque Spinning Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 121,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 126,
+    "symbol": "DGKC",
+    "fullName": "D.G. Khan Cement Company Limited",
+    "icon": "test.svg",
+    "sectorId": 122,
+    "sector": "Cement"
+  },
+  {
+    "id": 127,
+    "symbol": "DIIL",
+    "fullName": "Diamond Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 123,
+    "sector": "Engineering"
+  },
+  {
+    "id": 128,
+    "symbol": "DINT",
+    "fullName": "Din Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 124,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 129,
+    "symbol": "DKTM",
+    "fullName": "Dewan Khalid Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 125,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 130,
+    "symbol": "DLL",
+    "fullName": "Dawood Lawrencepur Limited",
+    "icon": "test.svg",
+    "sectorId": 126,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 131,
+    "symbol": "DMC",
+    "fullName": "D.M. Corporation Limited.",
+    "icon": "test.svg",
+    "sectorId": 127,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 132,
+    "symbol": "DMTM",
+    "fullName": "Dewan Mushtaq Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 128,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 133,
+    "symbol": "DNCC",
+    "fullName": "Dandot Cement Company Limited",
+    "icon": "test.svg",
+    "sectorId": 129,
+    "sector": "Cement"
+  },
+  {
+    "id": 134,
+    "symbol": "DOL",
+    "fullName": "Descon Oxychem Limited",
+    "icon": "test.svg",
+    "sectorId": 130,
+    "sector": "Chemical"
+  },
+  {
+    "id": 135,
+    "symbol": "DSFL",
+    "fullName": "Dewan Salman Fibre Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 131,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 136,
+    "symbol": "DSIL",
+    "fullName": "D.S. Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 132,
+    "sector": "Engineering"
+  },
+  {
+    "id": 137,
+    "symbol": "DSL",
+    "fullName": "Dost Steels Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 133,
+    "sector": "Engineering"
+  },
+  {
+    "id": 138,
+    "symbol": "DWAE",
+    "fullName": "Dewan Automotive Engineering Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 134,
+    "sector": "Engineering"
+  },
+  {
+    "id": 139,
+    "symbol": "DWSM",
+    "fullName": "Dewan Sugar Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 135,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 140,
+    "symbol": "DWTM",
+    "fullName": "Dewan Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 136,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 141,
+    "symbol": "DYNO",
+    "fullName": "Dynea Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 137,
+    "sector": "Chemical"
+  },
+  {
+    "id": 142,
+    "symbol": "ECOP",
+    "fullName": "Ecopack Limited",
+    "icon": "test.svg",
+    "sectorId": 138,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 143,
+    "symbol": "EFERT",
+    "fullName": "Engro Fertilizers Limited",
+    "icon": "test.svg",
+    "sectorId": 139,
+    "sector": "Fertilizer"
+  },
+  {
+    "id": 144,
+    "symbol": "EFUG",
+    "fullName": "EFU General Insurance Limited",
+    "icon": "test.svg",
+    "sectorId": 140,
+    "sector": "Insurance"
+  },
+  {
+    "id": 145,
+    "symbol": "EFUL",
+    "fullName": "EFU Life Assurance Limited",
+    "icon": "test.svg",
+    "sectorId": 141,
+    "sector": "Insurance"
+  },
+  {
+    "id": 146,
+    "symbol": "ELCM",
+    "fullName": "Elahi Cotton Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 142,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 147,
+    "symbol": "ELSM",
+    "fullName": "Ellcot Spinning Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 143,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 148,
+    "symbol": "EMCO",
+    "fullName": "Emco Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 144,
+    "sector": "Engineering"
+  },
+  {
+    "id": 149,
+    "symbol": "ENGL",
+    "fullName": "English Leasing Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 145,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 150,
+    "symbol": "ENGROH",
+    "fullName": "Engro Holdings Limited",
+    "icon": "test.svg",
+    "sectorId": 146,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 151,
+    "symbol": "EPCL",
+    "fullName": "Engro Polymer & Chemicals Limited",
+    "icon": "test.svg",
+    "sectorId": 147,
+    "sector": "Chemical"
+  },
+  {
+    "id": 152,
+    "symbol": "EPCLPS",
+    "fullName": "Engro Poly(Pref)",
+    "icon": "test.svg",
+    "sectorId": 148,
+    "sector": "Chemical"
+  },
+  {
+    "id": 153,
+    "symbol": "EPQL",
+    "fullName": "Engro Powergen Qadirpur Limited",
+    "icon": "test.svg",
+    "sectorId": 149,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 154,
+    "symbol": "ESBL",
+    "fullName": "Escorts Investment Bank Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 150,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 155,
+    "symbol": "EWIC",
+    "fullName": "East West Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 151,
+    "sector": "Insurance"
+  },
+  {
+    "id": 156,
+    "symbol": "EXIDE",
+    "fullName": "Exide Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 152,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 157,
+    "symbol": "FABL",
+    "fullName": "Faysal Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 153,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 158,
+    "symbol": "FAEL",
+    "fullName": "Fatima Enterprises Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 154,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 159,
+    "symbol": "FANM",
+    "fullName": "First Al-Noor Modaraba",
+    "icon": "test.svg",
+    "sectorId": 155,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 160,
+    "symbol": "FASM",
+    "fullName": "Faisal Spinning Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 156,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 161,
+    "symbol": "FATIMA",
+    "fullName": "Fatima Fertilizer Company Limited",
+    "icon": "test.svg",
+    "sectorId": 157,
+    "sector": "Fertilizer"
+  },
+  {
+    "id": 162,
+    "symbol": "FCCL",
+    "fullName": "Fauji Cement Company Limited",
+    "icon": "test.svg",
+    "sectorId": 158,
+    "sector": "Cement"
+  },
+  {
+    "id": 163,
+    "symbol": "FCEL",
+    "fullName": "First Capital Equities Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 159,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 164,
+    "symbol": "FCEPL",
+    "fullName": "Frieslandcampina Engro Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 160,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 165,
+    "symbol": "FCIBL",
+    "fullName": "First Credit and Investment Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 161,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 166,
+    "symbol": "FCL",
+    "fullName": "Fast Cables Limited",
+    "icon": "test.svg",
+    "sectorId": 162,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 167,
+    "symbol": "FCONM",
+    "fullName": "First Constellation Modaraba",
+    "icon": "test.svg",
+    "sectorId": 163,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 168,
+    "symbol": "FCSC",
+    "fullName": "First Capital Securities Corporation",
+    "icon": "test.svg",
+    "sectorId": 164,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 169,
+    "symbol": "FDPL",
+    "fullName": "First Dawood Properties Limited",
+    "icon": "test.svg",
+    "sectorId": 165,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 170,
+    "symbol": "FECM",
+    "fullName": "First Elite Capital Modaraba",
+    "icon": "test.svg",
+    "sectorId": 166,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 171,
+    "symbol": "FECTC",
+    "fullName": "Fecto Cement Limited",
+    "icon": "test.svg",
+    "sectorId": 167,
+    "sector": "Cement"
+  },
+  {
+    "id": 172,
+    "symbol": "FEM",
+    "fullName": "First Equity Modaraba",
+    "icon": "test.svg",
+    "sectorId": 168,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 173,
+    "symbol": "FEROZ",
+    "fullName": "Ferozsons Laboratories Limited",
+    "icon": "test.svg",
+    "sectorId": 169,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 174,
+    "symbol": "FFC",
+    "fullName": "Fauji Fertilizer Company Limited",
+    "icon": "test.svg",
+    "sectorId": 170,
+    "sector": "Fertilizer"
+  },
+  {
+    "id": 175,
+    "symbol": "FFL",
+    "fullName": "Fauji Foods Limited",
+    "icon": "test.svg",
+    "sectorId": 171,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 176,
+    "symbol": "FFLM",
+    "fullName": "First Fidelity Leasing Modaraba",
+    "icon": "test.svg",
+    "sectorId": 172,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 177,
+    "symbol": "FHAM",
+    "fullName": "First Habib Modaraba",
+    "icon": "test.svg",
+    "sectorId": 173,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 178,
+    "symbol": "FIBLM",
+    "fullName": "First IBL Modaraba",
+    "icon": "test.svg",
+    "sectorId": 174,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 179,
+    "symbol": "FIL",
+    "fullName": "Fateh Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 175,
+    "sector": "Engineering"
+  },
+  {
+    "id": 180,
+    "symbol": "FIM",
+    "fullName": "First Investec Modaraba(DEF)",
+    "icon": "test.svg",
+    "sectorId": 176,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 181,
+    "symbol": "FIMM",
+    "fullName": "First Imrooz Modaraba",
+    "icon": "test.svg",
+    "sectorId": 177,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 182,
+    "symbol": "FLYNG",
+    "fullName": "Flying Cement Company Limited",
+    "icon": "test.svg",
+    "sectorId": 178,
+    "sector": "Cement"
+  },
+  {
+    "id": 183,
+    "symbol": "FML",
+    "fullName": "Feroze1888 Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 179,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 184,
+    "symbol": "FNBM",
+    "fullName": "First National Bank Modaraba(DEF)",
+    "icon": "test.svg",
+    "sectorId": 180,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 185,
+    "symbol": "FNEL",
+    "fullName": "First National Equities Limited",
+    "icon": "test.svg",
+    "sectorId": 181,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 186,
+    "symbol": "FPJM",
+    "fullName": "First Punjab Modaraba",
+    "icon": "test.svg",
+    "sectorId": 182,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 187,
+    "symbol": "FPRM",
+    "fullName": "First Paramount Modaraba",
+    "icon": "test.svg",
+    "sectorId": 183,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 188,
+    "symbol": "FRCL",
+    "fullName": "Frontier Ceramics Limited",
+    "icon": "test.svg",
+    "sectorId": 184,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 189,
+    "symbol": "FRSM",
+    "fullName": "Faran Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 185,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 190,
+    "symbol": "FSWL",
+    "fullName": "Fateh Sports Wear Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 186,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 191,
+    "symbol": "FTHM",
+    "fullName": "Fateh Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 187,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 192,
+    "symbol": "FTMM",
+    "fullName": "First Treet Manufacturing Modaraba",
+    "icon": "test.svg",
+    "sectorId": 188,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 193,
+    "symbol": "FTSM",
+    "fullName": "First Tri-Star Modaraba",
+    "icon": "test.svg",
+    "sectorId": 189,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 194,
+    "symbol": "FZCM",
+    "fullName": "Fazal Cloth Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 190,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 195,
+    "symbol": "GADT",
+    "fullName": "Gadoon Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 191,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 196,
+    "symbol": "GAL",
+    "fullName": "Ghandhara Automobiles Limited",
+    "icon": "test.svg",
+    "sectorId": 192,
+    "sector": "Automobile Assembler"
+  },
+  {
+    "id": 197,
+    "symbol": "GAMON",
+    "fullName": "Gammon Pakistan Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 193,
+    "sector": "Engineering"
+  },
+  {
+    "id": 198,
+    "symbol": "GATI",
+    "fullName": "Gatron (Industries) Limited",
+    "icon": "test.svg",
+    "sectorId": 194,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 199,
+    "symbol": "GATM",
+    "fullName": "Gul Ahmed Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 195,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 200,
+    "symbol": "GCIL",
+    "fullName": "Ghani Chemical Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 196,
+    "sector": "Chemical"
+  },
+  {
+    "id": 201,
+    "symbol": "GCWL",
+    "fullName": "Ghani Chemworld Limited",
+    "icon": "test.svg",
+    "sectorId": 197,
+    "sector": "Chemical"
+  },
+  {
+    "id": 203,
+    "symbol": "GDL",
+    "fullName": "Ghani Dairies Limited",
+    "icon": "test.svg",
+    "sectorId": 198,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 204,
+    "symbol": "GEMBCEM",
+    "fullName": "Burj Clean Energy Modaraba(GEM)",
+    "icon": "test.svg",
+    "sectorId": 199,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 205,
+    "symbol": "GEMMEL",
+    "fullName": "Mughal Energy Limited(GEM)",
+    "icon": "test.svg",
+    "sectorId": 200,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 206,
+    "symbol": "GEMNETS",
+    "fullName": "Nets International Communication Limited",
+    "icon": "test.svg",
+    "sectorId": 201,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 207,
+    "symbol": "GEMPACRA",
+    "fullName": "The Pakistan Credit Rating Agency Ltd",
+    "icon": "test.svg",
+    "sectorId": 202,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 208,
+    "symbol": "GEMPAPL",
+    "fullName": "Pak Agro Packaging Limited(GEM)",
+    "icon": "test.svg",
+    "sectorId": 203,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 209,
+    "symbol": "GFIL",
+    "fullName": "Ghazi Fabrics International Limited",
+    "icon": "test.svg",
+    "sectorId": 204,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 210,
+    "symbol": "GGGL",
+    "fullName": "Ghani Global Glass Limited",
+    "icon": "test.svg",
+    "sectorId": 205,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 211,
+    "symbol": "GGL",
+    "fullName": "Ghani Global Holdings Limited",
+    "icon": "test.svg",
+    "sectorId": 206,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 212,
+    "symbol": "GHGL",
+    "fullName": "Ghani Glass Limited(XD)",
+    "icon": "test.svg",
+    "sectorId": 207,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 213,
+    "symbol": "GHNI",
+    "fullName": "Ghandhara Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 208,
+    "sector": "Engineering"
+  },
+  {
+    "id": 214,
+    "symbol": "GIL",
+    "fullName": "Good Luck Industries Ltd.",
+    "icon": "test.svg",
+    "sectorId": 209,
+    "sector": "Engineering"
+  },
+  {
+    "id": 215,
+    "symbol": "GLAXO",
+    "fullName": "GlaxoSmithKline Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 210,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 216,
+    "symbol": "GLOT",
+    "fullName": "Globe Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 211,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 217,
+    "symbol": "GOC",
+    "fullName": "GOC (Pak) Limited.",
+    "icon": "test.svg",
+    "sectorId": 212,
+    "sector": "Chemical"
+  },
+  {
+    "id": 218,
+    "symbol": "GRR",
+    "fullName": "Globe Residency REIT",
+    "icon": "test.svg",
+    "sectorId": 213,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 219,
+    "symbol": "GRYL",
+    "fullName": "Grays Leasing Limited",
+    "icon": "test.svg",
+    "sectorId": 214,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 220,
+    "symbol": "GSPM",
+    "fullName": "Gulshan Spinning Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 215,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 221,
+    "symbol": "GTYR",
+    "fullName": "Ghandhara Tyre & Rubber Company Limited",
+    "icon": "test.svg",
+    "sectorId": 216,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 222,
+    "symbol": "GUSM",
+    "fullName": "Gulistan Spinning Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 217,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 223,
+    "symbol": "GUTM",
+    "fullName": "Gulistan Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 218,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 224,
+    "symbol": "GVGL",
+    "fullName": "Ghani Value Glass Limited",
+    "icon": "test.svg",
+    "sectorId": 219,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 225,
+    "symbol": "GWLC",
+    "fullName": "Gharibwal Cement Limited",
+    "icon": "test.svg",
+    "sectorId": 220,
+    "sector": "Cement"
+  },
+  {
+    "id": 226,
+    "symbol": "HABSM",
+    "fullName": "Habib Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 221,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 227,
+    "symbol": "HADC",
+    "fullName": "Haydari Construction Company Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 222,
+    "sector": "Engineering"
+  },
+  {
+    "id": 228,
+    "symbol": "HAEL",
+    "fullName": "Hala Enterprises Limited",
+    "icon": "test.svg",
+    "sectorId": 223,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 229,
+    "symbol": "HAFL",
+    "fullName": "Hafiz Limited",
+    "icon": "test.svg",
+    "sectorId": 224,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 230,
+    "symbol": "HAJT",
+    "fullName": "Hajra Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 225,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 231,
+    "symbol": "HALEON",
+    "fullName": "Haleon Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 226,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 232,
+    "symbol": "HASCOL",
+    "fullName": "Hascol Petroleum Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 227,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 233,
+    "symbol": "HATM",
+    "fullName": "Hamid Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 228,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 234,
+    "symbol": "HBL",
+    "fullName": "Habib Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 229,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 235,
+    "symbol": "HBLTETF",
+    "fullName": "HBL Total Treasury (ETF)(XD)",
+    "icon": "test.svg",
+    "sectorId": 230,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 236,
+    "symbol": "HCAR",
+    "fullName": "Honda Atlas Cars (Pakistan) Limited(XD)",
+    "icon": "test.svg",
+    "sectorId": 231,
+    "sector": "Automobile Assembler"
+  },
+  {
+    "id": 237,
+    "symbol": "HGFA",
+    "fullName": "HBL Growth Fund(XD)",
+    "icon": "test.svg",
+    "sectorId": 232,
+    "sector": "Close - End Mutual Fund"
+  },
+  {
+    "id": 238,
+    "symbol": "HICL",
+    "fullName": "Habib Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 233,
+    "sector": "Insurance"
+  },
+  {
+    "id": 239,
+    "symbol": "HIFA",
+    "fullName": "HBL Investment Fund(XD)",
+    "icon": "test.svg",
+    "sectorId": 234,
+    "sector": "Close - End Mutual Fund"
+  },
+  {
+    "id": 240,
+    "symbol": "HINO",
+    "fullName": "Hinopak Motors Limited",
+    "icon": "test.svg",
+    "sectorId": 235,
+    "sector": "Automobile Assembler"
+  },
+  {
+    "id": 241,
+    "symbol": "HINOON",
+    "fullName": "Highnoon Laboratories Limited",
+    "icon": "test.svg",
+    "sectorId": 236,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 242,
+    "symbol": "HIRAT",
+    "fullName": "Hira Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 237,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 243,
+    "symbol": "HKKT",
+    "fullName": "Hakkim Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 238,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 244,
+    "symbol": "HMB",
+    "fullName": "Habib Metropolitan Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 239,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 245,
+    "symbol": "HMIM",
+    "fullName": "Haji Mohammad Ismail Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 240,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 246,
+    "symbol": "HPL",
+    "fullName": "Hoechst Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 241,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 247,
+    "symbol": "HRPL",
+    "fullName": "Habib Rice Product Limited.",
+    "icon": "test.svg",
+    "sectorId": 242,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 248,
+    "symbol": "HSPI",
+    "fullName": "Huffaz Seamless Pipe Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 243,
+    "sector": "Engineering"
+  },
+  {
+    "id": 249,
+    "symbol": "HTL",
+    "fullName": "Hi-Tech Lubricants Limited",
+    "icon": "test.svg",
+    "sectorId": 244,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 250,
+    "symbol": "HUBC",
+    "fullName": "The Hub Power Company Limited",
+    "icon": "test.svg",
+    "sectorId": 245,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 251,
+    "symbol": "HUMNL",
+    "fullName": "Hum Network Limited",
+    "icon": "test.svg",
+    "sectorId": 246,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 252,
+    "symbol": "HUSI",
+    "fullName": "Husein Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 247,
+    "sector": "Engineering"
+  },
+  {
+    "id": 253,
+    "symbol": "HWQS",
+    "fullName": "Haseeb Waqas Sugar Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 248,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 254,
+    "symbol": "IBFL",
+    "fullName": "Ibrahim Fibres Limited",
+    "icon": "test.svg",
+    "sectorId": 249,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 255,
+    "symbol": "IBLHL",
+    "fullName": "IBL HealthCare Limited",
+    "icon": "test.svg",
+    "sectorId": 250,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 256,
+    "symbol": "ICCI",
+    "fullName": "ICC Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 251,
+    "sector": "Engineering"
+  },
+  {
+    "id": 257,
+    "symbol": "ICIBL",
+    "fullName": "Invest Capital Investment Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 252,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 258,
+    "symbol": "ICL",
+    "fullName": "Ittehad Chemicals Limted",
+    "icon": "test.svg",
+    "sectorId": 253,
+    "sector": "Chemical"
+  },
+  {
+    "id": 259,
+    "symbol": "IDRT",
+    "fullName": "Idrees Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 254,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 260,
+    "symbol": "IDSM",
+    "fullName": "Ideal Spinning Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 255,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 261,
+    "symbol": "IDYM",
+    "fullName": "Indus Dyeing & Manufacturing Co. Limited",
+    "icon": "test.svg",
+    "sectorId": 256,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 262,
+    "symbol": "IGIHL",
+    "fullName": "IGI Holdings Limited",
+    "icon": "test.svg",
+    "sectorId": 257,
+    "sector": "Insurance"
+  },
+  {
+    "id": 263,
+    "symbol": "IGIL",
+    "fullName": "IGI Life Insurance Limited",
+    "icon": "test.svg",
+    "sectorId": 258,
+    "sector": "Insurance"
+  },
+  {
+    "id": 264,
+    "symbol": "ILP",
+    "fullName": "Interloop Limited",
+    "icon": "test.svg",
+    "sectorId": 259,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 265,
+    "symbol": "IMAGE",
+    "fullName": "Image Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 260,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 266,
+    "symbol": "IML",
+    "fullName": "Imperial  Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 261,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 267,
+    "symbol": "IMS",
+    "fullName": "Intermarket Securities Limited",
+    "icon": "test.svg",
+    "sectorId": 262,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 268,
+    "symbol": "INDU",
+    "fullName": "Indus Motor Company Limited",
+    "icon": "test.svg",
+    "sectorId": 263,
+    "sector": "Automobile Assembler"
+  },
+  {
+    "id": 269,
+    "symbol": "INIL",
+    "fullName": "International Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 264,
+    "sector": "Engineering"
+  },
+  {
+    "id": 270,
+    "symbol": "INKL",
+    "fullName": "International Knitwear Limited",
+    "icon": "test.svg",
+    "sectorId": 265,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 271,
+    "symbol": "INMF",
+    "fullName": "Investec Mutual Fund Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 266,
+    "sector": "Close - End Mutual Fund"
+  },
+  {
+    "id": 272,
+    "symbol": "IPAK",
+    "fullName": "International Packaging Films Limited(XB)",
+    "icon": "test.svg",
+    "sectorId": 267,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 273,
+    "symbol": "IREIT",
+    "fullName": "Image Reit",
+    "icon": "test.svg",
+    "sectorId": 268,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 274,
+    "symbol": "ISIL",
+    "fullName": "Ismail Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 269,
+    "sector": "Engineering"
+  },
+  {
+    "id": 275,
+    "symbol": "ISL",
+    "fullName": "International Steels Limited",
+    "icon": "test.svg",
+    "sectorId": 270,
+    "sector": "Engineering"
+  },
+  {
+    "id": 276,
+    "symbol": "ITANZ",
+    "fullName": "Itanz Technologies Limited",
+    "icon": "test.svg",
+    "sectorId": 271,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 277,
+    "symbol": "ITTEFAQ",
+    "fullName": "Ittefaq Iron Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 272,
+    "sector": "Engineering"
+  },
+  {
+    "id": 278,
+    "symbol": "JATM",
+    "fullName": "J.A. Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 273,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 279,
+    "symbol": "JDMT",
+    "fullName": "Janana De Malucho Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 274,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 280,
+    "symbol": "JDWS",
+    "fullName": "JDW Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 275,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 281,
+    "symbol": "JGICL",
+    "fullName": "Jubilee General Insurance Company Ltd.",
+    "icon": "test.svg",
+    "sectorId": 276,
+    "sector": "Insurance"
+  },
+  {
+    "id": 282,
+    "symbol": "JKSM",
+    "fullName": "J.K. Spinning Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 277,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 283,
+    "symbol": "JLICL",
+    "fullName": "Jubilee Life Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 278,
+    "sector": "Insurance"
+  },
+  {
+    "id": 284,
+    "symbol": "JSBL",
+    "fullName": "JS Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 279,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 285,
+    "symbol": "JSCL",
+    "fullName": "Jahangir Siddiqui & Co. Ltd.",
+    "icon": "test.svg",
+    "sectorId": 280,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 286,
+    "symbol": "JSGBETF",
+    "fullName": "JS Global Banking Sector(ETF)",
+    "icon": "test.svg",
+    "sectorId": 281,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 287,
+    "symbol": "JSGCL",
+    "fullName": "JS Global Capital Limited",
+    "icon": "test.svg",
+    "sectorId": 282,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 288,
+    "symbol": "JSIL",
+    "fullName": "JS Investments Limited",
+    "icon": "test.svg",
+    "sectorId": 283,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 289,
+    "symbol": "JSMFETF",
+    "fullName": "JS Momentum Factor Exchange Traded Fund",
+    "icon": "test.svg",
+    "sectorId": 284,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 290,
+    "symbol": "JSML",
+    "fullName": "Jauharabad Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 285,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 291,
+    "symbol": "JSRR",
+    "fullName": "JS Rental REIT",
+    "icon": "test.svg",
+    "sectorId": 286,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 292,
+    "symbol": "JUBS",
+    "fullName": "Jubilee Spinning & Weaving Mills Ltd.(DEF)",
+    "icon": "test.svg",
+    "sectorId": 287,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 293,
+    "symbol": "JVDC",
+    "fullName": "Javedan Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 288,
+    "sector": "Cement"
+  },
+  {
+    "id": 294,
+    "symbol": "JVDCPS",
+    "fullName": "Javedan Corporation (Pref)",
+    "icon": "test.svg",
+    "sectorId": 289,
+    "sector": "Cement"
+  },
+  {
+    "id": 295,
+    "symbol": "KAKL",
+    "fullName": "Kaiser Arts & Krafts Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 290,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 296,
+    "symbol": "KAPCO",
+    "fullName": "Kot Addu Power Company Limited",
+    "icon": "test.svg",
+    "sectorId": 291,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 297,
+    "symbol": "KCL",
+    "fullName": "Karam Ceramics Limited",
+    "icon": "test.svg",
+    "sectorId": 292,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 298,
+    "symbol": "KEL",
+    "fullName": "K-Electric Limited",
+    "icon": "test.svg",
+    "sectorId": 293,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 299,
+    "symbol": "KHTC",
+    "fullName": "Khyber Tobacco Company Limited",
+    "icon": "test.svg",
+    "sectorId": 294,
+    "sector": "Tobacco"
+  },
+  {
+    "id": 300,
+    "symbol": "KHYT",
+    "fullName": "Khyber Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 295,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 301,
+    "symbol": "KML",
+    "fullName": "Kohinoor Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 296,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 302,
+    "symbol": "KOHC",
+    "fullName": "Kohat Cement Company Limited",
+    "icon": "test.svg",
+    "sectorId": 297,
+    "sector": "Cement"
+  },
+  {
+    "id": 303,
+    "symbol": "KOHE",
+    "fullName": "Kohinoor Energy Limited",
+    "icon": "test.svg",
+    "sectorId": 298,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 304,
+    "symbol": "KOHP",
+    "fullName": "Kohinoor Power Company Limited",
+    "icon": "test.svg",
+    "sectorId": 299,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 305,
+    "symbol": "KOHTM",
+    "fullName": "Kohat Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 300,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 306,
+    "symbol": "KOIL",
+    "fullName": "Kohinoor Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 301,
+    "sector": "Engineering"
+  },
+  {
+    "id": 307,
+    "symbol": "KOSM",
+    "fullName": "Kohinoor Spinning Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 302,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 308,
+    "symbol": "KPUS",
+    "fullName": "Khairpur Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 303,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 309,
+    "symbol": "KSBP",
+    "fullName": "KSB Pumps Company Limited",
+    "icon": "test.svg",
+    "sectorId": 304,
+    "sector": "Engineering"
+  },
+  {
+    "id": 310,
+    "symbol": "KSTM",
+    "fullName": "Khalid Siraj Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 305,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 311,
+    "symbol": "KTML",
+    "fullName": "Kohinoor Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 306,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 312,
+    "symbol": "LCI",
+    "fullName": "Lucky Core Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 307,
+    "sector": "Engineering"
+  },
+  {
+    "id": 313,
+    "symbol": "LEUL",
+    "fullName": "Leather Up Limited",
+    "icon": "test.svg",
+    "sectorId": 308,
+    "sector": "Leather & Tanneries"
+  },
+  {
+    "id": 314,
+    "symbol": "LIVEN",
+    "fullName": "Liven Pharma Limited",
+    "icon": "test.svg",
+    "sectorId": 309,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 315,
+    "symbol": "LOADS",
+    "fullName": "Loads Limited",
+    "icon": "test.svg",
+    "sectorId": 310,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 316,
+    "symbol": "LOTCHEM",
+    "fullName": "Lotte Chemical Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 311,
+    "sector": "Chemical"
+  },
+  {
+    "id": 317,
+    "symbol": "LPGL",
+    "fullName": "Leiner Pak Gelatine Limited",
+    "icon": "test.svg",
+    "sectorId": 312,
+    "sector": "Chemical"
+  },
+  {
+    "id": 318,
+    "symbol": "LPL",
+    "fullName": "Lalpir Power Limited",
+    "icon": "test.svg",
+    "sectorId": 313,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 319,
+    "symbol": "LSECL",
+    "fullName": "LSE Capital Limited.",
+    "icon": "test.svg",
+    "sectorId": 314,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 320,
+    "symbol": "LSEFSL",
+    "fullName": "LSE Financial Services Limited.",
+    "icon": "test.svg",
+    "sectorId": 315,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 321,
+    "symbol": "LSEVL",
+    "fullName": "LSE Ventures Limited",
+    "icon": "test.svg",
+    "sectorId": 316,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 322,
+    "symbol": "LUCK",
+    "fullName": "Lucky Cement Limited",
+    "icon": "test.svg",
+    "sectorId": 317,
+    "sector": "Cement"
+  },
+  {
+    "id": 323,
+    "symbol": "MACFL",
+    "fullName": "MACPAC Films Limited",
+    "icon": "test.svg",
+    "sectorId": 318,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 324,
+    "symbol": "MACTER",
+    "fullName": "Macter International Limited",
+    "icon": "test.svg",
+    "sectorId": 319,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 325,
+    "symbol": "MARI",
+    "fullName": "Mari Energies Limited",
+    "icon": "test.svg",
+    "sectorId": 320,
+    "sector": "Oil & Gas Exploration Companies"
+  },
+  {
+    "id": 326,
+    "symbol": "MCB",
+    "fullName": "MCB Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 321,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 327,
+    "symbol": "MCBIM",
+    "fullName": "MCB Investment Management Limited.",
+    "icon": "test.svg",
+    "sectorId": 322,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 328,
+    "symbol": "MDTL",
+    "fullName": "Media Times Limited",
+    "icon": "test.svg",
+    "sectorId": 323,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 329,
+    "symbol": "MEBL",
+    "fullName": "Meezan Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 324,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 330,
+    "symbol": "MEHT",
+    "fullName": "Mehmood Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 325,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 331,
+    "symbol": "MERIT",
+    "fullName": "Merit Packaging Limited",
+    "icon": "test.svg",
+    "sectorId": 326,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 332,
+    "symbol": "MFFL",
+    "fullName": "Mitchells Fruit Farms Limited",
+    "icon": "test.svg",
+    "sectorId": 327,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 333,
+    "symbol": "MFL",
+    "fullName": "Matco Foods Limited",
+    "icon": "test.svg",
+    "sectorId": 328,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 334,
+    "symbol": "MFTM",
+    "fullName": "Mohammad Farooq Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 329,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 335,
+    "symbol": "MIIETF",
+    "fullName": "Mahaana Islamic Index ETF(XD)",
+    "icon": "test.svg",
+    "sectorId": 330,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 336,
+    "symbol": "MIRKS",
+    "fullName": "Mirpurkhas Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 331,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 337,
+    "symbol": "MLCF",
+    "fullName": "Maple Leaf Cement Factory Limited",
+    "icon": "test.svg",
+    "sectorId": 332,
+    "sector": "Cement"
+  },
+  {
+    "id": 338,
+    "symbol": "MOHE",
+    "fullName": "Mohib Exports Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 333,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 339,
+    "symbol": "MQTM",
+    "fullName": "Maqbool Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 334,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 340,
+    "symbol": "MRNS",
+    "fullName": "Mehran Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 335,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 341,
+    "symbol": "MSCL",
+    "fullName": "Metropolitan Steel Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 336,
+    "sector": "Engineering"
+  },
+  {
+    "id": 342,
+    "symbol": "MSOT",
+    "fullName": "Masood Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 337,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 343,
+    "symbol": "MSOTPS",
+    "fullName": "Masood Textile (Pref)",
+    "icon": "test.svg",
+    "sectorId": 338,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 344,
+    "symbol": "MTL",
+    "fullName": "Millat Tractors Limited",
+    "icon": "test.svg",
+    "sectorId": 339,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 345,
+    "symbol": "MUBT",
+    "fullName": "Mubarak Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 340,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 346,
+    "symbol": "MUGHAL",
+    "fullName": "Mughal Iron & Steel Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 341,
+    "sector": "Engineering"
+  },
+  {
+    "id": 347,
+    "symbol": "MUGHALC",
+    "fullName": "Mughal Iron & Steel Industries Ltd(C)",
+    "icon": "test.svg",
+    "sectorId": 342,
+    "sector": "Engineering"
+  },
+  {
+    "id": 348,
+    "symbol": "MUREB",
+    "fullName": "Murree Brewery Company Limited",
+    "icon": "test.svg",
+    "sectorId": 343,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 349,
+    "symbol": "MWMP",
+    "fullName": "Mandviwala Mauser Plastic Industries",
+    "icon": "test.svg",
+    "sectorId": 344,
+    "sector": "Chemical"
+  },
+  {
+    "id": 350,
+    "symbol": "MZNPETF",
+    "fullName": "Meezan Pakistan ETF(XD)",
+    "icon": "test.svg",
+    "sectorId": 345,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 351,
+    "symbol": "NAFL",
+    "fullName": "National Fibres Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 346,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 352,
+    "symbol": "NAGC",
+    "fullName": "Nagina Cotton Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 347,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 353,
+    "symbol": "NATF",
+    "fullName": "National Foods Limited",
+    "icon": "test.svg",
+    "sectorId": 348,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 354,
+    "symbol": "NATM",
+    "fullName": "Nadeem Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 349,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 355,
+    "symbol": "NBP",
+    "fullName": "National Bank of Pakistan",
+    "icon": "test.svg",
+    "sectorId": 350,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 356,
+    "symbol": "NBPGETF",
+    "fullName": "NBP Pakistan  Growth ETF(XD)",
+    "icon": "test.svg",
+    "sectorId": 351,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 357,
+    "symbol": "NCL",
+    "fullName": "Nishat Chunian Limited",
+    "icon": "test.svg",
+    "sectorId": 352,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 358,
+    "symbol": "NCML",
+    "fullName": "Nazir Cotton Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 353,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 359,
+    "symbol": "NCPL",
+    "fullName": "Nishat Chunian Power Limited",
+    "icon": "test.svg",
+    "sectorId": 354,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 360,
+    "symbol": "NESTLE",
+    "fullName": "Nestle Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 355,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 361,
+    "symbol": "NETSOL",
+    "fullName": "NetSol Technologies Limited",
+    "icon": "test.svg",
+    "sectorId": 356,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 362,
+    "symbol": "NEXT",
+    "fullName": "Next Capital Limited",
+    "icon": "test.svg",
+    "sectorId": 357,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 363,
+    "symbol": "NICL",
+    "fullName": "Nimir Industrial Chemicals Limited",
+    "icon": "test.svg",
+    "sectorId": 358,
+    "sector": "Chemical"
+  },
+  {
+    "id": 364,
+    "symbol": "NINA",
+    "fullName": "Nina Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 359,
+    "sector": "Engineering"
+  },
+  {
+    "id": 365,
+    "symbol": "NITGETF",
+    "fullName": "NIT Pakistan Gateway ETF(XD)",
+    "icon": "test.svg",
+    "sectorId": 360,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 366,
+    "symbol": "NMFL",
+    "fullName": "Nirala MSR Foods Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 361,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 367,
+    "symbol": "NML",
+    "fullName": "Nishat Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 362,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 368,
+    "symbol": "NONS",
+    "fullName": "Noon Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 363,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 369,
+    "symbol": "NPL",
+    "fullName": "Nishat Power Limited",
+    "icon": "test.svg",
+    "sectorId": 364,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 370,
+    "symbol": "NRL",
+    "fullName": "National Refinery Limited",
+    "icon": "test.svg",
+    "sectorId": 365,
+    "sector": "Refinery"
+  },
+  {
+    "id": 371,
+    "symbol": "NRSL",
+    "fullName": "Nimir Resins Limited",
+    "icon": "test.svg",
+    "sectorId": 366,
+    "sector": "Chemical"
+  },
+  {
+    "id": 372,
+    "symbol": "NSRM",
+    "fullName": "The National Silk & Rayon Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 367,
+    "sector": "Synthetic & Rayon"
+  },
+  {
+    "id": 373,
+    "symbol": "OBOY",
+    "fullName": "Oilboy Energy Limited",
+    "icon": "test.svg",
+    "sectorId": 368,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 374,
+    "symbol": "OCTOPUS",
+    "fullName": "Octopus Digital Limited",
+    "icon": "test.svg",
+    "sectorId": 369,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 375,
+    "symbol": "OGDC",
+    "fullName": "Oil & Gas Development Company Limited",
+    "icon": "test.svg",
+    "sectorId": 370,
+    "sector": "Oil & Gas Exploration Companies"
+  },
+  {
+    "id": 376,
+    "symbol": "OLPL",
+    "fullName": "OLP Financial Services Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 371,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 377,
+    "symbol": "OLPM",
+    "fullName": "OLP Modaraba",
+    "icon": "test.svg",
+    "sectorId": 372,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 378,
+    "symbol": "OML",
+    "fullName": "Olympia Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 373,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 379,
+    "symbol": "ORM",
+    "fullName": "Orient Rental Mod",
+    "icon": "test.svg",
+    "sectorId": 374,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 380,
+    "symbol": "OTSU",
+    "fullName": "Otsuka Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 375,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 381,
+    "symbol": "PABC",
+    "fullName": "Pakistan Aluminium Beverage Cans Limited",
+    "icon": "test.svg",
+    "sectorId": 376,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 382,
+    "symbol": "PACE",
+    "fullName": "Pace (Pakistan) Limited",
+    "icon": "test.svg",
+    "sectorId": 377,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 383,
+    "symbol": "PAEL",
+    "fullName": "Pak Elektron Limited",
+    "icon": "test.svg",
+    "sectorId": 378,
+    "sector": "Cable & Electrical Goods"
+  },
+  {
+    "id": 384,
+    "symbol": "PAKD",
+    "fullName": "Pak Datacom Limited",
+    "icon": "test.svg",
+    "sectorId": 379,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 385,
+    "symbol": "PAKL",
+    "fullName": "Pak Leather Crafts Limited",
+    "icon": "test.svg",
+    "sectorId": 380,
+    "sector": "Leather & Tanneries"
+  },
+  {
+    "id": 386,
+    "symbol": "PAKOXY",
+    "fullName": "Pakistan Oxygen Limited",
+    "icon": "test.svg",
+    "sectorId": 381,
+    "sector": "Chemical"
+  },
+  {
+    "id": 387,
+    "symbol": "PAKQATAR",
+    "fullName": "Pak Qatar Family Takaful Limited",
+    "icon": "test.svg",
+    "sectorId": 382,
+    "sector": "Insurance"
+  },
+  {
+    "id": 388,
+    "symbol": "PAKRI",
+    "fullName": "Pakistan Reinsurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 383,
+    "sector": "Insurance"
+  },
+  {
+    "id": 389,
+    "symbol": "PAKT",
+    "fullName": "Pakistan Tobacco Company Limited",
+    "icon": "test.svg",
+    "sectorId": 384,
+    "sector": "Tobacco"
+  },
+  {
+    "id": 390,
+    "symbol": "PASL",
+    "fullName": "Pervez Ahmed Consultancy Services Ltd.(DEF)",
+    "icon": "test.svg",
+    "sectorId": 385,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 391,
+    "symbol": "PASM",
+    "fullName": "Paramount Spinning Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 386,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 392,
+    "symbol": "PCAL",
+    "fullName": "Pakistan Cables Limited",
+    "icon": "test.svg",
+    "sectorId": 387,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 393,
+    "symbol": "PECO",
+    "fullName": "Pakistan Engineering Company Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 388,
+    "sector": "Engineering"
+  },
+  {
+    "id": 394,
+    "symbol": "PGLC",
+    "fullName": "Pak-Gulf Leasing Company Limited",
+    "icon": "test.svg",
+    "sectorId": 389,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 395,
+    "symbol": "PHDL",
+    "fullName": "Pakistan Hotels Developers Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 390,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 396,
+    "symbol": "PIAHCLA",
+    "fullName": "PIA Holding Company Limited",
+    "icon": "test.svg",
+    "sectorId": 391,
+    "sector": "Transport"
+  },
+  {
+    "id": 397,
+    "symbol": "PIAHCLB",
+    "fullName": "PIA Holding Company LimitedB",
+    "icon": "test.svg",
+    "sectorId": 392,
+    "sector": "Transport"
+  },
+  {
+    "id": 398,
+    "symbol": "PIBTL",
+    "fullName": "Pakistan International Bulk Terminal",
+    "icon": "test.svg",
+    "sectorId": 393,
+    "sector": "Transport"
+  },
+  {
+    "id": 399,
+    "symbol": "PICL",
+    "fullName": "Pakistan Industrial & Commercial Leasing(DEF)",
+    "icon": "test.svg",
+    "sectorId": 394,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 400,
+    "symbol": "PICT",
+    "fullName": "Pakistan International Container",
+    "icon": "test.svg",
+    "sectorId": 395,
+    "sector": "Transport"
+  },
+  {
+    "id": 401,
+    "symbol": "PIL",
+    "fullName": "PICIC Insurance Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 396,
+    "sector": "Insurance"
+  },
+  {
+    "id": 402,
+    "symbol": "PIM",
+    "fullName": "Popular Islamic Modaraba",
+    "icon": "test.svg",
+    "sectorId": 397,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 403,
+    "symbol": "PINL",
+    "fullName": "Premier Insurance Limited",
+    "icon": "test.svg",
+    "sectorId": 398,
+    "sector": "Insurance"
+  },
+  {
+    "id": 404,
+    "symbol": "PIOC",
+    "fullName": "Pioneer Cement Limited",
+    "icon": "test.svg",
+    "sectorId": 399,
+    "sector": "Cement"
+  },
+  {
+    "id": 405,
+    "symbol": "PKGI",
+    "fullName": "The Pakistan General Insurance Co. Ltd.",
+    "icon": "test.svg",
+    "sectorId": 400,
+    "sector": "Insurance"
+  },
+  {
+    "id": 406,
+    "symbol": "PKGP",
+    "fullName": "Pakgen Power Limited",
+    "icon": "test.svg",
+    "sectorId": 401,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 407,
+    "symbol": "PKGS",
+    "fullName": "Packages Limited",
+    "icon": "test.svg",
+    "sectorId": 402,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 408,
+    "symbol": "PMRS",
+    "fullName": "The Premier Sugar Mills",
+    "icon": "test.svg",
+    "sectorId": 403,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 409,
+    "symbol": "PNSC",
+    "fullName": "Pakistan National Shipping Corporation",
+    "icon": "test.svg",
+    "sectorId": 404,
+    "sector": "Transport"
+  },
+  {
+    "id": 410,
+    "symbol": "POL",
+    "fullName": "Pakistan Oilfields Limited",
+    "icon": "test.svg",
+    "sectorId": 405,
+    "sector": "Oil & Gas Exploration Companies"
+  },
+  {
+    "id": 411,
+    "symbol": "POML",
+    "fullName": "Punjab Oil Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 406,
+    "sector": "Vanaspati & Allied Industries"
+  },
+  {
+    "id": 412,
+    "symbol": "POWER",
+    "fullName": "Power Cement Limited",
+    "icon": "test.svg",
+    "sectorId": 407,
+    "sector": "Cement"
+  },
+  {
+    "id": 413,
+    "symbol": "POWERPS",
+    "fullName": "Power Cement (Pref)",
+    "icon": "test.svg",
+    "sectorId": 408,
+    "sector": "Cement"
+  },
+  {
+    "id": 414,
+    "symbol": "PPL",
+    "fullName": "Pakistan Petroleum Limited",
+    "icon": "test.svg",
+    "sectorId": 409,
+    "sector": "Oil & Gas Exploration Companies"
+  },
+  {
+    "id": 415,
+    "symbol": "PPP",
+    "fullName": "Pakistan Paper Products Limited",
+    "icon": "test.svg",
+    "sectorId": 410,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 416,
+    "symbol": "PPVC",
+    "fullName": "Pakistan PVC Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 411,
+    "sector": "Chemical"
+  },
+  {
+    "id": 417,
+    "symbol": "PQGTL",
+    "fullName": "Pak Qatar General Takaful Limited",
+    "icon": "test.svg",
+    "sectorId": 412,
+    "sector": "Insurance"
+  },
+  {
+    "id": 418,
+    "symbol": "PREMA",
+    "fullName": "At-Tahur Limited",
+    "icon": "test.svg",
+    "sectorId": 413,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 419,
+    "symbol": "PRET",
+    "fullName": "Premium Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 414,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 420,
+    "symbol": "PRIB",
+    "fullName": "Prudential Investment Bank Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 415,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 421,
+    "symbol": "PRIC",
+    "fullName": "Progressive Insurance Company Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 416,
+    "sector": "Insurance"
+  },
+  {
+    "id": 422,
+    "symbol": "PRL",
+    "fullName": "Pakistan Refinery Limited",
+    "icon": "test.svg",
+    "sectorId": 417,
+    "sector": "Refinery"
+  },
+  {
+    "id": 423,
+    "symbol": "PRWM",
+    "fullName": "Prosperity Weaving Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 418,
+    "sector": "Textile Weaving"
+  },
+  {
+    "id": 424,
+    "symbol": "PSEL",
+    "fullName": "Pakistan Services Limited",
+    "icon": "test.svg",
+    "sectorId": 419,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 425,
+    "symbol": "PSO",
+    "fullName": "Pakistan State Oil Company Limited",
+    "icon": "test.svg",
+    "sectorId": 420,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 426,
+    "symbol": "PSX",
+    "fullName": "Pakistan Stock Exchange Limited",
+    "icon": "test.svg",
+    "sectorId": 421,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 427,
+    "symbol": "PSYL",
+    "fullName": "Pakistan Synthetics Limited",
+    "icon": "test.svg",
+    "sectorId": 422,
+    "sector": "Synthetic & Rayon"
+  },
+  {
+    "id": 428,
+    "symbol": "PTC",
+    "fullName": "Pakistan Telecommunication Company Ltd",
+    "icon": "test.svg",
+    "sectorId": 423,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 429,
+    "symbol": "PTL",
+    "fullName": "Panther Tyres Ltd.",
+    "icon": "test.svg",
+    "sectorId": 424,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 430,
+    "symbol": "QTECH",
+    "fullName": "Quantum Data Technologies Limited",
+    "icon": "test.svg",
+    "sectorId": 425,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 431,
+    "symbol": "QUET",
+    "fullName": "Quetta Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 426,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 432,
+    "symbol": "QUICE",
+    "fullName": "Quice Food Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 427,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 433,
+    "symbol": "REDCO",
+    "fullName": "Redco Textiles Limited",
+    "icon": "test.svg",
+    "sectorId": 428,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 434,
+    "symbol": "REGAL",
+    "fullName": "Regal Ceramics Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 429,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 435,
+    "symbol": "REWM",
+    "fullName": "Reliance Weaving Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 430,
+    "sector": "Textile Weaving"
+  },
+  {
+    "id": 436,
+    "symbol": "RICL",
+    "fullName": "Reliance Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 431,
+    "sector": "Insurance"
+  },
+  {
+    "id": 437,
+    "symbol": "RMPL",
+    "fullName": "Rafhan Maize Products Company Limited",
+    "icon": "test.svg",
+    "sectorId": 432,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 438,
+    "symbol": "RPL",
+    "fullName": "Roshan Packages Limited",
+    "icon": "test.svg",
+    "sectorId": 433,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 439,
+    "symbol": "RUBY",
+    "fullName": "Ruby Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 434,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 440,
+    "symbol": "RUPL",
+    "fullName": "Rupali Polyester Limited",
+    "icon": "test.svg",
+    "sectorId": 435,
+    "sector": "Synthetic & Rayon"
+  },
+  {
+    "id": 441,
+    "symbol": "SAIF",
+    "fullName": "Saif Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 436,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 442,
+    "symbol": "SANE",
+    "fullName": "Salman Noman Enterprises Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 437,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 443,
+    "symbol": "SANSM",
+    "fullName": "Sanghar Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 438,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 444,
+    "symbol": "SAPT",
+    "fullName": "Sapphire Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 439,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 445,
+    "symbol": "SARC",
+    "fullName": "Sardar Chemical Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 440,
+    "sector": "Chemical"
+  },
+  {
+    "id": 446,
+    "symbol": "SASML",
+    "fullName": "Sindh Abadgars Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 441,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 447,
+    "symbol": "SAZEW",
+    "fullName": "Sazgar Engineering Works Limited",
+    "icon": "test.svg",
+    "sectorId": 442,
+    "sector": "Engineering"
+  },
+  {
+    "id": 448,
+    "symbol": "SBL",
+    "fullName": "Samba Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 443,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 449,
+    "symbol": "SCBPL",
+    "fullName": "Standard Chartered Bank (Pak) Ltd",
+    "icon": "test.svg",
+    "sectorId": 444,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 450,
+    "symbol": "SCHT",
+    "fullName": "Schon Textiles Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 445,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 451,
+    "symbol": "SCL",
+    "fullName": "Shield Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 446,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 452,
+    "symbol": "SDOT",
+    "fullName": "Sadoon Textile Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 447,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 453,
+    "symbol": "SEARL",
+    "fullName": "The Searle Company Limited",
+    "icon": "test.svg",
+    "sectorId": 448,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 454,
+    "symbol": "SEL",
+    "fullName": "Sitara Energy Limited",
+    "icon": "test.svg",
+    "sectorId": 449,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 455,
+    "symbol": "SEPL",
+    "fullName": "Security Papers Limited",
+    "icon": "test.svg",
+    "sectorId": 450,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 456,
+    "symbol": "SERT",
+    "fullName": "Service Industries Textiles Limited",
+    "icon": "test.svg",
+    "sectorId": 451,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 457,
+    "symbol": "SFAT",
+    "fullName": "Safa Textiles Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 452,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 458,
+    "symbol": "SFL",
+    "fullName": "Sapphire Fibres Limited",
+    "icon": "test.svg",
+    "sectorId": 453,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 459,
+    "symbol": "SGABL",
+    "fullName": "SG.Allied Businesses Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 454,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 460,
+    "symbol": "SGF",
+    "fullName": "Service GlobalFootwear Limited",
+    "icon": "test.svg",
+    "sectorId": 455,
+    "sector": "Leather & Tanneries"
+  },
+  {
+    "id": 461,
+    "symbol": "SGPL",
+    "fullName": "S.G. Power Limited",
+    "icon": "test.svg",
+    "sectorId": 456,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 462,
+    "symbol": "SHCI",
+    "fullName": "Shaffi Chemical Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 457,
+    "sector": "Chemical"
+  },
+  {
+    "id": 463,
+    "symbol": "SHCM",
+    "fullName": "Shadman Cotton Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 458,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 464,
+    "symbol": "SHDT",
+    "fullName": "Shadab Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 459,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 465,
+    "symbol": "SHEZ",
+    "fullName": "Shezan International Limited",
+    "icon": "test.svg",
+    "sectorId": 460,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 466,
+    "symbol": "SHFA",
+    "fullName": "Shifa International Hospitals Limited",
+    "icon": "test.svg",
+    "sectorId": 461,
+    "sector": "Pharmaceuticals"
+  },
+  {
+    "id": 467,
+    "symbol": "SHJS",
+    "fullName": "Shahtaj Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 462,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 468,
+    "symbol": "SHNI",
+    "fullName": "Shaheen Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 463,
+    "sector": "Insurance"
+  },
+  {
+    "id": 469,
+    "symbol": "SHSML",
+    "fullName": "Shahmurad Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 464,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 470,
+    "symbol": "SIBL",
+    "fullName": "Security Investment Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 465,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 471,
+    "symbol": "SIEM",
+    "fullName": "Siemens (Pakistan) Engineering",
+    "icon": "test.svg",
+    "sectorId": 466,
+    "sector": "Engineering"
+  },
+  {
+    "id": 472,
+    "symbol": "SINDM",
+    "fullName": "Sindh Modaraba",
+    "icon": "test.svg",
+    "sectorId": 467,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 473,
+    "symbol": "SITC",
+    "fullName": "Sitara Chemical Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 468,
+    "sector": "Chemical"
+  },
+  {
+    "id": 474,
+    "symbol": "SKRS",
+    "fullName": "Sakrand Sugar Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 469,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 475,
+    "symbol": "SLCL",
+    "fullName": "Security Leasing Corporation Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 470,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 476,
+    "symbol": "SLCPA",
+    "fullName": "Security Leasing Corp.9.10%(Pref)",
+    "icon": "test.svg",
+    "sectorId": 471,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 477,
+    "symbol": "SLGL",
+    "fullName": "Secure Logistics-Trax Group Limited",
+    "icon": "test.svg",
+    "sectorId": 472,
+    "sector": "Transport"
+  },
+  {
+    "id": 478,
+    "symbol": "SLL",
+    "fullName": "SME Leasing Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 473,
+    "sector": "Leasing Companies"
+  },
+  {
+    "id": 479,
+    "symbol": "SLM",
+    "fullName": "Service Long March Tyres Limited",
+    "icon": "test.svg",
+    "sectorId": 474,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 480,
+    "symbol": "SLYT",
+    "fullName": "Sally Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 475,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 481,
+    "symbol": "SMCPL",
+    "fullName": "Safe Mix Concrete Limited",
+    "icon": "test.svg",
+    "sectorId": 476,
+    "sector": "Cement"
+  },
+  {
+    "id": 482,
+    "symbol": "SML",
+    "fullName": "Shakarganj Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 477,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 483,
+    "symbol": "SNAI",
+    "fullName": "Sana Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 478,
+    "sector": "Engineering"
+  },
+  {
+    "id": 484,
+    "symbol": "SNBL",
+    "fullName": "Soneri Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 479,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 485,
+    "symbol": "SNGP",
+    "fullName": "Sui Northern Gas Pipelines Limited",
+    "icon": "test.svg",
+    "sectorId": 480,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 486,
+    "symbol": "SPAC1",
+    "fullName": "LSE SPAC-I Limited",
+    "icon": "test.svg",
+    "sectorId": 481,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 487,
+    "symbol": "SPCL",
+    "fullName": "Saudi Pak Consultancy Company Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 482,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 488,
+    "symbol": "SPEL",
+    "fullName": "SPEL Limited",
+    "icon": "test.svg",
+    "sectorId": 483,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 489,
+    "symbol": "SPL",
+    "fullName": "Sitara Peroxide Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 484,
+    "sector": "Chemical"
+  },
+  {
+    "id": 490,
+    "symbol": "SPSL",
+    "fullName": "Sitara Petroleum Service Limited",
+    "icon": "test.svg",
+    "sectorId": 485,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 491,
+    "symbol": "SPWL",
+    "fullName": "Saif Power Limited",
+    "icon": "test.svg",
+    "sectorId": 486,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 492,
+    "symbol": "SRR",
+    "fullName": "Signature Residency Reit",
+    "icon": "test.svg",
+    "sectorId": 487,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 493,
+    "symbol": "SRVI",
+    "fullName": "Service Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 488,
+    "sector": "Engineering"
+  },
+  {
+    "id": 494,
+    "symbol": "SSGC",
+    "fullName": "Sui Southern Gas Company Limited",
+    "icon": "test.svg",
+    "sectorId": 489,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 495,
+    "symbol": "SSIC",
+    "fullName": "Silver Star Insurance Company Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 490,
+    "sector": "Insurance"
+  },
+  {
+    "id": 496,
+    "symbol": "SSML",
+    "fullName": "Saritow Spinning Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 491,
+    "sector": "Textile Spinning"
+  },
+  {
+    "id": 497,
+    "symbol": "SSOM",
+    "fullName": "S.S.Oil Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 492,
+    "sector": "Vanaspati & Allied Industries"
+  },
+  {
+    "id": 498,
+    "symbol": "STCL",
+    "fullName": "Shabbir Tiles & Ceramics Limited",
+    "icon": "test.svg",
+    "sectorId": 493,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 499,
+    "symbol": "STJT",
+    "fullName": "Shahtaj Textile Limited",
+    "icon": "test.svg",
+    "sectorId": 494,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 500,
+    "symbol": "STL",
+    "fullName": "Supernet Technologies Limited",
+    "icon": "test.svg",
+    "sectorId": 495,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 501,
+    "symbol": "STML",
+    "fullName": "Shams Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 496,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 502,
+    "symbol": "STPL",
+    "fullName": "Siddiqsons Tin Plate Limited",
+    "icon": "test.svg",
+    "sectorId": 497,
+    "sector": "Engineering"
+  },
+  {
+    "id": 503,
+    "symbol": "STYLERS",
+    "fullName": "Stylers International Limited",
+    "icon": "test.svg",
+    "sectorId": 498,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 504,
+    "symbol": "SUHJ",
+    "fullName": "Suhail Jute Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 499,
+    "sector": "Jute"
+  },
+  {
+    "id": 505,
+    "symbol": "SURAJ",
+    "fullName": "Suraj Ghee Industries Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 500,
+    "sector": "Vanaspati & Allied Industries"
+  },
+  {
+    "id": 506,
+    "symbol": "SURC",
+    "fullName": "Suraj Cotton Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 501,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 507,
+    "symbol": "SUTM",
+    "fullName": "Sunrays Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 502,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 508,
+    "symbol": "SWL",
+    "fullName": "Standard Worldwide Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 503,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 509,
+    "symbol": "SYM",
+    "fullName": "Symmetry Group Limited",
+    "icon": "test.svg",
+    "sectorId": 504,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 510,
+    "symbol": "SYS",
+    "fullName": "Systems Limited",
+    "icon": "test.svg",
+    "sectorId": 505,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 511,
+    "symbol": "SZTM",
+    "fullName": "Shahzad Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 506,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 512,
+    "symbol": "TAJT",
+    "fullName": "Taj Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 507,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 513,
+    "symbol": "TATM",
+    "fullName": "Tata Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 508,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 514,
+    "symbol": "TBL",
+    "fullName": "Treet Battery Limited.",
+    "icon": "test.svg",
+    "sectorId": 509,
+    "sector": "Automobile Parts & Accessories"
+  },
+  {
+    "id": 515,
+    "symbol": "TCORP",
+    "fullName": "Tariq Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 510,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 516,
+    "symbol": "TCORPCPS",
+    "fullName": "Tariq Corporation Limited(Pref)",
+    "icon": "test.svg",
+    "sectorId": 511,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 518,
+    "symbol": "TELE",
+    "fullName": "Telecard Limited",
+    "icon": "test.svg",
+    "sectorId": 512,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 519,
+    "symbol": "TGL",
+    "fullName": "Tariq Glass Industries Limited",
+    "icon": "test.svg",
+    "sectorId": 513,
+    "sector": "Glass & Ceramics"
+  },
+  {
+    "id": 520,
+    "symbol": "THALL",
+    "fullName": "Thal Limited",
+    "icon": "test.svg",
+    "sectorId": 514,
+    "sector": "Engineering"
+  },
+  {
+    "id": 521,
+    "symbol": "THCCL",
+    "fullName": "Thatta Cement Company Limited",
+    "icon": "test.svg",
+    "sectorId": 515,
+    "sector": "Cement"
+  },
+  {
+    "id": 522,
+    "symbol": "TICL",
+    "fullName": "The Thal Industries Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 516,
+    "sector": "Cement"
+  },
+  {
+    "id": 523,
+    "symbol": "TOMCL",
+    "fullName": "The Organic Meat Company Limited",
+    "icon": "test.svg",
+    "sectorId": 517,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 524,
+    "symbol": "TOWL",
+    "fullName": "Towellers Limited",
+    "icon": "test.svg",
+    "sectorId": 518,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 525,
+    "symbol": "TPL",
+    "fullName": "TPL Corp Limited",
+    "icon": "test.svg",
+    "sectorId": 519,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 526,
+    "symbol": "TPLI",
+    "fullName": "TPL Insurance Limited",
+    "icon": "test.svg",
+    "sectorId": 520,
+    "sector": "Insurance"
+  },
+  {
+    "id": 527,
+    "symbol": "TPLL",
+    "fullName": "TPL Life Insurance Limited",
+    "icon": "test.svg",
+    "sectorId": 521,
+    "sector": "Insurance"
+  },
+  {
+    "id": 528,
+    "symbol": "TPLP",
+    "fullName": "TPL Properties Limited",
+    "icon": "test.svg",
+    "sectorId": 522,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 529,
+    "symbol": "TPLRF1",
+    "fullName": "TPL REIT Fund I",
+    "icon": "test.svg",
+    "sectorId": 523,
+    "sector": "Real Estate Investment Trust"
+  },
+  {
+    "id": 530,
+    "symbol": "TPLT",
+    "fullName": "TPL Trakker Limited",
+    "icon": "test.svg",
+    "sectorId": 524,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 531,
+    "symbol": "TREET",
+    "fullName": "Treet Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 525,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 532,
+    "symbol": "TRG",
+    "fullName": "TRG Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 526,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 533,
+    "symbol": "TRIBL",
+    "fullName": "Trust Investment Bank Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 527,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 534,
+    "symbol": "TRIPF",
+    "fullName": "Tri-Pack Films Limited",
+    "icon": "test.svg",
+    "sectorId": 528,
+    "sector": "Paper, Board & Packaging"
+  },
+  {
+    "id": 535,
+    "symbol": "TRSM",
+    "fullName": "Trust Modaraba",
+    "icon": "test.svg",
+    "sectorId": 529,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 536,
+    "symbol": "TSBL",
+    "fullName": "Trust Securities & Brokerage Limited",
+    "icon": "test.svg",
+    "sectorId": 530,
+    "sector": "Investment Banks / Investment Companies / Securities Companies"
+  },
+  {
+    "id": 537,
+    "symbol": "TSMF",
+    "fullName": "Tri-Star Mutual Fund Limited",
+    "icon": "test.svg",
+    "sectorId": 531,
+    "sector": "Close - End Mutual Fund"
+  },
+  {
+    "id": 538,
+    "symbol": "TSML",
+    "fullName": "Tandlianwala Sugar Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 532,
+    "sector": "Sugar & Allied Industries"
+  },
+  {
+    "id": 539,
+    "symbol": "TSPL",
+    "fullName": "Tri-Star Power Limited",
+    "icon": "test.svg",
+    "sectorId": 533,
+    "sector": "Power Generation & Distribution"
+  },
+  {
+    "id": 540,
+    "symbol": "UBDL",
+    "fullName": "United Brands Limited",
+    "icon": "test.svg",
+    "sectorId": 534,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 541,
+    "symbol": "UBL",
+    "fullName": "United Bank Limited",
+    "icon": "test.svg",
+    "sectorId": 535,
+    "sector": "Commercial Banks"
+  },
+  {
+    "id": 542,
+    "symbol": "UBLPETF",
+    "fullName": "UBLPakistan Enterprise ETF(XD)",
+    "icon": "test.svg",
+    "sectorId": 536,
+    "sector": "Exchange Traded Funds"
+  },
+  {
+    "id": 543,
+    "symbol": "UCAPM",
+    "fullName": "Unicap Modaraba",
+    "icon": "test.svg",
+    "sectorId": 537,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 544,
+    "symbol": "UDLI",
+    "fullName": "UDL International Limited",
+    "icon": "test.svg",
+    "sectorId": 538,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 545,
+    "symbol": "UDPL",
+    "fullName": "United Distributors Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 539,
+    "sector": "Miscellaneous"
+  },
+  {
+    "id": 546,
+    "symbol": "UNIC",
+    "fullName": "The United Insurance Company",
+    "icon": "test.svg",
+    "sectorId": 540,
+    "sector": "Insurance"
+  },
+  {
+    "id": 547,
+    "symbol": "UNITY",
+    "fullName": "Unity Foods Limited",
+    "icon": "test.svg",
+    "sectorId": 541,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 548,
+    "symbol": "UPFL",
+    "fullName": "Unilever Pakistan Foods Limited",
+    "icon": "test.svg",
+    "sectorId": 542,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 549,
+    "symbol": "USMT",
+    "fullName": "Usman Textile Mills Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 543,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 550,
+    "symbol": "UVIC",
+    "fullName": "The Universal Insurance Company Limited",
+    "icon": "test.svg",
+    "sectorId": 544,
+    "sector": "Insurance"
+  },
+  {
+    "id": 551,
+    "symbol": "WAFI",
+    "fullName": "Wafi Energy Pakistan Limited",
+    "icon": "test.svg",
+    "sectorId": 545,
+    "sector": "Oil & Gas Marketing Companies"
+  },
+  {
+    "id": 552,
+    "symbol": "WAHDAT",
+    "fullName": "Wahdat Poultry Farm Limited",
+    "icon": "test.svg",
+    "sectorId": 546,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 553,
+    "symbol": "WAHN",
+    "fullName": "Wah Noble Chemicals Limited",
+    "icon": "test.svg",
+    "sectorId": 547,
+    "sector": "Chemical"
+  },
+  {
+    "id": 554,
+    "symbol": "WASL",
+    "fullName": "Wasl Mobility Modaraba",
+    "icon": "test.svg",
+    "sectorId": 548,
+    "sector": "Modarabas"
+  },
+  {
+    "id": 555,
+    "symbol": "WAVES",
+    "fullName": "Waves Corporation Limited",
+    "icon": "test.svg",
+    "sectorId": 549,
+    "sector": "Cable & Electrical Goods"
+  },
+  {
+    "id": 556,
+    "symbol": "WAVESAPP",
+    "fullName": "Waves Home Appliances Limited",
+    "icon": "test.svg",
+    "sectorId": 550,
+    "sector": "Cable & Electrical Goods"
+  },
+  {
+    "id": 557,
+    "symbol": "WTL",
+    "fullName": "Worldcall Telecom Limited",
+    "icon": "test.svg",
+    "sectorId": 551,
+    "sector": "Technology & Communication"
+  },
+  {
+    "id": 558,
+    "symbol": "YOUW",
+    "fullName": "Yousaf Weaving Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 552,
+    "sector": "Textile Weaving"
+  },
+  {
+    "id": 559,
+    "symbol": "ZAHID",
+    "fullName": "Zahidjee Textile Mills Limited",
+    "icon": "test.svg",
+    "sectorId": 553,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 560,
+    "symbol": "ZAL",
+    "fullName": "Zarea Limited",
+    "icon": "test.svg",
+    "sectorId": 554,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 561,
+    "symbol": "ZELP",
+    "fullName": "Zeal Pak Cement Factory Limited(DEF)",
+    "icon": "test.svg",
+    "sectorId": 555,
+    "sector": "Cement"
+  },
+  {
+    "id": 562,
+    "symbol": "ZIL",
+    "fullName": "ZIL Limited",
+    "icon": "test.svg",
+    "sectorId": 556,
+    "sector": "Food & Personal Care Products"
+  },
+  {
+    "id": 563,
+    "symbol": "ZTL",
+    "fullName": "Zephyr Textiles Limited",
+    "icon": "test.svg",
+    "sectorId": 557,
+    "sector": "Textile Composite"
+  },
+  {
+    "id": 564,
+    "symbol": "ZUMA",
+    "fullName": "Zuma Resources Limited",
+    "icon": "test.svg",
+    "sectorId": 558,
+    "sector": "Miscellaneous"
+  }
+]

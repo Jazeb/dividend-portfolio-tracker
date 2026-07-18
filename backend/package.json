@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "download-icons": "npx tsx scripts/download-stock-icons.ts",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev --name init",
     "prisma:studio": "npx prisma studio",
@@ -80,6 +81,6 @@
     "testEnvironment": "node"
   },
   "prisma": {
-    "seed": "npx prisma/seed.ts"
+    "seed": "npx tsx prisma/seed.ts"
   }
 }

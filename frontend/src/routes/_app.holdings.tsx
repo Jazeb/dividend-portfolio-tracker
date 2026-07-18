@@ -26,6 +26,7 @@ import { holdings as seedHoldings } from "@/lib/mock-data";
 
 import { holdingsApi, type Holding } from "@/lib/api/holdings";
 import { portfoliosApi, type Portfolio } from "@/lib/api/portfolios";
+import { StockLogo } from "@/components/StockLogo";
 
 export const Route = createFileRoute("/_app/holdings")({
   component: HoldingsPage,
@@ -194,9 +195,8 @@ function HoldingsPage() {
                             params={{ symbol: h.stocks.symbol }}
                             className="flex items-center gap-3 group-hover:text-primary"
                           >
-                            <div className="h-8 w-8 rounded-lg bg-accent grid place-items-center text-[10px] font-bold">
-                              {h.symbol}
-                            </div>
+                            <StockLogo symbol={h.stocks.symbol} size={32} />
+
                             <div className="min-w-0">
                               <div className="font-medium text-sm truncate">{h.stocks.symbol}</div>
                               <div className="text-xs text-muted-foreground truncate">

@@ -50,6 +50,11 @@ enum DividendPaymentStatus {
   MISSED
 }
 
+enum FundingSource {
+  CASH
+  DIVIDEND
+}
+
 model Profile {
   id          Int      @id @default(autoincrement())
   firstName   String
@@ -101,10 +106,12 @@ model Sector {
 model Transaction {
   id String @id @default(cuid())
   
-  quantity            Decimal @db.Decimal(18,4)
-  buyingPrice         Decimal @db.Decimal(18,4)
-  totalBuyingPrice    Decimal @db.Decimal(18,4)
+  quantity            Decimal       @db.Decimal(18,4)
+  buyingPrice         Decimal       @db.Decimal(18,4)
+  totalBuyingPrice    Decimal       @db.Decimal(18,4)
   broker              String
+  fundingSource       FundingSource @default(CASH)
+
 
   stockId   Int
   stock     Stock         @relation(fields: [stockId], references: [id])

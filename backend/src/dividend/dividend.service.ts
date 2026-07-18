@@ -12,7 +12,7 @@ import {
 
 @Injectable()
 export class DividendService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   TAX_RATE = 0.15;
 
@@ -83,28 +83,73 @@ export class DividendService {
   }
 
   async getDashboardData(portfolioId: string, profileId: string) {
-    const upcomingDividends = await this.getUpcomingDividends(portfolioId, profileId);
-    const summary = await this.getSummaryData(portfolioId, profileId);
+    // const upcomingDividends = await this.getUpcomingDividends(portfolioId, profileId);
+    const dividendPayments = await this.getDividendPayments(portfolioId, profileId);
+    
+    const portfolio = await this.prismaService.portfolio.findFirst({
+      where: { profileId: Number(profileId), id: Number(portfolioId) },
+      include: { holdings: { include: { stocks: { include: { sector: true } } } } },
+    });
+
+    const upcommingDividends = this.getUpcomingDividends(dividendPayments);
+    const dividendHistory = this.getDividendHistory(dividendPayments);
+
+    const summary = this.getSummaryData(portfolio);
+    summary.upcomingDividend = this.calculatecommulativeUpcomingDividend(upcommingDividends);
+
+    const breakdownByStocks = this.calculateBreakdownByStock(portfolio);
+    const breakdownBySector = this.calculateBrealdownBySector(portfolio);
+
     return {
-      upcoming: upcomingDividends,
+      upcoming: upcommingDividends,
       summary: summary,
-      history: [],
-      breakdownByStock: [],
-      breakdownBySector: [],
+      history: dividendHistory,
+      breakdownByStock: breakdownByStocks,
+      breakdownBySector: breakdownBySector,
       calendar: [],
       incomeTrend: [],
     };
   }
 
-  private async getSummaryData(portfolioId: string, profileId: string) {
-    const portfolio = await this.prismaService.portfolio.findFirst({
-      where: { profileId: Number(profileId), id: Number(portfolioId) },
-      include: { holdings: { include: { stocks: true } } },
+  async getDividendPayments(portfolioId: string, profileId: string):Promise<DividendPayment[]> {
+    const diviendPayments = await this.prismaService.dividendPayment.findMany({
+      where: {
+        portfolioId: Number(portfolioId),
+        profileId: Number(profileId),
+        // status: 'UPCOMING',
+      },
+      include: { declaration: { include: { stock: true } } },
+      orderBy: { declaration: { paymentDate: 'asc' } },
     });
-    const annualIncome = this.calculateAnnualIncome(portfolio?.holdings);
+    return diviendPayments
+  }
+
+  private calculateBrealdownBySector(portfolio) {
+    const sectorMap = new Map<string, number>();
+
+    for (const holding of portfolio.holdings) {
+      const sector = holding.stocks.sector;
+      const annualIncome = holding.quantity * holding.stocks.annualDividend;
+      let key = sector.name;
+      console.log(sector)
+      sectorMap.set(
+        key,
+        (sectorMap.get(sector) ?? 0) + annualIncome
+      );
+    }
+
+    const breakdownBySector = Array.from(sectorMap, ([sector, annualIncome]) => ({
+      sector:sector,
+      annualIncome,
+    }));
+    return breakdownBySector
+  }
+
+  private getSummaryData(_portfolio) {
+    const annualIncome = this.calculateAnnualIncome(_portfolio?.holdings);
     const monthlyIncome = annualIncome / 12;
-    const curentYield = this.calculateCurrentYield(portfolio?.holdings);
-    const yoc = this.calculateYieldOnCost(portfolio?.holdings);
+    const curentYield = this.calculateCurrentYield(_portfolio?.holdings);
+    const yoc = this.calculateYieldOnCost(_portfolio?.holdings);
     return {
       annualIncome,
       monthlyIncome,
@@ -113,6 +158,31 @@ export class DividendService {
       yield: curentYield,
       yieldOnCost: yoc,
     };
+  }
+
+  calculatecommulativeUpcomingDividend(upcomingDividends: any) {
+    return upcomingDividends.reduce((a, c) => a + c.grossDividend, 0);
+  }
+
+  calculateBreakdownByStock(portfolio) {
+    const holdings = portfolio.holdings;
+    const totalAnnualIncome = holdings.reduce(
+      (sum, holding) => sum + holding.quantity * holding.stocks.annualDividend,
+      0
+    );
+    return holdings.map((holding) => {
+      const annualIncome = holding.quantity * holding.stocks.annualDividend;
+      const currentYield = holding.stocks.annualDividend / holding.stocks.currentPrice;
+      const yoc = holding.stocks.annualDividend / holding.avgPrice;
+      return {
+        symbol: holding.stocks.symbol,
+        company: holding.stocks.fullName,
+        annualIncome: annualIncome,
+        yield: (currentYield * 100).toFixed(2),
+        yieldOnCost: (yoc * 100).toFixed(2),
+        contribution: ((annualIncome / totalAnnualIncome) * 100).toFixed(1)
+      }
+    })
   }
 
   calculateMarketValueOfHoldings(holdings: any[]) {
@@ -150,17 +220,39 @@ export class DividendService {
     return currentYield;
   }
 
-  async getUpcomingDividends(portfolioId: string, profileId: string) {
-    const upcoming = await this.prismaService.dividendPayment.findMany({
-      where: {
-        portfolioId: Number(portfolioId),
-        profileId: Number(profileId),
-        status: 'UPCOMING',
-      },
-      include: { declaration: { include: { stock: true } } },
-      orderBy: { declaration: { paymentDate: 'asc' } },
-    });
+  getUpcomingDividends(upcoming) {
+    return upcoming.map(payment => {
+      const d = payment.declaration;
 
+      const grossDividend = Number(payment.eligibleShares) * Number(d.dividendPerShare);
+
+      const taxAmount = grossDividend * this.TAX_RATE;
+
+      const netDividend = grossDividend - taxAmount;
+
+      return {
+        id: payment.id,
+        stock: d.stock.symbol,
+        company: d.stock.fullName,
+
+        eligibleShares: Number(payment.eligibleShares),
+        dividendPerShare: Number(d.dividendPerShare),
+
+        grossDividend,
+        taxRate: Number(payment.taxRate),
+        taxAmount,
+        netDividend,
+
+        exDividendDate: d.exDividendDate,
+        bookClosureDate: d.bookClosureDate,
+        paymentDate: d.paymentDate,
+
+        status: payment.status,
+      };
+    });
+  }
+
+  getDividendHistory(upcoming) {
     return upcoming.map(payment => {
       const d = payment.declaration;
 

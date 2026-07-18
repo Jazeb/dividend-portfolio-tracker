@@ -808,7 +808,7 @@ function DividendsPage() {
                   <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div
                       className="h-full gradient-primary rounded-full"
-                      style={{ width: `${Math.min(h.contribution, 100)}%` }}
+                      style={{ width: `${Math.min(Number(h.contribution), 100)}%` }}
                     />
                   </div>
                   <div className="mt-1 flex gap-3 text-[10px] text-muted-foreground">
@@ -819,7 +819,7 @@ function DividendsPage() {
                 <div className="text-right tabular-nums">
                   <div className="text-sm font-semibold">{pkr(h.annualIncome)}</div>
                   <Badge variant="secondary" className="text-[10px]">
-                    {h.contribution.toFixed(1)}%
+                    {Number(h.contribution).toFixed(1)}%
                   </Badge>
                 </div>
               </div>

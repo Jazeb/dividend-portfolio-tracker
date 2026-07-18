@@ -17,10 +17,10 @@ export class DividendController {
     return this.dividendService.getDashboardData(query.portfolioId, userId);
   }
 
-  @Get('/upcoming')
-  getUpcomingDividends(@Query() query: { portfolioId: string }, @Headers('UserId') userId: string) {
-    return this.dividendService.getUpcomingDividends(query.portfolioId, userId);
-  }
+  // @Get('/upcoming')
+  // getUpcomingDividends(@Query() query: { portfolioId: string }, @Headers('UserId') userId: string) {
+  //   return this.dividendService.getUpcomingDividends(query.portfolioId, userId);
+  // }
 
   @Get('/history')
   getDividendsHistory() {

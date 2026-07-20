@@ -22,6 +22,20 @@ export interface Holding {
   stocks: Stock;
 }
 
+export interface PortfolioDashboard {
+  id: number;
+  name: string;
+  strategy: string;
+  description: string;
+  annualIncome: number;
+  monthlyIncome: number;
+  lifetimeIncome: number;
+  upcomingDividend: number;
+  yield: number;
+  yieldOnCost: number;
+  holdings: Holding[];
+}
+
 export interface Portfolio {
   id: string;
   name: string;

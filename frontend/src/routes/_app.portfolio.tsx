@@ -24,8 +24,9 @@ import {
 } from "@/components/ui/select";
 import { Plus, ArrowUpRight, TrendingUp, Loader2 } from "lucide-react";
 import { portfolios as seedPortfolios, pkr } from "@/lib/mock-data";
-import { portfoliosApi, type Portfolio } from "@/lib/api/portfolios";
+import { portfoliosApi } from "@/lib/api/portfolios";
 import { toast } from "sonner";
+import { Portfolio, PortfolioDashboard } from "@/types/index";
 
 export const Route = createFileRoute("/_app/portfolio")({
   component: PortfolioPage,
@@ -62,21 +63,21 @@ function calculateProfitFromPortfolio(portfolio: Portfolio) {
 function PortfolioPage() {
   const queryClient = useQueryClient();
 
-  const portfoliosQuery = useQuery<Portfolio[]>({
+  const portfoliosQuery = useQuery<PortfolioDashboard[]>({
     queryKey: ["portfolios"],
     queryFn: () => portfoliosApi.list(),
     enabled: API_ENABLED,
-    initialData: API_ENABLED ? undefined : (seedPortfolios as Portfolio[]),
+    initialData: API_ENABLED ? undefined : (seedPortfolios as PortfolioDashboard[]),
     // Gracefully fall back to seed data when the API is unreachable.
-    placeholderData: seedPortfolios as Portfolio[],
+    // placeholderData: seedPortfolios as Portfolio[],
     retry: 1,
   });
 
-  const portfolios: Portfolio[] = portfoliosQuery.data ?? (seedPortfolios as Portfolio[]);
+  const portfolios = portfoliosQuery.data ?? (seedPortfolios as PortfolioDashboard[]);
 
   // Local additions used only when the API is not configured.
   const [localExtras, setLocalExtras] = useState<Portfolio[]>([]);
-  const allPortfolios = API_ENABLED ? portfolios : [...portfolios, ...localExtras];
+  const allPortfolios = portfolios; // API_ENABLED ? portfolios : [...portfolios, ...localExtras];
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
@@ -114,7 +115,7 @@ function PortfolioPage() {
       toast.error("A portfolio with this name already exists");
       return;
     }
-    const capital = Number(form.initialCapital) || 0;
+    // const capital = Number(form.initialCapital) || 0;
     const dto: Omit<Portfolio, "id"> = {
       name,
       // value: capital,
@@ -129,11 +130,11 @@ function PortfolioPage() {
     if (API_ENABLED) {
       createMutation.mutate(dto);
     } else {
-      const newPortfolio: Portfolio = {
-        ...dto,
-        id: name.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now().toString(36),
-      };
-      setLocalExtras((prev) => [...prev, newPortfolio]);
+      // const newPortfolio: Portfolio = {
+      //   ...dto,
+      //   id: name.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now().toString(36),
+      // };
+      // setLocalExtras((prev) => [...prev, newPortfolio]);
       toast.success(`"${name}" portfolio created`);
       setOpen(false);
       reset();
@@ -180,7 +181,9 @@ function PortfolioPage() {
               0,
             ) as number;
 
+            const networth = totalCost + profit;
             const positive = profit >= 0;
+
             return (
               <Link key={p.id} to="/holdings" className="group">
                 <Card className="card-elevated p-6 h-full transition hover:shadow-glow hover:-translate-y-1">
@@ -196,7 +199,7 @@ function PortfolioPage() {
                     </div>
                   </div>
                   <div className="text-3xl font-display font-semibold tabular-nums">
-                    {pkr(totalCost)}
+                    {pkr(networth)}
                   </div>
                   <div
                     className={`text-xs mt-1 tabular-nums ${positive ? "text-success" : "text-destructive"}`}
@@ -211,14 +214,12 @@ function PortfolioPage() {
                     </div>
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Dividend</div>
-                      <div className="text-sm font-medium tabular-nums">
-                        56000{/* {pkr(p.dividendIncome)} */}
-                      </div>
+                      <div className="text-sm font-medium tabular-nums">{pkr(p.annualIncome)}</div>
                     </div>
 
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Yield</div>
-                      <div className="text-sm font-medium tabular-nums">6%</div>
+                      <div className="text-sm font-medium tabular-nums">{p.yield}</div>
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-xs text-primary opacity-0 group-hover:opacity-100 transition">

@@ -1,4 +1,4 @@
-import { Portfolio } from "./api/portfolios";
+import { PortfolioDashboard, Holding } from "@/types";
 
 export type Sector = {
   id: number;
@@ -192,8 +192,20 @@ export const holdings: Holding[] = [
   // },
 ];
 
-export const portfolios: Portfolio[] = [
-  {},
+export const portfolios: PortfolioDashboard[] = [
+  {
+    id: 1,
+    name: "Dividend-Jazeb",
+    strategy: "Dividend Growth",
+    description: "ferf",
+    annualIncome: 0,
+    monthlyIncome: 0,
+    lifetimeIncome: 0,
+    upcomingDividend: 0,
+    yield: 0,
+    yieldOnCost: 0,
+    holdings: [],
+  },
   //   {
   //     id: "dividend",
   //     name: "Dividend Portfolio",

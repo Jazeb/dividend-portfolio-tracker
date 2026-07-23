@@ -29,7 +29,7 @@ export class TransactionsService {
     const newQuantity = Number(currentHolding.quantity) + Number(transaction.quantity);
     const newAvgPrice = (Number(currentHolding.totalCost) + Number(transaction.totalBuyingPrice)) / newQuantity;
     const newTotalCost = Number(currentHolding.totalCost) + Number(transaction.totalBuyingPrice);
-    
+
     await this.prisma.holding.update({
       where: {
         portfolioId_stockId: {
@@ -61,7 +61,7 @@ export class TransactionsService {
   async createTransaction(@Body() body: CreateTransactionDto, profileId: string): Promise<Transaction> {
     const stock = await this.prisma.stock.findFirst({ where: { symbol: body.symbol } });
     if (!stock) throw new Error('invalid stock symbol');
-    
+
     const transaction = await this.prisma.transaction.create({
       data: {
         stockId: stock.id,
@@ -83,12 +83,11 @@ export class TransactionsService {
       },
     });
 
-    if(currentHolding) {
+    if (currentHolding) {
       await this.updateCurrentHolding(currentHolding, transaction);
     } else {
       await this.addNewHolding(transaction);
     }
-
 
     // this.prisma.holding.upsert({
     //   where: {

@@ -22,11 +22,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search, Download, SlidersHorizontal, Columns3, Loader2 } from "lucide-react";
-import { holdings as seedHoldings } from "@/lib/mock-data";
+import { holdings as seedHoldings, seedPortfolios } from "@/lib/mock-data";
 
-import { holdingsApi, type Holding } from "@/lib/api/holdings";
-import { portfoliosApi, type Portfolio } from "@/lib/api/portfolios";
+import { holdingsApi } from "@/lib/api/holdings";
+import { portfoliosApi } from "@/lib/api/portfolios";
 import { StockLogo } from "@/components/StockLogo";
+import { Portfolio, Holding } from "@/types";
+const SEED_PORTFOLIOS: Portfolio[] = seedPortfolios as Portfolio[];
 
 export const Route = createFileRoute("/_app/holdings")({
   component: HoldingsPage,
@@ -39,31 +41,30 @@ const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undef
 console.log({ API_ENABLED });
 
 function HoldingsPage() {
-  function portfolioName(id: string) {
-    console.log({ id, portfolios });
-    const po = portfolios.find((p) => p.id === id);
-    console.log({ po });
-    return po?.name;
-  }
+  const portfoliosQuery = useQuery<Portfolio[]>({
+    queryKey: ["portfolios"],
+    queryFn: () => portfoliosApi.list(),
+    enabled: API_ENABLED,
+    // initialData: API_ENABLED ? undefined : SEED_PORTFOLIOS,
+    // placeholderData: SEED_PORTFOLIOS,
+    staleTime: 5 * 60_000,
+  });
 
   const holdingsQuery = useQuery<Holding[]>({
     queryKey: ["holdings"],
-    queryFn: () => holdingsApi.list(),
+    queryFn: () => holdingsApi.list(portfolioFilter),
     enabled: API_ENABLED,
     // initialData: API_ENABLED ? undefined : (seedHoldings as Holding[]),
     // placeholderData: seedHoldings as Holding[],
     retry: 1,
   });
 
-  const portfolioQuery = useQuery({
-    queryKey: ["portfolio"],
-    queryFn: () => portfoliosApi.list(),
-    staleTime: 5 * 60_000,
-  });
-
-  const portfolios: Portfolio[] = portfolioQuery.data ?? [];
-
+  const portfolios: Portfolio[] = portfoliosQuery.data ?? SEED_PORTFOLIOS;
   const holdings: Holding[] = holdingsQuery.data ?? (seedHoldings as Holding[]);
+
+  function portfolioName(id: string) {
+    return portfolios.find((p) => p.id === id)?.name;
+  }
 
   const isLoading = API_ENABLED && holdingsQuery.isLoading;
   const isError = API_ENABLED && holdingsQuery.isError && !holdingsQuery.data;
@@ -81,15 +82,24 @@ function HoldingsPage() {
   //   [holdings],
   // );
 
-  const filteredHoldings = useMemo(
-    () =>
-      portfolioFilter === "all"
-        ? holdingsWithPortfolio
-        : holdingsWithPortfolio.filter((h) => h.portfolioId === Number(portfolioFilter)),
-    [holdingsWithPortfolio, portfolioFilter],
-  );
+  // const filteredHoldings = useMemo(
+  //   () =>
+  //     portfolioFilter === "all"
+  //       ? holdingsWithPortfolio
+  //       : holdingsWithPortfolio.filter((h) => h.portfolioId === Number(portfolioFilter)),
+  //   [holdingsWithPortfolio, portfolioFilter],
+  // );
+
+  const filteredHoldings = useMemo(() => {
+    if (API_ENABLED) return holdingsWithPortfolio;
+    return portfolioFilter === "all"
+      ? holdingsWithPortfolio
+      : holdingsWithPortfolio.filter((h) => h.id === Number(portfolioFilter));
+  }, [holdingsWithPortfolio, portfolioFilter]);
 
   const activePortfolio = portfolios.find((p) => p.id === portfolioFilter);
+
+  console.log({ activePortfolio });
 
   return (
     <>
@@ -162,6 +172,7 @@ function HoldingsPage() {
                   <TableHead>Sector</TableHead>
                   <TableHead className="text-right">Qty</TableHead>
                   <TableHead className="text-right">Avg Price</TableHead>
+                  <TableHead className="text-right">Invested</TableHead>
                   <TableHead className="text-right">Current</TableHead>
                   <TableHead className="text-right">Market Value</TableHead>
                   <TableHead className="text-right">Yield</TableHead>
@@ -174,7 +185,7 @@ function HoldingsPage() {
                 {filteredHoldings.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={10}
+                      colSpan={11}
                       className="text-center text-sm text-muted-foreground py-10"
                     >
                       No holdings in this portfolio.
@@ -182,11 +193,14 @@ function HoldingsPage() {
                   </TableRow>
                 ) : (
                   filteredHoldings.map((h) => {
+                    console.log({ h });
                     const mv = h.quantity * h.stocks.currentPrice;
                     const pl = (h.stocks.currentPrice - h.avgPrice) * h.quantity;
                     const plPct = ((h.stocks.currentPrice - h.avgPrice) / h.avgPrice) * 100;
                     const positive = pl >= 0;
                     const yieldOnCost = ((h.stocks.annualDividend / h.avgPrice) * 100).toFixed(2);
+                    const invested = h.quantity * h.avgPrice;
+
                     return (
                       <TableRow key={h.stocks.symbol} className="cursor-pointer group">
                         <TableCell>
@@ -215,6 +229,9 @@ function HoldingsPage() {
                         </TableCell>
                         <TableCell className="text-right tabular-nums">
                           {Number(h.avgPrice).toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums font-medium">
+                          {invested.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TableCell>
                         <TableCell className="text-right tabular-nums font-medium">
                           {Number(h.stocks.currentPrice).toFixed(2)}

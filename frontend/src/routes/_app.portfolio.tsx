@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, ArrowUpRight, TrendingUp, Loader2 } from "lucide-react";
-import { portfolios as seedPortfolios, pkr } from "@/lib/mock-data";
+import { seedPortfoliosDashboard, pkr } from "@/lib/mock-data";
 import { portfoliosApi } from "@/lib/api/portfolios";
 import { toast } from "sonner";
 import { Portfolio, PortfolioDashboard } from "@/types/index";
@@ -45,39 +45,20 @@ const STRATEGIES = [
 // When VITE_API_BASE_URL is unset (e.g. on Lovable preview), fall back to seed data.
 const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
 
-function calculateProfitFromPortfolio(portfolio: Portfolio) {
-  const holdings = portfolio.holdings;
-  let profit = 0;
-  let pct = 0;
-  // let dividendYield = 0;
-
-  holdings?.forEach((holding) => {
-    const _profit = holding.quantity * holding.stocks.currentPrice - holding.totalCost;
-    profit += _profit;
-    pct = holding.totalCost > 0 ? (profit / holding.totalCost) * 100 : 0;
-    // dividendYield = holding.stocks.dividendYield
-  });
-  return { profit, pct };
-}
-
 function PortfolioPage() {
   const queryClient = useQueryClient();
-
   const portfoliosQuery = useQuery<PortfolioDashboard[]>({
-    queryKey: ["portfolios"],
-    queryFn: () => portfoliosApi.list(),
+    queryKey: ["portfoliosDashboard"],
+    queryFn: () => portfoliosApi.dashboardData(),
     enabled: API_ENABLED,
-    initialData: API_ENABLED ? undefined : (seedPortfolios as PortfolioDashboard[]),
-    // Gracefully fall back to seed data when the API is unreachable.
-    // placeholderData: seedPortfolios as Portfolio[],
+    // initialData: API_ENABLED ? undefined : (seedPortfoliosDashboard as PortfolioDashboard[]),
+    // placeholderData: seedPortfoliosDashboard as PortfolioDashboard[],
     retry: 1,
   });
 
-  const portfolios = portfoliosQuery.data ?? (seedPortfolios as PortfolioDashboard[]);
-
-  // Local additions used only when the API is not configured.
-  const [localExtras, setLocalExtras] = useState<Portfolio[]>([]);
-  const allPortfolios = portfolios; // API_ENABLED ? portfolios : [...portfolios, ...localExtras];
+  const allPortfolios = API_ENABLED
+    ? portfoliosQuery.data
+    : (seedPortfoliosDashboard as PortfolioDashboard[]);
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
@@ -111,10 +92,11 @@ function PortfolioPage() {
       toast.error("Portfolio name is required");
       return;
     }
-    if (allPortfolios.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
+    if (allPortfolios?.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
       toast.error("A portfolio with this name already exists");
       return;
     }
+
     // const capital = Number(form.initialCapital) || 0;
     const dto: Omit<Portfolio, "id"> = {
       name,
@@ -173,16 +155,8 @@ function PortfolioPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {allPortfolios.map((p) => {
-            const { profit, pct } = calculateProfitFromPortfolio(p);
-            const holdings = p.holdings;
-            const totalCost = holdings?.reduce(
-              (acc, current) => acc + Number(current.totalCost),
-              0,
-            ) as number;
-
-            const networth = totalCost + profit;
-            const positive = profit >= 0;
+          {(allPortfolios ?? [])?.map((p) => {
+            const positive = p.portfolioProfit >= 0;
 
             return (
               <Link key={p.id} to="/holdings" className="group">
@@ -190,7 +164,7 @@ function PortfolioPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
-                        {p.holdings?.length} holdings
+                        {p.holdingsCount} holdings
                       </div>
                       <div className="text-lg font-semibold">{p.name}</div>
                     </div>
@@ -199,22 +173,24 @@ function PortfolioPage() {
                     </div>
                   </div>
                   <div className="text-3xl font-display font-semibold tabular-nums">
-                    {pkr(networth)}
+                    {pkr(p.portfolioNetworth)}
                   </div>
                   <div
                     className={`text-xs mt-1 tabular-nums ${positive ? "text-success" : "text-destructive"}`}
                   >
                     {positive ? "+" : ""}
-                    {pkr(profit)} ({pct.toFixed(1)}%)
+                    {pkr(p.portfolioProfit)} ({p.profitPercent?.toFixed(1)}%)
                   </div>
                   <div className="grid grid-cols-3 gap-3 mt-6 pt-4 border-t">
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Cost</div>
-                      <div className="text-sm font-medium tabular-nums">{pkr(totalCost)}</div>
+                      <div className="text-sm font-medium tabular-nums">{pkr(p.portfolioCost)}</div>
                     </div>
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Dividend</div>
-                      <div className="text-sm font-medium tabular-nums">{pkr(p.annualIncome)}</div>
+                      <div className="text-sm font-medium tabular-nums">
+                        {pkr(p.annualDividendIncome)}
+                      </div>
                     </div>
 
                     <div>

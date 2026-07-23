@@ -440,35 +440,35 @@ function DividendsPage() {
   }
 
   const { summary } = dashboard;
-  // const isEmpty =
-  //   dashboard.breakdownByStock.length === 0 &&
-  //   dashboard.history.length === 0 &&
-  //   dashboard.upcoming.length === 0;
+  const isEmpty =
+    dashboard.breakdownByStock.length === 0 &&
+    dashboard.history.length === 0 &&
+    dashboard.upcoming.length === 0;
 
-  // if (isEmpty) {
-  //   return (
-  //     <>
-  //       {header}
-  //       <Card className="card-elevated p-12 text-center flex flex-col items-center gap-4">
-  //         <div className="h-14 w-14 rounded-2xl gradient-primary grid place-items-center">
-  //           <Coins className="h-7 w-7 text-primary-foreground" />
-  //         </div>
-  //         <div>
-  //           <h2 className="text-lg font-semibold">
-  //             No dividend data available for this portfolio.
-  //           </h2>
-  //           <p className="text-sm text-muted-foreground mt-1">
-  //             Add transactions to start tracking dividend payments.
-  //           </p>
-  //         </div>
-  //         <Button className="gap-2">
-  //           <Sparkles className="h-4 w-4" />
-  //           Add Transactions
-  //         </Button>
-  //       </Card>
-  //     </>
-  //   );
-  // }
+  if (isEmpty) {
+    return (
+      <>
+        {header}
+        <Card className="card-elevated p-12 text-center flex flex-col items-center gap-4">
+          <div className="h-14 w-14 rounded-2xl gradient-primary grid place-items-center">
+            <Coins className="h-7 w-7 text-primary-foreground" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">
+              No dividend data available for this portfolio.
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Add transactions to start tracking dividend payments.
+            </p>
+          </div>
+          <Button className="gap-2">
+            <Sparkles className="h-4 w-4" />
+            Add Transactions
+          </Button>
+        </Card>
+      </>
+    );
+  }
 
   const nextMonth = Math.round(summary.annualIncome / 12);
   const nextQuarter = Math.round(summary.annualIncome / 4);

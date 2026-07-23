@@ -1,338 +1,172 @@
-import { PortfolioDashboard, Holding, Portfolio } from "@/types";
+import { Portfolio, PortfolioDashboard } from "@/types";
 
-export type Sector = {
-  id: number;
-  name: string;
-};
-
-export type Stock = {
-  id: number;
-  fullName: string;
+export type Holding = {
   symbol: string;
+  name: string;
+  sector: string;
+  qty: number;
+  avgPrice: number;
   currentPrice: number;
-  annualDividend: number;
   dividendYield: number;
-  sector: Sector;
+  yieldOnCost: number;
+  annualDividend: number;
 };
-
-// export type Holding = {
-//   symbol: string;
-//   name: string;
-//   sector: string;
-//   quantity: number;
-//   avgPrice: number;
-//   currentPrice: number;
-//   dividendYield: number;
-//   yieldOnCost: number;
-//   annualDividend: number;
-//   portfolioId: number;
-//   stocks: Stock;
-// };
-
-export const seedPortfolios: Portfolio[] = [
-  {
-    id: "1",
-    name: "divided",
-    description: "dividend",
-    strategy: "dividend",
-  },
-];
-
-export const holding = {
-  id: 1,
-  symbol: "MEBL",
-  sector: "Banking",
-  quantity: 100,
-  avgPrice: "100",
-  invested: "10000",
-  currentPrice: 200,
-  annualDividend: 28,
-  marketValue: "400000",
-  yield: "6",
-  yoc: "6",
-  pl: "1000",
-};
-
-export const seedPortfoliosDashboard: PortfolioDashboard[] = [
-  {
-    id: 1,
-    name: "divided",
-    strategy: "dividend",
-    description: "dividend",
-    annualIncome: 100000,
-    monthlyIncome: 10000,
-    lifetimeIncome: 20000,
-    upcomingDividend: 50000,
-    yield: 7,
-    yieldOnCost: 10,
-    holdings: [holding],
-  },
-];
 
 export const holdings: Holding[] = [
-  // {
-  //   symbol: "OGDC",
-  //   name: "Oil & Gas Development",
-  //   sector: "Energy",
-  //   quantity: 1200,
-  //   avgPrice: 88.5,
-  //   currentPrice: 142.3,
-  //   dividendYield: 8.4,
-  //   yieldOnCost: 12.9,
-  //   annualDividend: 14,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "MCB",
-  //   name: "MCB Bank Limited",
-  //   sector: "Banking",
-  //   quantity: 800,
-  //   avgPrice: 168.2,
-  //   currentPrice: 218.4,
-  //   dividendYield: 10.1,
-  //   yieldOnCost: 14.2,
-  //   annualDividend: 22,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "ENGRO",
-  //   name: "Engro Corporation",
-  //   sector: "Conglomerate",
-  //   quantity: 500,
-  //   avgPrice: 245.0,
-  //   currentPrice: 312.6,
-  //   dividendYield: 9.6,
-  //   yieldOnCost: 12.4,
-  //   annualDividend: 30,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "LUCK",
-  //   name: "Lucky Cement",
-  //   sector: "Cement",
-  //   quantity: 300,
-  //   avgPrice: 512.0,
-  //   currentPrice: 782.5,
-  //   dividendYield: 4.2,
-  //   yieldOnCost: 6.4,
-  //   annualDividend: 33,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "PSO",
-  //   name: "Pakistan State Oil",
-  //   sector: "Energy",
-  //   quantity: 700,
-  //   avgPrice: 178.0,
-  //   currentPrice: 224.9,
-  //   dividendYield: 7.1,
-  //   yieldOnCost: 9.0,
-  //   annualDividend: 16,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "HBL",
-  //   name: "Habib Bank Limited",
-  //   sector: "Banking",
-  //   quantity: 950,
-  //   avgPrice: 96.4,
-  //   currentPrice: 132.2,
-  //   dividendYield: 9.8,
-  //   yieldOnCost: 13.4,
-  //   annualDividend: 13,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "FFC",
-  //   name: "Fauji Fertilizer",
-  //   sector: "Fertilizer",
-  //   quantity: 1500,
-  //   avgPrice: 108.5,
-  //   currentPrice: 148.0,
-  //   dividendYield: 12.5,
-  //   yieldOnCost: 17.0,
-  //   annualDividend: 18.5,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "PPL",
-  //   name: "Pakistan Petroleum",
-  //   sector: "Energy",
-  //   quantity: 600,
-  //   avgPrice: 82.0,
-  //   currentPrice: 118.6,
-  //   dividendYield: 6.2,
-  //   yieldOnCost: 9.0,
-  //   annualDividend: 7.4,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "UBL",
-  //   name: "United Bank Limited",
-  //   sector: "Banking",
-  //   quantity: 450,
-  //   avgPrice: 152.0,
-  //   currentPrice: 208.5,
-  //   dividendYield: 11.2,
-  //   yieldOnCost: 15.4,
-  //   annualDividend: 23.5,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
-  // {
-  //   symbol: "MEBL",
-  //   name: "Meezan Bank",
-  //   sector: "Banking",
-  //   quantity: 620,
-  //   avgPrice: 128.0,
-  //   currentPrice: 192.4,
-  //   dividendYield: 8.8,
-  //   yieldOnCost: 13.2,
-  //   annualDividend: 17,
-  //   stocks: {
-  //     id: 1,
-  //     fullName: 'Meezan Bank',
-  //     symbol: 'MEBL'
-  //   }
-  // },
+  {
+    symbol: "OGDC",
+    name: "Oil & Gas Development",
+    sector: "Energy",
+    qty: 1200,
+    avgPrice: 88.5,
+    currentPrice: 142.3,
+    dividendYield: 8.4,
+    yieldOnCost: 12.9,
+    annualDividend: 14,
+  },
+  {
+    symbol: "MCB",
+    name: "MCB Bank Limited",
+    sector: "Banking",
+    qty: 800,
+    avgPrice: 168.2,
+    currentPrice: 218.4,
+    dividendYield: 10.1,
+    yieldOnCost: 14.2,
+    annualDividend: 22,
+  },
+  {
+    symbol: "ENGRO",
+    name: "Engro Corporation",
+    sector: "Conglomerate",
+    qty: 500,
+    avgPrice: 245.0,
+    currentPrice: 312.6,
+    dividendYield: 9.6,
+    yieldOnCost: 12.4,
+    annualDividend: 30,
+  },
+  {
+    symbol: "LUCK",
+    name: "Lucky Cement",
+    sector: "Cement",
+    qty: 300,
+    avgPrice: 512.0,
+    currentPrice: 782.5,
+    dividendYield: 4.2,
+    yieldOnCost: 6.4,
+    annualDividend: 33,
+  },
+  {
+    symbol: "PSO",
+    name: "Pakistan State Oil",
+    sector: "Energy",
+    qty: 700,
+    avgPrice: 178.0,
+    currentPrice: 224.9,
+    dividendYield: 7.1,
+    yieldOnCost: 9.0,
+    annualDividend: 16,
+  },
+  {
+    symbol: "HBL",
+    name: "Habib Bank Limited",
+    sector: "Banking",
+    qty: 950,
+    avgPrice: 96.4,
+    currentPrice: 132.2,
+    dividendYield: 9.8,
+    yieldOnCost: 13.4,
+    annualDividend: 13,
+  },
+  {
+    symbol: "FFC",
+    name: "Fauji Fertilizer",
+    sector: "Fertilizer",
+    qty: 1500,
+    avgPrice: 108.5,
+    currentPrice: 148.0,
+    dividendYield: 12.5,
+    yieldOnCost: 17.0,
+    annualDividend: 18.5,
+  },
+  {
+    symbol: "PPL",
+    name: "Pakistan Petroleum",
+    sector: "Energy",
+    qty: 600,
+    avgPrice: 82.0,
+    currentPrice: 118.6,
+    dividendYield: 6.2,
+    yieldOnCost: 9.0,
+    annualDividend: 7.4,
+  },
+  {
+    symbol: "UBL",
+    name: "United Bank Limited",
+    sector: "Banking",
+    qty: 450,
+    avgPrice: 152.0,
+    currentPrice: 208.5,
+    dividendYield: 11.2,
+    yieldOnCost: 15.4,
+    annualDividend: 23.5,
+  },
+  {
+    symbol: "MEBL",
+    name: "Meezan Bank",
+    sector: "Banking",
+    qty: 620,
+    avgPrice: 128.0,
+    currentPrice: 192.4,
+    dividendYield: 8.8,
+    yieldOnCost: 13.2,
+    annualDividend: 17,
+  },
 ];
 
-export const portfoliosDashboard: PortfolioDashboard[] = [
+import type { Portfolio as PortfolioType } from "@/types";
+
+export const portfolios: PortfolioType[] = [
   {
     id: 1,
-    name: "Dividend-Jazeb",
+    name: "Dividend Portfolio",
     strategy: "Dividend Growth",
-    description: "ferf",
-    annualIncome: 0,
-    monthlyIncome: 0,
-    lifetimeIncome: 0,
-    upcomingDividend: 0,
-    yield: 0,
-    yieldOnCost: 0,
-    holdings: [],
+    description: "Long-term dividend growth strategy",
+    portfolioCost: 2_120_000,
+    holdingsCount: 12,
+    portfolioNetworth: 2_845_000,
+    portfolioProfit: 725_000,
+    profitPercent: 34.2,
+    annualDividendIncome: 268_400,
+    yield: 9.4,
   },
-  //   {
-  //     id: "dividend",
-  //     name: "Dividend Portfolio",
-  //     // value: 2_845_000,
-  //     // cost: 2_120_000,
-  //     // dividendIncome: 268_400,
-  //     // holdings: 12,
-  //     // yield: 9.4,
-  //     holdings: [
-  //       {
-  //         id: 1,
-  //         quantity: 1000,
-  //         avgPrice: 500,
-  //         totalCost: 450.4,
-  //         stocks: {
-  //           id: 1,
-  //           fullName: "Meezan Bank",
-  //           symbol: "MEBL",
-  //           currentPrice: 500,
-  //           dividendYield: 10,
-  //           annualDividend: 28,
-  //           sector: {
-  //             id: 1,
-  //             name: "Banking",
-  //           },
-  //         },
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "retirement",
-  //     name: "Retirement Portfolio",
-  //     // value: 1_620_000,
-  //     // cost: 1_380_000,
-  //     // dividendIncome: 142_800,
-  //     // holdings: 8,
-  //     // yield: 8.8,
-  //     holdings: [
-  //       {
-  //         id: 1,
-  //         quantity: 1000,
-  //         avgPrice: 500,
-  //         totalCost: 450.4,
-  //         stocks: {
-  //           id: 1,
-  //           fullName: "Meezan Bank",
-  //           symbol: "MEBL",
-  //           currentPrice: 500,
-  //           dividendYield: 10,
-  //           annualDividend: 28,
-  //           sector: {
-  //             id: 1,
-  //             name: "Banking",
-  //           },
-  //         },
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "education",
-  //     name: "Children Education",
-  //     // value: 685_000,
-  //     // cost: 610_000,
-  //     // dividendIncome: 54_200,
-  //     // holdings: 6,
-  //     // yield: 7.9,
-  //     holdings: [
-  //       {
-  //         id: 1,
-  //         quantity: 1000,
-  //         avgPrice: 500,
-  //         totalCost: 450.4,
-  //         stocks: {
-  //           id: 1,
-  //           fullName: "Meezan Bank",
-  //           symbol: "MEBL",
-  //           currentPrice: 500,
-  //           dividendYield: 10,
-  //           annualDividend: 28,
-  //           sector: {
-  //             id: 1,
-  //             name: "Banking",
-  //           },
-  //         },
-  //       },
-  //     ],
-  //   },
+  {
+    id: 2,
+    name: "Retirement Portfolio",
+    strategy: "Retirement",
+    description: "Retirement income focus",
+    portfolioCost: 1_380_000,
+    holdingsCount: 8,
+    portfolioNetworth: 1_620_000,
+    portfolioProfit: 240_000,
+    profitPercent: 17.4,
+    annualDividendIncome: 142_800,
+    yield: 8.8,
+  },
+  {
+    id: 3,
+    name: "Children Education",
+    strategy: "Education",
+    description: "Fund for children's education",
+    portfolioCost: 610_000,
+    holdingsCount: 6,
+    portfolioNetworth: 685_000,
+    portfolioProfit: 75_000,
+    profitPercent: 12.3,
+    annualDividendIncome: 54_200,
+    yield: 7.9,
+  },
 ];
 
 export const monthLabels = [

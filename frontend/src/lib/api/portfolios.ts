@@ -5,7 +5,17 @@
 import { http } from "@/lib/http";
 import { Portfolio, PortfolioDashboard } from "@/types";
 
-export type CreatePortfolioDto = Omit<Portfolio, "id">;
+export type CreatePortfolioDto = Omit<
+  Portfolio,
+  | "id"
+  | "portfolioCost"
+  | "holdingsCount"
+  | "portfolioNetworth"
+  | "portfolioProfit"
+  | "profitPercent"
+  | "annualDividendIncome"
+  | "yield"
+>;
 export const portfoliosApi = {
   dashboardData: () => http.get<PortfolioDashboard[]>("/portfolio/dashboard"),
   getByProfile: () => http.get<Portfolio[]>("/portfolio/byProfile"),

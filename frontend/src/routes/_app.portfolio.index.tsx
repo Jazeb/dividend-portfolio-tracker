@@ -23,10 +23,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, ArrowUpRight, TrendingUp, Loader2 } from "lucide-react";
-import { seedPortfoliosDashboard, pkr } from "@/lib/mock-data";
-import { portfoliosApi } from "@/lib/api/portfolios";
+import { portfolios as seedPortfolios, pkr } from "@/lib/mock-data";
+import { portfoliosApi, type CreatePortfolioDto } from "@/lib/api/portfolios";
 import { toast } from "sonner";
-import { Portfolio, PortfolioDashboard } from "@/types/index";
+import { Portfolio, PortfolioDashboard } from "@/types";
 
 export const Route = createFileRoute("/_app/portfolio/")({
   component: PortfolioPage,
@@ -47,32 +47,32 @@ const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undef
 
 function PortfolioPage() {
   const queryClient = useQueryClient();
+
   const portfoliosQuery = useQuery<PortfolioDashboard[]>({
-    queryKey: ["portfoliosDashboard"],
+    queryKey: ["portfolios"],
     queryFn: () => portfoliosApi.dashboardData(),
     enabled: API_ENABLED,
-    // initialData: API_ENABLED ? undefined : (seedPortfoliosDashboard as PortfolioDashboard[]),
-    // placeholderData: seedPortfoliosDashboard as PortfolioDashboard[],
+    initialData: API_ENABLED ? undefined : seedPortfolios,
     retry: 1,
   });
 
-  const allPortfolios = API_ENABLED
-    ? portfoliosQuery.data
-    : (seedPortfoliosDashboard as PortfolioDashboard[]);
+  const portfolios: PortfolioDashboard[] = portfoliosQuery.data ?? seedPortfolios;
+
+  // Local additions used only when the API is not configured.
+  const [localExtras, setLocalExtras] = useState<Portfolio[]>([]);
+  const allPortfolios = API_ENABLED ? portfolios : [...portfolios, ...localExtras];
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
     strategy: "Dividend Growth",
-    initialCapital: "",
     description: "",
   });
 
-  const reset = () =>
-    setForm({ name: "", strategy: "Dividend Growth", initialCapital: "", description: "" });
+  const reset = () => setForm({ name: "", strategy: "Dividend Growth", description: "" });
 
   const createMutation = useMutation({
-    mutationFn: (dto: Omit<Portfolio, "id">) => portfoliosApi.create(dto),
+    mutationFn: (dto: CreatePortfolioDto) => portfoliosApi.create(dto),
     onSuccess: (created) => {
       toast.success(`"${created.name}" portfolio created`);
       queryClient.invalidateQueries({ queryKey: ["portfolios"] });
@@ -92,31 +92,30 @@ function PortfolioPage() {
       toast.error("Portfolio name is required");
       return;
     }
-    if (allPortfolios?.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
+    if (allPortfolios.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
       toast.error("A portfolio with this name already exists");
       return;
     }
-
-    // const capital = Number(form.initialCapital) || 0;
-    const dto: Omit<Portfolio, "id"> = {
+    const dto: CreatePortfolioDto = {
       name,
-      // value: capital,
-      // cost: capital,
-      // dividendIncome: 0,
-      // holdings: 0,
-      // yield: 0,
       strategy: form.strategy,
-      description: form.description.trim() || undefined,
+      description: form.description.trim(),
     };
 
-    if (API_ENABLED) {
-      createMutation.mutate(dto);
-    } else {
-      // const newPortfolio: Portfolio = {
-      //   ...dto,
-      //   id: name.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now().toString(36),
-      // };
-      // setLocalExtras((prev) => [...prev, newPortfolio]);
+    if (API_ENABLED) createMutation.mutate(dto);
+    else {
+      const newPortfolio: Portfolio = {
+        ...dto,
+        id: Date.now(),
+        portfolioCost: 0,
+        holdingsCount: 0,
+        portfolioNetworth: 0,
+        portfolioProfit: 0,
+        profitPercent: 0,
+        annualDividendIncome: 0,
+        yield: 0,
+      };
+      setLocalExtras((prev) => [...prev, newPortfolio]);
       toast.success(`"${name}" portfolio created`);
       setOpen(false);
       reset();
@@ -155,12 +154,12 @@ function PortfolioPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {(allPortfolios ?? [])?.map((p) => {
-            const positive = p.portfolioProfit >= 0;
-            const portfolioId = String(p.id)
-
+          {(allPortfolios ?? []).map((p) => {
+            const profit = p.portfolioProfit;
+            const pct = p.profitPercent;
+            const positive = profit >= 0;
             return (
-              <Link key={p.id} to="/portfolio/$id" params={{ id: portfolioId }} className="group">
+              <Link key={p.id} to="/portfolio/$id" params={{ id: String(p.id) }} className="group">
                 <Card className="card-elevated p-6 h-full transition hover:shadow-glow hover:-translate-y-1">
                   <div className="flex items-start justify-between mb-4">
                     <div>
@@ -180,7 +179,7 @@ function PortfolioPage() {
                     className={`text-xs mt-1 tabular-nums ${positive ? "text-success" : "text-destructive"}`}
                   >
                     {positive ? "+" : ""}
-                    {pkr(p.portfolioProfit)} ({p.profitPercent?.toFixed(1)}%)
+                    {pkr(profit)} ({pct.toFixed(1)}%)
                   </div>
                   <div className="grid grid-cols-3 gap-3 mt-6 pt-4 border-t">
                     <div>
@@ -193,10 +192,9 @@ function PortfolioPage() {
                         {pkr(p.annualDividendIncome)}
                       </div>
                     </div>
-
                     <div>
                       <div className="text-[10px] uppercase text-muted-foreground">Yield</div>
-                      <div className="text-sm font-medium tabular-nums">{p.yield}</div>
+                      <div className="text-sm font-medium tabular-nums">{p.yield}%</div>
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-xs text-primary opacity-0 group-hover:opacity-100 transition">
@@ -252,17 +250,6 @@ function PortfolioPage() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="pf-capital">Initial Capital (PKR)</Label>
-                <Input
-                  id="pf-capital"
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  value={form.initialCapital}
-                  onChange={(e) => setForm({ ...form, initialCapital: e.target.value })}
-                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="pf-desc">Description (optional)</Label>

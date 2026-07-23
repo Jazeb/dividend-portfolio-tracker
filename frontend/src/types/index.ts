@@ -23,19 +23,19 @@ export interface Stock {
 // }
 
 export interface Holding {
-  id: number,
-  symbol: string,
-  fullName: string
-  sector: string,
-  quantity: string,
-  avgPrice: string,
-  invested: number,
-  currentPrice: number,
-  annualDividend: number,
-  marketValue: number,
-  yield: string,
-  yoc: number,
-  pl: number
+  id: number;
+  symbol: string;
+  fullName: string;
+  sector: string;
+  quantity: string;
+  avgPrice: string;
+  invested: number;
+  currentPrice: number;
+  annualDividend: number;
+  marketValue: number;
+  yield: string;
+  yoc: number;
+  pl: number;
 }
 
 export interface PortfolioDashboard {
@@ -62,6 +62,7 @@ export interface Portfolio {
   profitPercent: number;
   annualDividendIncome: number;
   yield: number;
+  createdAt: string;
   holdings?: Holding[];
 }
 

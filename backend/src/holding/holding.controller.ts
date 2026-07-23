@@ -8,7 +8,7 @@ export class HoldingController {
 
   @Get('/dashboard')
   getHoldingsDashboard(@Headers('UserId') userId: string, @Query() query: { portfolioId: string }) {
-    this.holdingService.getHoldingDashboard(userId, query);
+    return this.holdingService.getHoldingDashboard(userId, query);
   }
 
   @Get('/byProfile')

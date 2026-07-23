@@ -45,4 +45,8 @@ export class PortfolioCalculator {
 
     return Number(((annualDividend / netWorth) * 100).toFixed(2));
   }
+
+  static calculateProfitLoss(portfolio){
+    return portfolio.holdings.map((h) => (h.stocks.currentPrice) - Number(h.avgPrice) * Number(h.quantity));
+  }
 }

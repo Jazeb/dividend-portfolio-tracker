@@ -10,6 +10,7 @@ export const portfoliosApi = {
   dashboardData: () => http.get<PortfolioDashboard[]>("/portfolio/dashboard"),
   getByProfile: () => http.get<Portfolio[]>("/portfolio/byProfile"),
   list: () => http.get<Portfolio[]>("/portfolio/byProfile"),
+  byId: (id: string) => http.get<Portfolio>(`/portfolio/${id}`),
   create: (dto: CreatePortfolioDto) => http.post<Portfolio>("/portfolio", dto),
   remove: (id: string) => http.delete<void>(`/portfolio/${id}`),
 };

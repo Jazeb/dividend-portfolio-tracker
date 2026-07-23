@@ -10,9 +10,22 @@ export class PortfolioService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly dividendService: DividendService,
-  ) {}
+  ) { }
 
-  private calculateHoldingProfit() {}
+  async getPortfolioById(portfolioId: string, profileId) {
+    const portfolio = await this.prismaService.portfolio.findFirst({
+      where: { id: Number(portfolioId), profileId: Number(profileId)  },
+      include: { holdings: { include: { stocks: true } } },
+    });
+    const summary = this.getPortfolioSummary(portfolio);
+    const data = {
+      ...summary,
+      description: portfolio?.description,
+      strategy: portfolio?.strategy,
+      holdings: portfolio?.holdings
+    }
+    return data
+  }
 
   async getPortfolioDashboard(profileId: string) {
     const portfolios = await this.prismaService.portfolio.findMany({
@@ -20,26 +33,7 @@ export class PortfolioService {
       include: { holdings: { include: { stocks: true } } },
     });
 
-    const sumary = portfolios.map(portfolio => {
-      const portfolioCost = PortfolioCalculator.calculatePortfolioCost(portfolio);
-      const portfolioNetworth = PortfolioCalculator.calculatePortfolioNetWorth(portfolio);
-      const portfolioProfit = portfolioNetworth - portfolioCost;
-      const profitPercent = PortfolioCalculator.calculateProfitPercent(portfolioProfit, portfolioCost);
-      const annualDividendIncome = PortfolioCalculator.calculateAnnualDividend(portfolio);
-      const dividendYield = PortfolioCalculator.calculatePortfolioDividendYield(portfolio);
-      return {
-        id: portfolio.id,
-        name: portfolio.name,
-        portfolioCost: portfolioCost,
-        holdingsCount: portfolio.holdings.length,
-        portfolioNetworth: portfolioNetworth,
-        portfolioProfit: portfolioProfit,
-        profitPercent: profitPercent,
-        annualDividendIncome: annualDividendIncome,
-        yield: dividendYield,
-      };
-    });
-    console.log(sumary);
+    const sumary = portfolios.map(portfolio => this.getPortfolioSummary(portfolio));
     return sumary;
     // let profit = 0;
     // let pct = 0;
@@ -51,6 +45,28 @@ export class PortfolioService {
     //   pct = holding.totalCost > 0 ? (profit / holding.totalCost) * 100 : 0;
     //   // dividendYield = holding.stocks.dividendYield
     // });
+  }
+
+  getPortfolioSummary(portfolio) {
+    const portfolioCost = PortfolioCalculator.calculatePortfolioCost(portfolio);
+    const portfolioNetworth = PortfolioCalculator.calculatePortfolioNetWorth(portfolio);
+    const portfolioProfit = portfolioNetworth - portfolioCost;
+    const profitPercent = PortfolioCalculator.calculateProfitPercent(portfolioProfit, portfolioCost);
+    const annualDividendIncome = PortfolioCalculator.calculateAnnualDividend(portfolio);
+    const dividendYield = PortfolioCalculator.calculatePortfolioDividendYield(portfolio);
+    // const pl = PortfolioCalculator.calculateProfitLoss(portfolio);
+    
+    return {
+      id: portfolio.id,
+      name: portfolio.name,
+      portfolioCost: portfolioCost,
+      holdingsCount: portfolio.holdings.length,
+      portfolioNetworth: portfolioNetworth,
+      portfolioProfit: portfolioProfit,
+      profitPercent: Number.isNaN(profitPercent) ? 0 : profitPercent,
+      annualDividendIncome: annualDividendIncome,
+      yield: dividendYield,
+    }
   }
 
   async getPortfolioByProfile(profileId: string): Promise<Portfolio[]> {

@@ -43,7 +43,7 @@ console.log({ API_ENABLED });
 function HoldingsPage() {
   const portfoliosQuery = useQuery<Portfolio[]>({
     queryKey: ["portfolios"],
-    queryFn: () => portfoliosApi.list(),
+    queryFn: () => portfoliosApi.getByProfile(),
     enabled: API_ENABLED,
     // initialData: API_ENABLED ? undefined : SEED_PORTFOLIOS,
     // placeholderData: SEED_PORTFOLIOS,
@@ -194,34 +194,34 @@ function HoldingsPage() {
                 ) : (
                   filteredHoldings.map((h) => {
                     console.log({ h });
-                    const mv = h.quantity * h.stocks.currentPrice;
-                    const pl = (h.stocks.currentPrice - h.avgPrice) * h.quantity;
-                    const plPct = ((h.stocks.currentPrice - h.avgPrice) / h.avgPrice) * 100;
-                    const positive = pl >= 0;
-                    const yieldOnCost = ((h.stocks.annualDividend / h.avgPrice) * 100).toFixed(2);
-                    const invested = h.quantity * h.avgPrice;
+                    // const mv = h.quantity * h.stocks.currentPrice;
+                    // const pl = (h.stocks.currentPrice - h.avgPrice) * h.quantity;
+                    const plPct = ((h.currentPrice - Number(h.avgPrice)) / Number(h.avgPrice)) * 100;
+                    const positive = h.marketValue >= 0;
+                    // const yieldOnCost = ((h.stocks.annualDividend / h.avgPrice) * 100).toFixed(2);
+                    // const invested = h.quantity * h.avgPrice;
 
                     return (
-                      <TableRow key={h.stocks.symbol} className="cursor-pointer group">
+                      <TableRow key={h.symbol} className="cursor-pointer group">
                         <TableCell>
                           <Link
                             to="/stock/$symbol"
-                            params={{ symbol: h.stocks.symbol }}
+                            params={{ symbol: h.symbol }}
                             className="flex items-center gap-3 group-hover:text-primary"
                           >
-                            <StockLogo symbol={h.stocks.symbol} size={32} />
+                            <StockLogo symbol={h.symbol} size={32} />
 
                             <div className="min-w-0">
-                              <div className="font-medium text-sm truncate">{h.stocks.symbol}</div>
+                              <div className="font-medium text-sm truncate">{h.symbol}</div>
                               <div className="text-xs text-muted-foreground truncate">
-                                {h.stocks.fullName}
+                                {h.fullName}
                               </div>
                             </div>
                           </Link>
                         </TableCell>
                         <TableCell>
                           <Badge variant="secondary" className="font-normal">
-                            {h.stocks.sector.name}
+                            {h.sector}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right tabular-nums">
@@ -231,28 +231,28 @@ function HoldingsPage() {
                           {Number(h.avgPrice).toFixed(2)}
                         </TableCell>
                         <TableCell className="text-right tabular-nums font-medium">
-                          {invested.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                          {h.invested.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TableCell>
                         <TableCell className="text-right tabular-nums font-medium">
-                          {Number(h.stocks.currentPrice).toFixed(2)}
+                          {Number(h.currentPrice).toFixed(2)}
                         </TableCell>
                         <TableCell className="text-right tabular-nums font-semibold">
-                          {mv.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                          {h.marketValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TableCell>
                         <TableCell className="text-right tabular-nums">
-                          {h.stocks.dividendYield}%
+                          {Number(h.yield).toFixed(2)}%
                         </TableCell>
                         <TableCell className="text-right tabular-nums text-primary">
-                          {yieldOnCost}%
+                          {Number(h.yoc).toFixed(2)}%
                         </TableCell>
                         <TableCell className="text-right tabular-nums">
-                          {h.stocks.annualDividend}
+                          {h.annualDividend}
                         </TableCell>
                         <TableCell
                           className={`text-right tabular-nums font-medium ${positive ? "text-success" : "text-destructive"}`}
                         >
                           {positive ? "+" : ""}
-                          {pl.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                          {h.pl.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                           <div className="text-[10px] font-normal">
                             {positive ? "+" : ""}
                             {plPct.toFixed(1)}%

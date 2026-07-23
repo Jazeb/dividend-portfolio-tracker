@@ -28,7 +28,7 @@ import { portfoliosApi } from "@/lib/api/portfolios";
 import { toast } from "sonner";
 import { Portfolio, PortfolioDashboard } from "@/types/index";
 
-export const Route = createFileRoute("/_app/portfolio")({
+export const Route = createFileRoute("/_app/portfolio/")({
   component: PortfolioPage,
   head: () => ({ meta: [{ title: "Portfolios — PSX Dividend Tracker" }] }),
 });
@@ -157,9 +157,10 @@ function PortfolioPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {(allPortfolios ?? [])?.map((p) => {
             const positive = p.portfolioProfit >= 0;
+            const portfolioId = String(p.id)
 
             return (
-              <Link key={p.id} to="/holdings" className="group">
+              <Link key={p.id} to="/portfolio/$id" params={{ id: portfolioId }} className="group">
                 <Card className="card-elevated p-6 h-full transition hover:shadow-glow hover:-translate-y-1">
                   <div className="flex items-start justify-between mb-4">
                     <div>

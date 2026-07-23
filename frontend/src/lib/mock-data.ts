@@ -1,4 +1,4 @@
-import { Portfolio } from "./api/portfolios";
+import { PortfolioDashboard, Holding, Portfolio } from "@/types";
 
 export type Sector = {
   id: number;
@@ -28,6 +28,46 @@ export type Stock = {
 //   portfolioId: number;
 //   stocks: Stock;
 // };
+
+export const seedPortfolios: Portfolio[] = [
+  {
+    id: "1",
+    name: "divided",
+    description: "dividend",
+    strategy: "dividend",
+  },
+];
+
+export const holding = {
+  id: 1,
+  symbol: "MEBL",
+  sector: "Banking",
+  quantity: 100,
+  avgPrice: "100",
+  invested: "10000",
+  currentPrice: 200,
+  annualDividend: 28,
+  marketValue: "400000",
+  yield: "6",
+  yoc: "6",
+  pl: "1000",
+};
+
+export const seedPortfoliosDashboard: PortfolioDashboard[] = [
+  {
+    id: 1,
+    name: "divided",
+    strategy: "dividend",
+    description: "dividend",
+    annualIncome: 100000,
+    monthlyIncome: 10000,
+    lifetimeIncome: 20000,
+    upcomingDividend: 50000,
+    yield: 7,
+    yieldOnCost: 10,
+    holdings: [holding],
+  },
+];
 
 export const holdings: Holding[] = [
   // {
@@ -192,8 +232,20 @@ export const holdings: Holding[] = [
   // },
 ];
 
-export const portfolios: Portfolio[] = [
-  {},
+export const portfoliosDashboard: PortfolioDashboard[] = [
+  {
+    id: 1,
+    name: "Dividend-Jazeb",
+    strategy: "Dividend Growth",
+    description: "ferf",
+    annualIncome: 0,
+    monthlyIncome: 0,
+    lifetimeIncome: 0,
+    upcomingDividend: 0,
+    yield: 0,
+    yieldOnCost: 0,
+    holdings: [],
+  },
   //   {
   //     id: "dividend",
   //     name: "Dividend Portfolio",

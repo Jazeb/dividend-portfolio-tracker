@@ -49,7 +49,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
+import { cn, toISO } from "@/lib/utils";
 import {
   Plus,
   Search,
@@ -61,7 +61,8 @@ import {
   ChevronsUpDown,
 } from "lucide-react";
 import { stocksApi, type Stock } from "@/lib/api/stocks";
-import { portfoliosApi, type Portfolio } from "@/lib/api/portfolios";
+import { portfoliosApi } from "@/lib/api/portfolios";
+import { Portfolio } from "@/types";
 
 const TX_TYPES: TxType[] = ["Buy", "Sell", "Dividend", "Bonus", "Rights", "Split", "Transfer"];
 const BROKERS = ["AKD Securities", "JS Global", "Arif Habib"];
@@ -287,7 +288,9 @@ function TransactionsPage() {
               )}
               {filtered.map((t) => (
                 <TableRow key={t.id}>
-                  <TableCell className="text-sm text-muted-foreground">{t.purchaseDate}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {toISO(t.purchaseDate)}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={

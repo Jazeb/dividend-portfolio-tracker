@@ -13,13 +13,40 @@ export interface Stock {
   sector: Sector;
 }
 
+// export interface Holding {
+//   id: number;
+//   quantity: number;
+//   avgPrice: number;
+//   totalCost: number;
+//   portfolioId: number;
+//   stocks: Stock;
+// }
+
 export interface Holding {
   id: number;
+  symbol: string;
+  sector: string;
   quantity: number;
-  avgPrice: number;
-  totalCost: number;
-  portfolioId: number;
-  stocks: Stock;
+  avgPrice: string;
+  invested: string;
+  currentPrice: number;
+  annualDividend: number;
+  marketValue: string;
+  yield: string;
+  yoc: string;
+  pl: string;
+}
+
+export interface PortfolioDashboard {
+  id: number;
+  name: string;
+  portfolioCost: number;
+  holdingsCount: number;
+  portfolioNetworth: number;
+  portfolioProfit: number;
+  profitPercent: number;
+  annualDividendIncome: number;
+  yield: number;
 }
 
 export interface Portfolio {

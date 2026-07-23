@@ -131,7 +131,6 @@ export class DividendService {
       const sector = holding.stocks.sector;
       const annualIncome = holding.quantity * holding.stocks.annualDividend;
       let key = sector.name;
-      console.log(sector);
       sectorMap.set(key, (sectorMap.get(sector) ?? 0) + annualIncome);
     }
 
@@ -142,7 +141,7 @@ export class DividendService {
     return breakdownBySector;
   }
 
-  private getSummaryData(_portfolio) {
+  public getSummaryData(_portfolio) {
     const annualIncome = this.calculateAnnualIncome(_portfolio?.holdings);
     const monthlyIncome = annualIncome / 12;
     const curentYield = this.calculateCurrentYield(_portfolio?.holdings);
@@ -152,8 +151,8 @@ export class DividendService {
       monthlyIncome,
       lifetimeIncome: 0,
       upcomingDividend: 0,
-      yield: curentYield,
-      yieldOnCost: yoc,
+      yield: curentYield.toFixed(2),
+      yieldOnCost: yoc.toFixed(2),
     };
   }
 
@@ -186,7 +185,7 @@ export class DividendService {
     let marketValue = 0;
     for (const holding of holdings) {
       const stock = holding?.stocks as Stock;
-      marketValue += Number(stock.currentPrice) * holding.quantity;
+      marketValue += Number(stock?.currentPrice || 0) * holding.quantity;
     }
     return marketValue;
   }
@@ -206,7 +205,7 @@ export class DividendService {
 
   calculateAnnualIncome(holdings: any) {
     let annualIncome = 0;
-    for (const holding of holdings) annualIncome += holding.quantity * holding.stocks.annualDividend;
+    for (const holding of holdings) annualIncome += holding.quantity * (holding.stocks?.annualDividend || 0);
     return annualIncome;
   }
 
@@ -214,7 +213,7 @@ export class DividendService {
     const currentPortfolioMarketValue = this.calculateMarketValueOfHoldings(holdings);
     const projectedAnnualDividendIncome = this.calculateAnnualIncome(holdings);
     const currentYield = (projectedAnnualDividendIncome / currentPortfolioMarketValue) * 100;
-    return currentYield;
+    return Number.isNaN(currentYield) ? 0 : currentYield;
   }
 
   getUpcomingDividends(upcoming) {

@@ -38,12 +38,16 @@ export async function seedStocksAndSectors(prisma: PrismaClient) {
         fullName: row.fullName,
         icon: row.icon,
         sectorId: sectorDbId,
+        annualDividend: row.annualDividend,
+        currentPrice: row.currentPrice,
       },
       create: {
         symbol: row.symbol,
         fullName: row.fullName,
         icon: row.icon,
         sectorId: sectorDbId,
+        annualDividend: row.annualDividend,
+        currentPrice: row.currentPrice,
       },
     });
     seeded++;

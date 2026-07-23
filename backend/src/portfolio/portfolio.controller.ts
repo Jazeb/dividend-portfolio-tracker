@@ -5,15 +5,20 @@ import { Portfolio } from 'generated/prisma/client';
 
 @Controller('portfolio')
 export class PortfolioController {
-    constructor(private readonly portfolioService: PortfolioService) { }
-    
-    @Get('/byProfile')
-    getPortfoliosByProfile(@Headers('UserId') userId: string): Promise<Portfolio[]> {
-        return this.portfolioService.getPortfolioByProfile(userId);
-    }
+  constructor(private readonly portfolioService: PortfolioService) {}
 
-    @Post('')
-    createPortfolio(@Headers('UserId') userId: string, @Body() body: CreatePortfolioDTO): Promise<Portfolio> {
-        return this.portfolioService.create(body, userId);
-    }
+  @Get('/byProfile')
+  getPortfoliosByProfile(@Headers('UserId') userId: string): Promise<Portfolio[]> {
+    return this.portfolioService.getPortfolioByProfile(userId);
+  }
+
+  @Get('/dashboard')
+  getPortfolioDashboard(@Headers('UserId') userId: string) {
+    return this.portfolioService.getPortfolioDashboard(userId);
+  }
+
+  @Post('')
+  createPortfolio(@Headers('UserId') userId: string, @Body() body: CreatePortfolioDTO): Promise<Portfolio> {
+    return this.portfolioService.create(body, userId);
+  }
 }

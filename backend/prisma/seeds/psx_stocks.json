@@ -1947,7 +1947,10 @@
     "id": 329,
     "symbol": "MEBL",
     "fullName": "Meezan Bank Limited",
-    "icon": "test.svg"
+    "icon": "test.svg",
+    "currentPrice": 200,
+    "annualDividend": 28,
+    "dividendYield": 6
   },
   {
     "id": 330,
@@ -3354,5 +3357,3 @@
     "icon": "test.svg"
   }
 ]
-
-

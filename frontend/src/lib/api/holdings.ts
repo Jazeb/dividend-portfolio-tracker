@@ -1,8 +1,9 @@
 // Holdings API service. Adjust endpoint paths to match your NestJS backend.
 //   GET /holdings -> Holding[]
 import { http } from "@/lib/http";
-import type { Holding } from "@/lib/mock-data";
-export type { Holding };
+import { Holding } from "@/types";
+
 export const holdingsApi = {
-  list: () => http.get<Holding[]>("/holding/byProfile"),
+  list: (portfolioId: string) =>
+    http.get<Holding[]>(`/holding/dashboard?portfolioId=${portfolioId}`),
 };

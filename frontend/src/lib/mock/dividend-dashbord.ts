@@ -8,6 +8,7 @@ import {
   portfolios as seedPortfolios,
   monthLabels,
 } from "@/lib/mock-data";
+import { toISO } from "@/lib/utils";
 
 const TAX_RATE = 0.15;
 const REFERENCE_DATE = new Date(2026, 6, 14); // Jul 14 2026
@@ -16,10 +17,6 @@ function holdingsFor(portfolioId: string) {
   return seedHoldings.filter(
     (_, i) => seedPortfolios[i % seedPortfolios.length].id === portfolioId,
   );
-}
-
-function toISO(d: Date) {
-  return d.toISOString().slice(0, 10);
 }
 
 export function buildMockDividendDashboard(portfolioId: string): DividendDashboard {
@@ -61,6 +58,8 @@ export function buildMockDividendDashboard(portfolioId: string): DividendDashboa
       taxAmount: tax,
       netDividend: gross - tax,
       paymentDate: toISO(payDate),
+      exDividendDate: "11-11-11",
+      bookClosureDate: "11-11-11",
       status: i === 0 ? "PROCESSING" : "UPCOMING",
     };
   });
@@ -89,6 +88,8 @@ export function buildMockDividendDashboard(portfolioId: string): DividendDashboa
         taxAmount: tax,
         netDividend: gross - tax,
         paymentDate: toISO(d),
+        exDividendDate: "11-11-11",
+        bookClosureDate: "11-11-11",
         status: "PAID",
       });
     }

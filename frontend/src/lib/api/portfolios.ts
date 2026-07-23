@@ -3,10 +3,12 @@
 //   POST   /portfolios       -> Portfolio
 //   DELETE /portfolios/:id   -> void
 import { http } from "@/lib/http";
-import { Portfolio } from "@/types";
+import { Portfolio, PortfolioDashboard } from "@/types";
 
 export type CreatePortfolioDto = Omit<Portfolio, "id">;
 export const portfoliosApi = {
+  dashboardData: () => http.get<PortfolioDashboard[]>("/portfolio/dashboard"),
+  getByProfile: () => http.get<Portfolio[]>("/portfolio/byProfile"),
   list: () => http.get<Portfolio[]>("/portfolio/byProfile"),
   create: (dto: CreatePortfolioDto) => http.post<Portfolio>("/portfolio", dto),
   remove: (id: string) => http.delete<void>(`/portfolio/${id}`),

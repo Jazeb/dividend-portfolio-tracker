@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Headers } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Headers, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from 'generated/prisma/client';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -13,9 +13,9 @@ export class TransactionsController {
   }
 
   @Get('profile')
-  getTransactionsByProfileId(@Headers('UserId') userId: string): Promise<Transaction[]> {
+  getTransactionsByProfileId(@Headers('UserId') userId: string, @Query('portfolioId') portfolioId: string): Promise<Transaction[]> {
     const profileId = Number(userId);
-    return this.transactionsService.getTransactionsByProfileId(profileId);
+    return this.transactionsService.getTransactionsByProfileId(profileId, portfolioId);
   }
 
   @Get(':id')

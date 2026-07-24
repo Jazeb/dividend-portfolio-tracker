@@ -36,8 +36,6 @@ import { toast } from "sonner";
 import {
   transactionsApi,
   type CreateTransactionDto,
-  type Transaction,
-  type TxType,
 } from "@/lib/api/transactions";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -62,7 +60,7 @@ import {
 } from "lucide-react";
 import { stocksApi, type Stock } from "@/lib/api/stocks";
 import { portfoliosApi } from "@/lib/api/portfolios";
-import { Portfolio } from "@/types";
+import { Portfolio, Transaction, TxType } from "@/types";
 
 const TX_TYPES: TxType[] = ["Buy", "Sell", "Dividend", "Bonus", "Rights", "Split", "Transfer"];
 const BROKERS = ["AKD Securities", "JS Global", "Arif Habib"];
@@ -99,7 +97,7 @@ function TransactionsPage() {
     queryFn: () => transactionsApi.list(),
   });
 
-  const portfolioName = (id: string) => portfolios.find((p) => p.id === id)?.name ?? id;
+  const portfolioName = (id: number) => portfolios.find((p) => p.id === id)?.name ?? id;
 
   const createMutation = useMutation({
     mutationFn: (dto: CreateTransactionDto) => transactionsApi.create(dto),
@@ -111,7 +109,7 @@ function TransactionsPage() {
         //       created.portfolioId,
         //     )} → ${portfolioName(created.toPortfolioId)}`
         //   :
-        `${created.transactionType} ${created.stock.symbol} recorded in ${portfolioName(created.portfolioId)}`,
+        `${created.transactionType} ${created.stock.symbol} recorded in ${portfolioName(Number(created.portfolioId))}`,
       );
       setOpen(false);
     },
@@ -165,7 +163,7 @@ function TransactionsPage() {
       quantity,
       buyingPrice,
       totalBuyingPrice: noValueTypes.includes(form.transactionType) ? 0 : quantity * buyingPrice,
-      portfolioId: form.portfolioId,
+      portfolioId: String(form.portfolioId),
       broker: form.broker,
       symbol: form.stock.symbol,
       // toPortfolioId: form.transactionType === "Transfer" ? form.toPortfolioId : undefined,
@@ -198,7 +196,7 @@ function TransactionsPage() {
             <SelectContent>
               <SelectItem value="all">All Portfolios</SelectItem>
               {portfolios.map((p) => (
-                <SelectItem key={p.id} value={p.id}>
+                <SelectItem key={p.id} value={String(p.id)}>
                   {p.name}
                 </SelectItem>
               ))}
@@ -313,7 +311,7 @@ function TransactionsPage() {
                         <span>{portfolioName(t.toPortfolioId)}</span>
                       </span>
                     ) : ()} */}
-                    {portfolioName(t.portfolioId)}
+                    {portfolioName(Number(t.portfolioId))}
                   </TableCell>
                   <TableCell className="font-medium">{t.stock.symbol}</TableCell>
                   <TableCell className="font-medium">{t.stock.fullName}</TableCell>
@@ -370,7 +368,7 @@ function TransactionsPage() {
               <div>
                 <Label>{isTransfer ? "From Portfolio" : "Portfolio"}</Label>
                 <Select
-                  value={form.portfolioId}
+                  value={String(form.portfolioId)}
                   onValueChange={(v) => setForm({ ...form, portfolioId: v })}
                 >
                   <SelectTrigger className="mt-1.5">
@@ -378,7 +376,7 @@ function TransactionsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {portfolios.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>
+                      <SelectItem key={p.id} value={String(p.id)}>
                         {p.name}
                       </SelectItem>
                     ))}

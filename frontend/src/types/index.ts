@@ -22,6 +22,22 @@ export interface Stock {
 //   stocks: Stock;
 // }
 
+export type TxType = "Buy" | "Sell" | "Dividend" | "Bonus" | "Rights" | "Split" | "Transfer";
+
+
+export interface Transaction {
+  id: string;
+  purchaseDate: string;
+  transactionType: TxType;
+  symbol?: string;
+  quantity: number;
+  buyingPrice: number;
+  totalBuyingPrice: number;
+  portfolioId: string;
+  broker?: string;
+  stock: Stock;
+}
+
 export interface Holding {
   id: number;
   symbol: string;

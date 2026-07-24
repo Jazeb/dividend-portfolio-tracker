@@ -34,7 +34,15 @@ import {
   BarChart3,
   Trophy,
   AlertTriangle,
+  Info,
 } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Tooltip as UITooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +82,8 @@ import {
 } from "@/lib/mock-data";
 import { portfoliosApi } from "@/lib/api/portfolios";
 import { toast } from "sonner";
-import { Portfolio } from "@/types";
+import { Portfolio, Transaction } from "@/types";
+import { transactionsApi } from "@/lib/api/transactions";
 
 const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
 
@@ -100,6 +109,10 @@ function PortfolioDetailPage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState("overview");
   const [tf, setTf] = useState<Timeframe>("6M");
+  const [allocMode, setAllocMode] = useState<"current" | "cost">(() => {
+    if (typeof window === "undefined") return "current";
+    return (window.localStorage.getItem("portfolio-alloc-mode") as "current" | "cost") || "current";
+  });
 
   const seedPortfolio = useMemo(
     () => (seedPortfolios as Portfolio[]).find((p) => String(p.id) === id),
@@ -114,7 +127,15 @@ function PortfolioDetailPage() {
     staleTime: 5 * 60_000,
   });
 
+  const transactionsQuery = useQuery<Transaction[]>({
+    queryKey: ["transaction"],
+    queryFn: () => transactionsApi.list({ portfolioId: '1' }),
+    enabled: API_ENABLED,
+    staleTime: 5 * 60_000,
+  });
+
   const portfolio = API_ENABLED ? portfolioQuery.data : seedPortfolio;
+  const recentTransactions = transactionsQuery.data;
 
   // Holdings for this portfolio: prefer backend-provided `portfolio.holdings`,
   // otherwise deterministically partition the seed data for demo mode.
@@ -125,20 +146,19 @@ function PortfolioDetailPage() {
       0,
       seedList.findIndex((p) => String(p.id) === id),
     );
-    console.log({ holdings: portfolio.holdings });
     const raw =
       portfolio.holdings && portfolio.holdings.length > 0
         ? portfolio.holdings.map((h) => ({
-            symbol: h.symbol,
-            name: h.fullName,
-            sector: h.sector,
-            qty: Number(h.quantity),
-            avgPrice: Number(h.avgPrice),
-            currentPrice: h.currentPrice,
-            annualDividend: h.annualDividend,
-            dividendYield: Number(h.yield),
-            yieldOnCost: h.yoc,
-          }))
+          symbol: h.symbol,
+          name: h.fullName,
+          sector: h.sector,
+          qty: Number(h.quantity),
+          avgPrice: Number(h.avgPrice),
+          currentPrice: h.currentPrice,
+          annualDividend: h.annualDividend,
+          dividendYield: Number(h.yield),
+          yieldOnCost: h.yoc,
+        }))
         : API_ENABLED
           ? []
           : seedHoldings.filter((_, i) => i % Math.max(seedList.length, 1) === idx);
@@ -164,27 +184,49 @@ function PortfolioDetailPage() {
     return portfolioGrowth.slice(-map[tf]);
   }, [tf]);
 
-  const allocation = useMemo(() => {
-    const total = portfolioHoldings.reduce((s, h) => s + h.marketValue, 0);
-    const bySector = new Map<string, number>();
-    portfolioHoldings.forEach((h) =>
-      bySector.set(h.sector, (bySector.get(h.sector) ?? 0) + h.marketValue),
-    );
-    const arr = Array.from(bySector, ([name, value]) => ({
-      name,
-      value,
-      pct: total > 0 ? (value / total) * 100 : 0,
-    }));
-    return arr.length
-      ? arr.sort((a, b) => b.value - a.value)
-      : sectorAllocation.map((s) => ({ name: s.name, value: s.value * 10_000, pct: s.value }));
+  const allocations = useMemo(() => {
+    const build = (metric: "marketValue" | "invested") => {
+      const total = portfolioHoldings.reduce((s, h) => s + (h[metric] ?? 0), 0);
+      const bySector = new Map<string, number>();
+      portfolioHoldings.forEach((h) =>
+        bySector.set(h.sector, (bySector.get(h.sector) ?? 0) + (h[metric] ?? 0)),
+      );
+      const arr = Array.from(bySector, ([name, value]) => ({
+        name,
+        value,
+        pct: total > 0 ? (value / total) * 100 : 0,
+      })).sort((a, b) => b.value - a.value);
+      return { arr, total };
+    };
+
+    const hasData = portfolioHoldings.length > 0;
+    const current = hasData
+      ? build("marketValue")
+      : {
+        arr: sectorAllocation.map((s) => ({ name: s.name, value: s.value * 10_000, pct: s.value })),
+        total: sectorAllocation.reduce((s, x) => s + x.value * 10_000, 0),
+      };
+    const cost = hasData
+      ? build("invested")
+      : {
+        arr: sectorAllocation.map((s) => ({ name: s.name, value: s.value * 8_000, pct: s.value })),
+        total: sectorAllocation.reduce((s, x) => s + x.value * 8_000, 0),
+      };
+
+    // Stable color assignment across modes: sort sectors alphabetically
+    const sectors = Array.from(
+      new Set([...current.arr.map((s) => s.name), ...cost.arr.map((s) => s.name)]),
+    ).sort();
+    const colorMap = new Map<string, string>();
+    sectors.forEach((s, i) => colorMap.set(s, CHART_COLORS[i % CHART_COLORS.length]));
+
+    return { current, cost, colorMap };
   }, [portfolioHoldings]);
 
-  if (
-    API_ENABLED &&
-    (portfolioQuery.isLoading || portfolioQuery.isFetching) &&
-    !portfolioQuery.data
-  ) {
+  const activeAlloc = allocMode === "current" ? allocations.current : allocations.cost;
+  const allocation = activeAlloc.arr;
+
+  if (API_ENABLED && (portfolioQuery.isLoading || portfolioQuery.isFetching) && !portfolioQuery.data) {
     return (
       <div className="flex items-center justify-center py-24 text-muted-foreground">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -227,17 +269,13 @@ function PortfolioDetailPage() {
   const returnPct = portfolio.portfolioCost > 0 ? (profit / portfolio.portfolioCost) * 100 : 0;
   const positive = profit >= 0;
 
-  console.log({ portfolioHoldings });
   // Derived numbers
-  const marketValue =
-    portfolioHoldings.reduce((s, h) => s + h.marketValue, 0) || portfolio.portfolioNetworth;
-  const costBasis =
-    portfolioHoldings.reduce((s, h) => s + h.invested, 0) || portfolio.portfolioCost;
+  const marketValue = portfolioHoldings.reduce((s, h) => s + h.marketValue, 0) || portfolio.portfolioNetworth;
+  const costBasis = portfolioHoldings.reduce((s, h) => s + h.invested, 0) || portfolio.portfolioCost;
   const unrealized = marketValue - costBasis;
   const unrealizedPct = costBasis > 0 ? (unrealized / costBasis) * 100 : 0;
   const annualDividend =
-    portfolioHoldings.reduce((s, h) => s + h.qty * h.annualDividend, 0) ||
-    portfolio.annualDividendIncome;
+    portfolioHoldings.reduce((s, h) => s + h.qty * h.annualDividend, 0) || portfolio.annualDividendIncome;
   const upcomingTotal = upcomingDividends.reduce((s, d) => s + d.total, 0);
   const currentYield = marketValue > 0 ? (annualDividend / marketValue) * 100 : portfolio.yield;
   const yieldOnCost = costBasis > 0 ? (annualDividend / costBasis) * 100 : portfolio.yield * 1.3;
@@ -249,6 +287,7 @@ function PortfolioDetailPage() {
 
   const bestStock = [...portfolioHoldings].sort((a, b) => b.plPct - a.plPct)[0];
   const worstStock = [...portfolioHoldings].sort((a, b) => a.plPct - b.plPct)[0];
+
 
   const handleDelete = async () => {
     try {
@@ -492,8 +531,62 @@ function PortfolioDetailPage() {
             </Card>
 
             <Card className="card-elevated p-5">
-              <h3 className="font-semibold mb-1">Asset Allocation</h3>
-              <p className="text-xs text-muted-foreground mb-3">By sector</p>
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="font-semibold">Allocation</h3>
+                    <TooltipProvider delayDuration={100}>
+                      <UITooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label="Allocation info"
+                          >
+                            <Info className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                          <p className="mb-1">
+                            <span className="font-semibold">Current Allocation:</span> how your
+                            portfolio is distributed based on today's market value.
+                          </p>
+                          <p>
+                            <span className="font-semibold">Cost Allocation:</span> how your
+                            original investment was distributed when the positions were purchased.
+                          </p>
+                        </TooltipContent>
+                      </UITooltip>
+                    </TooltipProvider>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {allocMode === "current" ? "By current market value" : "By amount invested"}
+                  </p>
+                </div>
+                <ToggleGroup
+                  type="single"
+                  size="sm"
+                  value={allocMode}
+                  onValueChange={(v) => {
+                    if (!v) return;
+                    const next = v as "current" | "cost";
+                    setAllocMode(next);
+                    if (typeof window !== "undefined") {
+                      window.localStorage.setItem("portfolio-alloc-mode", next);
+                    }
+                  }}
+                  className="shrink-0"
+                  aria-label="Allocation method"
+                >
+                  <ToggleGroupItem value="current" className="text-xs px-2.5 h-7">
+                    Current
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="cost" className="text-xs px-2.5 h-7">
+                    Cost
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
               <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -504,31 +597,81 @@ function PortfolioDetailPage() {
                       innerRadius={45}
                       outerRadius={80}
                       paddingAngle={2}
+                      isAnimationActive
+                      animationDuration={500}
                     >
-                      {allocation.map((_, i) => (
-                        <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                      {allocation.map((s) => (
+                        <Cell
+                          key={s.name}
+                          fill={allocations.colorMap.get(s.name) ?? CHART_COLORS[0]}
+                        />
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(v: number) => pkr(v)}
+                      formatter={(v: number, _n, p) => [
+                        `${pkr(v)} (${(p?.payload?.pct ?? 0).toFixed(1)}%)`,
+                        allocMode === "current" ? "Market Value" : "Invested",
+                      ]}
                       contentStyle={{ borderRadius: 10, fontSize: 12 }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="space-y-1.5 mt-2">
-                {allocation.slice(0, 5).map((s, i) => (
-                  <div key={s.name} className="flex items-center justify-between text-xs">
+
+              <div className="space-y-1.5 mt-2 animate-fade-in" key={allocMode}>
+                {allocation.slice(0, 5).map((s) => (
+                  <div key={s.name} className="flex items-center justify-between text-xs gap-2">
                     <div className="flex items-center gap-2 min-w-0">
                       <span
                         className="h-2 w-2 rounded-full shrink-0"
-                        style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
+                        style={{ background: allocations.colorMap.get(s.name) }}
                       />
                       <span className="truncate">{s.name}</span>
                     </div>
-                    <div className="tabular-nums text-muted-foreground">{s.pct.toFixed(1)}%</div>
+                    <div className="flex items-center gap-2 shrink-0 tabular-nums">
+                      <span className="text-muted-foreground">
+                        {pkr(s.value)}
+                        {allocMode === "cost" ? " invested" : ""}
+                      </span>
+                      <span className="font-medium w-12 text-right">{s.pct.toFixed(1)}%</span>
+                    </div>
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-4 pt-3 border-t grid grid-cols-3 gap-2 text-xs">
+                <div className="min-w-0">
+                  <div className="text-muted-foreground">
+                    {allocMode === "current" ? "Total Value" : "Total Invested"}
+                  </div>
+                  <div className="font-semibold tabular-nums truncate">
+                    {pkr(activeAlloc.total)}
+                  </div>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-muted-foreground">Largest</div>
+                  <div className="font-semibold truncate">
+                    {allocation[0]?.name ?? "—"}
+                    {allocation[0] ? (
+                      <span className="text-muted-foreground font-normal">
+                        {" "}
+                        ({allocation[0].pct.toFixed(0)}%)
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-muted-foreground">Smallest</div>
+                  <div className="font-semibold truncate">
+                    {allocation[allocation.length - 1]?.name ?? "—"}
+                    {allocation.length > 0 ? (
+                      <span className="text-muted-foreground font-normal">
+                        {" "}
+                        ({allocation[allocation.length - 1].pct.toFixed(0)}%)
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
@@ -726,23 +869,23 @@ function PortfolioDetailPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {recentTransactions.slice(0, 5).map((t, i) => (
+                    {recentTransactions?.slice(0, 5).map((t, i) => (
                       <TableRow key={i}>
-                        <TableCell className="text-xs whitespace-nowrap">{t.date}</TableCell>
+                        <TableCell className="text-xs whitespace-nowrap">{toISO(t.purchaseDate)}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <StockLogo symbol={t.symbol} size={22} />
-                            <span className="font-medium text-sm">{t.symbol}</span>
+                            <StockLogo symbol={t.stock.symbol} size={22} />
+                            <span className="font-medium text-sm">{t.stock.symbol}</span>
                           </div>
                         </TableCell>
                         <TableCell>
                           <Badge variant="secondary" className="font-normal">
-                            {t.type}
+                            {t.transactionType}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right tabular-nums">{t.qty}</TableCell>
+                        <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
                         <TableCell className="text-right tabular-nums font-medium">
-                          {pkr(t.total)}
+                          {pkr(t.totalBuyingPrice)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -866,7 +1009,9 @@ function PortfolioDetailPage() {
                         <TableCell className="text-right tabular-nums">
                           {h.invested.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TableCell>
-                        <TableCell className="text-right tabular-nums">{h.currentPrice}</TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {h.currentPrice}
+                        </TableCell>
                         <TableCell className="text-right tabular-nums font-semibold">
                           {h.marketValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TableCell>
@@ -922,26 +1067,26 @@ function PortfolioDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recentTransactions.map((t, i) => (
+                  {recentTransactions?.map((t, i) => (
                     <TableRow key={i}>
-                      <TableCell className="text-xs whitespace-nowrap">{t.date}</TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">{t.purchaseDate}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <StockLogo symbol={t.symbol} size={22} />
-                          <span className="font-medium text-sm">{t.symbol}</span>
+                          <StockLogo symbol={t.stock.symbol} size={22} />
+                          <span className="font-medium text-sm">{t.stock.symbol}</span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className="font-normal">
-                          {t.type}
+                          {t.transactionType}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">{t.qty}</TableCell>
+                      <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
                       <TableCell className="text-right tabular-nums">
-                        {t.price.toFixed(2)}
+                        {Number(t.purchaseDate).toFixed(2)}
                       </TableCell>
                       <TableCell className="text-right tabular-nums font-medium">
-                        {pkr(t.total)}
+                        {pkr(t.totalBuyingPrice)}
                       </TableCell>
                     </TableRow>
                   ))}

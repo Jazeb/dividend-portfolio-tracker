@@ -5,28 +5,7 @@
 //   DELETE /transactions/:id        -> void
 
 import { http } from "@/lib/http";
-
-export type TxType = "Buy" | "Sell" | "Dividend" | "Bonus" | "Rights" | "Split" | "Transfer";
-
-export type Stock = {
-  id: number;
-  symbol: string;
-  fullName: string;
-};
-
-export interface Transaction {
-  id: string;
-  purchaseDate: string;
-  transactionType: TxType;
-  symbol?: string;
-  quantity: number;
-  buyingPrice: number;
-  totalBuyingPrice: number;
-  portfolioId: string;
-  // toPortfolioId?: string;
-  broker?: string;
-  stock: Stock;
-}
+import { Transaction, TxType } from "@/types";
 
 export type CreateTransactionDto = Omit<Transaction, "id" | "stock">;
 

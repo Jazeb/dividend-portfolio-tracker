@@ -1,20 +1,23 @@
 import { Injectable, Param, Body } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Holding, Transaction, TransactionType } from 'generated/prisma/client';
+import { Holding, Prisma, Transaction, TransactionType } from 'generated/prisma/client';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { connect } from 'http2';
 
 @Injectable()
 export class TransactionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async getTransactions(): Promise<Transaction[]> {
     return await this.prisma.transaction.findMany();
   }
 
-  async getTransactionsByProfileId(profileId: number): Promise<Transaction[]> {
+  async getTransactionsByProfileId(profileId: number, portfolioId: string): Promise<Transaction[]> {
+    const where: Prisma.TransactionWhereInput = { profileId }
+    if (portfolioId) where.portfolioId = Number(portfolioId);
+    
     return await this.prisma.transaction.findMany({
-      where: { profileId },
+      where,
       include: { stock: { select: { symbol: true, fullName: true } } },
     });
   }

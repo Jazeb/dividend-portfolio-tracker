@@ -67,6 +67,7 @@ import { buildMockDividendDashboard } from "@/lib/mock/dividend-dashbord";
 import { cn } from "@/lib/utils";
 
 import { Portfolio } from "@/types";
+import { StockLogo } from "@/components/StockLogo";
 
 // const API_ENABLED = false;
 const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
@@ -520,13 +521,13 @@ function DividendsPage() {
           />
           <StatCard
             label="Yield"
-            value={`${summary?.yield?.toFixed(2)}%`}
+            value={`${summary?.yield}%`}
             sub="portfolio"
             icon={<Percent className="h-4 w-4" />}
           />
           <StatCard
             label="Yield on Cost"
-            value={`${summary?.yieldOnCost?.toFixed(2)}%`}
+            value={`${summary?.yieldOnCost}%`}
             sub="on invested"
             icon={<Target className="h-4 w-4" />}
           />
@@ -583,9 +584,8 @@ function DividendsPage() {
                     <TableRow key={r.id} className="cursor-pointer" onClick={() => setDrawer(r)}>
                       <TableCell>
                         <div className="flex items-center gap-2.5">
-                          <div className="h-8 w-8 rounded-lg bg-accent grid place-items-center text-[10px] font-bold">
-                            {r.symbol}
-                          </div>
+                          <StockLogo symbol={r.symbol} size={22} />
+
                           <div className="min-w-0">
                             <div className="font-medium text-sm">{r.symbol}</div>
                             <div className="text-xs text-muted-foreground truncate max-w-[180px]">

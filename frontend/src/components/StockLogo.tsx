@@ -25,7 +25,7 @@ interface StockLogoProps {
 }
 
 export function StockLogo({ symbol, className, size = 32 }: StockLogoProps) {
-  const url = logoMap[symbol.toUpperCase()];
+  const url = logoMap[symbol?.toUpperCase()];
   const dim = { width: size, height: size };
   if (url) {
     return (

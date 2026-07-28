@@ -77,7 +77,7 @@ export interface Portfolio {
   profitPercent: number;
   annualDividendIncome: number;
   yield: number;
-  createdAt: string;
+  createdAt?: string;
   holdings?: Holding[];
   upcomingDividend?: UpcomingDividend[];
   monthlyDividends?: MonthlyDividend[];

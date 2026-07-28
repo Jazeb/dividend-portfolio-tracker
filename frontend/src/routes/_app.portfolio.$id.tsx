@@ -78,7 +78,8 @@ import {
   pkr,
   monthLabels,
 } from "@/lib/mock-data";
-import { portfoliosApi } from "@/lib/api/portfolios";
+import { portfoliosApi, type PortfolioPerformance } from "@/lib/api/portfolios";
+import { buildMockPerformance } from "@/lib/mock/portfolio-performance";
 import { toast } from "sonner";
 import { Portfolio, Transaction } from "@/types";
 import { transactionsApi } from "@/lib/api/transactions";
@@ -299,7 +300,6 @@ function PortfolioDetailPage() {
   const unrealized = marketValue - costBasis;
   const unrealizedPct = costBasis > 0 ? (unrealized / costBasis) * 100 : 0;
   const annualDividend = portfolio.annualDividendIncome;
-  console.log({ annualDividend });
 
   const upcomingTotal = upcomingDividends?.reduce((s, d) => s + d.total, 0);
   const currentYield = marketValue > 0 ? (annualDividend / marketValue) * 100 : portfolio.yield;
@@ -1122,7 +1122,7 @@ function PortfolioDetailPage() {
         </TabsContent>
 
         {/* ----------- DIVIDENDS ------------ */}
-        <TabsContent value="dividends" className="space-y-4 animate-in fade-in-50">
+        {/* <TabsContent value="dividends" className="space-y-4 animate-in fade-in-50">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
               label="Annual Income"
@@ -1214,177 +1214,475 @@ function PortfolioDetailPage() {
               </ResponsiveContainer>
             </div>
           </Card>
-        </TabsContent>
+        </TabsContent> */}
 
         {/* ----------- PERFORMANCE ------------ */}
-        <TabsContent value="performance" className="space-y-4 animate-in fade-in-50">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard
-              label="Portfolio Return"
-              value={`${returnPct.toFixed(2)}%`}
-              tone="primary"
-              delta={returnPct}
-              icon={<TrendingUp className="h-4 w-4" />}
-            />
-            <StatCard
-              label="Realized Gain"
-              value={pkr(Math.round(profit * 0.15))}
-              icon={<Coins className="h-4 w-4" />}
-            />
-            <StatCard
-              label="Unrealized Gain"
-              value={pkr(unrealized)}
-              icon={<TrendingUp className="h-4 w-4" />}
-              delta={unrealizedPct}
-            />
-            <StatCard
-              label="CAGR (est.)"
-              value={`${(returnPct / 2).toFixed(2)}%`}
-              icon={<BarChart3 className="h-4 w-4" />}
-              sub="2y avg"
-            />
-          </div>
-
-          <Card className="card-elevated p-5">
-            <h3 className="font-semibold mb-1">Portfolio Growth</h3>
-            <p className="text-xs text-muted-foreground mb-4">Value vs. cost basis</p>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={portfolioGrowth}>
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                  <XAxis dataKey="month" fontSize={11} tickLine={false} axisLine={false} />
-                  <YAxis
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
-                  />
-                  <Tooltip
-                    formatter={(v: number) => pkr(v)}
-                    contentStyle={{ borderRadius: 10, fontSize: 12 }}
-                  />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    name="Value"
-                    stroke="hsl(160 65% 45%)"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="cost"
-                    name="Cost"
-                    stroke="hsl(220 15% 55%)"
-                    strokeWidth={2}
-                    strokeDasharray="4 4"
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {bestStock && (
-              <Card className="card-elevated p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="h-8 w-8 rounded-lg bg-success/15 text-success grid place-items-center">
-                    <Trophy className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                      Best Performer
-                    </div>
-                    <div className="font-semibold">{bestStock.symbol}</div>
-                  </div>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div className="text-sm text-muted-foreground">{bestStock.name}</div>
-                  <div className="text-right">
-                    <div className="text-2xl font-display font-semibold text-success tabular-nums">
-                      +{bestStock.plPct.toFixed(1)}%
-                    </div>
-                    <div className="text-xs text-muted-foreground tabular-nums">
-                      +{pkr(bestStock.pl)}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            )}
-            {worstStock && (
-              <Card className="card-elevated p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="h-8 w-8 rounded-lg bg-destructive/15 text-destructive grid place-items-center">
-                    <TrendingDown className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                      Worst Performer
-                    </div>
-                    <div className="font-semibold">{worstStock.symbol}</div>
-                  </div>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div className="text-sm text-muted-foreground">{worstStock.name}</div>
-                  <div className="text-right">
-                    <div
-                      className={cn(
-                        "text-2xl font-display font-semibold tabular-nums",
-                        worstStock.plPct >= 0 ? "text-success" : "text-destructive",
-                      )}
-                    >
-                      {worstStock.plPct >= 0 ? "+" : ""}
-                      {worstStock.plPct.toFixed(1)}%
-                    </div>
-                    <div className="text-xs text-muted-foreground tabular-nums">
-                      {worstStock.pl >= 0 ? "+" : ""}
-                      {pkr(worstStock.pl)}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            )}
-          </div>
-
-          <Card className="card-elevated p-5">
-            <h3 className="font-semibold mb-4">Monthly Returns</h3>
-            <div className="h-[240px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={portfolioGrowth.map((g, i, arr) => {
-                    const prev = arr[i - 1]?.value ?? g.value;
-                    return { month: g.month, ret: ((g.value - prev) / prev) * 100 };
-                  })}
-                >
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                  <XAxis dataKey="month" fontSize={11} tickLine={false} axisLine={false} />
-                  <YAxis
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(v) => `${v.toFixed(1)}%`}
-                  />
-                  <Tooltip
-                    formatter={(v: number) => `${v.toFixed(2)}%`}
-                    contentStyle={{ borderRadius: 10, fontSize: 12 }}
-                  />
-                  <Bar dataKey="ret" radius={[6, 6, 0, 0]}>
-                    {portfolioGrowth.map((g, i, arr) => {
-                      const prev = arr[i - 1]?.value ?? g.value;
-                      const positive = g.value - prev >= 0;
-                      return (
-                        <Cell key={i} fill={positive ? "hsl(160 65% 45%)" : "hsl(0 70% 60%)"} />
-                      );
-                    })}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
+        <TabsContent value="performance" className="space-y-6 animate-in fade-in-50">
+          <PerformanceTab
+            portfolioId={portfolio.id}
+            fallback={{
+              marketValue,
+              costBasis,
+              annualDividend,
+              holdings: portfolioHoldings.map((h) => ({
+                symbol: h.symbol,
+                qty: h.qty,
+                avgPrice: h.avgPrice,
+                currentPrice: h.currentPrice,
+                annualDividend: h.annualDividend,
+              })),
+            }}
+          />
         </TabsContent>
       </Tabs>
     </>
+  );
+}
+
+// ============================================================
+// PERFORMANCE TAB
+// ============================================================
+
+interface PerformanceFallback {
+  marketValue: number;
+  costBasis: number;
+  annualDividend: number;
+  holdings: {
+    symbol: string;
+    qty: number;
+    avgPrice: number;
+    currentPrice: number;
+    annualDividend: number;
+  }[];
+}
+
+function PerformanceTab({
+  portfolioId,
+  fallback,
+}: {
+  portfolioId: number | string;
+  fallback: PerformanceFallback;
+}) {
+  const mock = useMemo<PortfolioPerformance>(() => buildMockPerformance(fallback), [fallback]);
+
+  const perfQuery = useQuery<PortfolioPerformance>({
+    queryKey: ["portfolio-performance", portfolioId],
+    queryFn: () => portfoliosApi.performance(portfolioId),
+    enabled: API_ENABLED,
+    staleTime: 60_000,
+  });
+
+  if (API_ENABLED && perfQuery.isLoading && !perfQuery.data) {
+    return (
+      <div className="flex items-center justify-center py-16 text-muted-foreground">
+        <Loader2 className="h-5 w-5 animate-spin mr-2" />
+        Loading performance…
+      </div>
+    );
+  }
+
+  if (API_ENABLED && perfQuery.isError && !perfQuery.data) {
+    return (
+      <Card className="p-6 text-center">
+        <div className="text-sm text-destructive mb-3">Could not load performance metrics.</div>
+        <Button variant="outline" size="sm" onClick={() => perfQuery.refetch()}>
+          Retry
+        </Button>
+      </Card>
+    );
+  }
+
+  const data: PortfolioPerformance = API_ENABLED ? (perfQuery.data ?? mock) : mock;
+  const {
+    dividend,
+    capital,
+    portfolioGrowth: growth,
+    annualDividendGrowth,
+    monthlyDividendIncome,
+    incomeByStock,
+    insights,
+    health,
+  } = data;
+
+  const unrealizedPct =
+    capital.marketValue - capital.unrealizedGain > 0
+      ? (capital.unrealizedGain / (capital.marketValue - capital.unrealizedGain)) * 100
+      : 0;
+
+  const targetPct =
+    health.dividendTarget > 0
+      ? Math.min(100, (health.currentDividend / health.dividendTarget) * 100)
+      : 0;
+
+  const maxIncome = Math.max(...incomeByStock.map((s) => s.income), 1);
+  const maxAnnual = Math.max(...annualDividendGrowth.map((y) => y.income), 1);
+
+  return (
+    <div className="space-y-6 animate-in fade-in-50">
+      {/* SECTION 1 — Dividend Performance */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Coins className="h-4 w-4 text-primary" />
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            Dividend Performance
+          </h3>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            label="Annual Dividend Income"
+            value={pkr(dividend.annualIncome)}
+            tone="primary"
+            icon={<Coins className="h-4 w-4" />}
+            sub="projected"
+            delta={dividend.growth}
+            deltaLabel="vs last year"
+          />
+          <StatCard
+            label="Yield on Cost"
+            value={`${dividend.yieldOnCost.toFixed(2)}%`}
+            tone="primary"
+            icon={<Target className="h-4 w-4" />}
+            sub="on invested"
+          />
+          <StatCard
+            label="Current Dividend Yield"
+            value={`${dividend.currentYield.toFixed(2)}%`}
+            icon={<PieIcon className="h-4 w-4" />}
+            sub="on market value"
+          />
+          <StatCard
+            label="Dividend Growth"
+            value={`+${dividend.growth.toFixed(1)}%`}
+            icon={<TrendingUp className="h-4 w-4" />}
+            sub="vs previous year"
+          />
+        </div>
+      </div>
+
+      {/* SECTION 2 — Capital Performance */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <BarChart3 className="h-4 w-4 text-primary" />
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            Capital Performance
+          </h3>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            label="Market Value"
+            value={pkr(capital.marketValue)}
+            icon={<Wallet className="h-4 w-4" />}
+          />
+          <StatCard
+            label="Unrealized Gain"
+            value={`${capital.unrealizedGain >= 0 ? "+" : ""}${pkr(capital.unrealizedGain)}`}
+            icon={
+              capital.unrealizedGain >= 0 ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )
+            }
+            delta={unrealizedPct}
+          />
+          <StatCard
+            label="Realized Gain"
+            value={pkr(capital.realizedGain)}
+            icon={<Coins className="h-4 w-4" />}
+          />
+          <StatCard
+            label="Total Return"
+            value={pkr(capital.totalReturn)}
+            tone="primary"
+            icon={<Trophy className="h-4 w-4" />}
+            sub="gain + dividends"
+          />
+        </div>
+      </div>
+
+      {/* SECTION 3 — Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="card-elevated p-5">
+          <div className="mb-4">
+            <h3 className="font-semibold">Portfolio Growth</h3>
+            <p className="text-xs text-muted-foreground">Market value vs. cost basis</p>
+          </div>
+          <div className="h-[280px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={growth}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                <XAxis dataKey="month" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+                />
+                <Tooltip
+                  contentStyle={{ borderRadius: 10, fontSize: 12 }}
+                  formatter={(v: number, name: string) => [pkr(v), name]}
+                  labelFormatter={(label, payload) => {
+                    const p = payload?.[0]?.payload as
+                      { cost: number; marketValue: number } | undefined;
+                    const gain = p ? p.marketValue - p.cost : 0;
+                    return `${label} · Gain ${gain >= 0 ? "+" : ""}${pkr(gain)}`;
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Line
+                  type="monotone"
+                  dataKey="marketValue"
+                  name="Market Value"
+                  stroke="hsl(160 65% 45%)"
+                  strokeWidth={2.5}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="cost"
+                  name="Cost Basis"
+                  stroke="hsl(220 15% 55%)"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        <Card className="card-elevated p-5">
+          <div className="mb-4">
+            <h3 className="font-semibold">Dividend Income Growth</h3>
+            <p className="text-xs text-muted-foreground">Annual dividend income</p>
+          </div>
+          <div className="h-[280px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={annualDividendGrowth}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                <XAxis dataKey="year" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+                />
+                <Tooltip
+                  contentStyle={{ borderRadius: 10, fontSize: 12 }}
+                  formatter={(v: number, _n, item) => {
+                    const idx = annualDividendGrowth.findIndex((y) => y.year === item.payload.year);
+                    const prev = idx > 0 ? annualDividendGrowth[idx - 1].income : 0;
+                    const growthPct = prev > 0 ? ((v - prev) / prev) * 100 : 0;
+                    return [
+                      `${pkr(v)}${item.payload.projected ? " (projected)" : ""}`,
+                      `Growth ${growthPct >= 0 ? "+" : ""}${growthPct.toFixed(1)}%`,
+                    ];
+                  }}
+                />
+                <Bar dataKey="income" radius={[8, 8, 0, 0]}>
+                  {annualDividendGrowth.map((y) => (
+                    <Cell
+                      key={y.year}
+                      fill={y.projected ? "hsl(160 55% 65%)" : "hsl(160 65% 45%)"}
+                      fillOpacity={y.projected ? 0.7 : 1}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-2 text-[11px] text-muted-foreground flex items-center gap-3">
+            <span className="inline-flex items-center gap-1">
+              <span className="h-2 w-2 rounded-sm bg-[hsl(160_65%_45%)]" /> Realized
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <span className="h-2 w-2 rounded-sm bg-[hsl(160_55%_65%)] opacity-70" /> Projected
+            </span>
+          </div>
+        </Card>
+      </div>
+
+      {/* SECTION 4 — Dividend Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="card-elevated p-5">
+          <div className="mb-4">
+            <h3 className="font-semibold">Monthly Dividend Income</h3>
+            <p className="text-xs text-muted-foreground">Projected income by month</p>
+          </div>
+          <div className="h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={monthlyDividendIncome}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                <XAxis dataKey="month" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
+                />
+                <Tooltip
+                  contentStyle={{ borderRadius: 10, fontSize: 12 }}
+                  formatter={(v: number) => [pkr(v), "Income"]}
+                />
+                <Bar dataKey="income" fill="hsl(160 65% 45%)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        <Card className="card-elevated p-5">
+          <div className="mb-4">
+            <h3 className="font-semibold">Income by Stock</h3>
+            <p className="text-xs text-muted-foreground">Annual dividend contribution</p>
+          </div>
+          <div className="space-y-3">
+            {incomeByStock.length === 0 && (
+              <div className="text-sm text-muted-foreground py-6 text-center">
+                No income data yet.
+              </div>
+            )}
+            {incomeByStock.slice(0, 8).map((s) => {
+              const barPct = (s.income / maxIncome) * 100;
+              console.log({ s });
+              return (
+                <div key={s.symbol} className="flex items-center gap-3">
+                  {/* <StockLogo symbol={s.symbol} size={28} /> */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline justify-between gap-2 mb-1">
+                      <span className="text-sm font-semibold">{s.symbol}</span>
+                      <span className="text-xs tabular-nums text-muted-foreground">
+                        {pkr(s.income)} · {s.percentage.toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-accent/60 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-700"
+                        style={{ width: `${barPct}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+
+      {/* SECTION 5 — Insights */}
+      <Card className="card-elevated p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Trophy className="h-4 w-4 text-primary" />
+          <h3 className="font-semibold">Performance Insights</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <InsightTile
+            label="Highest Dividend Contributor"
+            symbol={insights.highestContributor}
+            detail={(() => {
+              const s = incomeByStock.find((x) => x.symbol === insights.highestContributor);
+              return s ? `${pkr(s.income)}/year` : "—";
+            })()}
+          />
+          <InsightTile
+            label="Highest Yield on Cost"
+            symbol={insights.highestYieldOnCost}
+            detail={`${dividend.yieldOnCost.toFixed(1)}%`}
+          />
+          <InsightTile
+            label="Largest Capital Gain"
+            symbol={insights.largestCapitalGain}
+            detail={`+${pkr(Math.max(capital.unrealizedGain, 0))}`}
+            positive
+          />
+          <InsightTile
+            label="Largest Position"
+            symbol={insights.largestPosition}
+            detail={(() => {
+              const s = incomeByStock.find((x) => x.symbol === insights.largestPosition);
+              return s ? `${s.percentage.toFixed(1)}%` : "—";
+            })()}
+          />
+        </div>
+      </Card>
+
+      {/* SECTION 6 — Portfolio Health */}
+      <Card className="card-elevated p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Target className="h-4 w-4 text-primary" />
+          <h3 className="font-semibold">Portfolio Health</h3>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div>
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Dividend Target
+              </span>
+              <span className="text-xs font-semibold tabular-nums">{targetPct.toFixed(0)}%</span>
+            </div>
+            <div className="text-lg font-display font-semibold tabular-nums">
+              {pkr(health.currentDividend)}{" "}
+              <span className="text-sm text-muted-foreground font-normal">
+                / {pkr(health.dividendTarget)}
+              </span>
+            </div>
+            <Progress value={targetPct} className="h-2 mt-3" />
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+              Diversification
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-display font-semibold text-success">
+                {health.diversificationScore}
+              </span>
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              {new Set(fallback.holdings.map((h) => h.symbol)).size} holdings
+            </div>
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+              Average Holding Period
+            </div>
+            <div className="text-2xl font-display font-semibold tabular-nums">
+              {health.holdingPeriodYears.toFixed(1)}
+              <span className="text-sm text-muted-foreground font-normal ml-1">years</span>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function InsightTile({
+  label,
+  symbol,
+  detail,
+  positive,
+}: {
+  label: string;
+  symbol: string;
+  detail: string;
+  positive?: boolean;
+}) {
+  return (
+    <div className="rounded-xl border border-border/60 bg-accent/30 p-4 flex items-center gap-3 hover-lift">
+      {/* <StockLogo symbol={symbol} size={40} /> */}
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground truncate">
+          {label}
+        </div>
+        <div className="font-semibold">{symbol}</div>
+        <div
+          className={cn(
+            "text-xs tabular-nums",
+            positive ? "text-success" : "text-muted-foreground",
+          )}
+        >
+          {detail}
+        </div>
+      </div>
+    </div>
   );
 }

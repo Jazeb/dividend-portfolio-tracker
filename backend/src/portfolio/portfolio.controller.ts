@@ -22,6 +22,11 @@ export class PortfolioController {
     return this.portfolioService.create(body, userId);
   }
 
+  @Get(':id/performance')
+  getPortfolioPerformanceById(@Param('id') portfolioId: string, @Headers('UserId') userId: string) {
+    return this.portfolioService.getPortfolioPerformaceByPortfolioId(portfolioId, userId);
+  }
+
   @Get(':id')
   getPortfolioById(@Param('id') portfolioId: string, @Headers('UserId') userId: string) {
     return this.portfolioService.getPortfolioById(portfolioId, userId);

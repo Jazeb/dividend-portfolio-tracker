@@ -75,10 +75,8 @@ import {
   holdings as seedHoldings,
   portfolioGrowth,
   sectorAllocation,
-  monthlyDividends,
-  upcomingDividends,
-  recentTransactions,
   pkr,
+  monthLabels,
 } from "@/lib/mock-data";
 import { portfoliosApi } from "@/lib/api/portfolios";
 import { toast } from "sonner";
@@ -129,13 +127,16 @@ function PortfolioDetailPage() {
 
   const transactionsQuery = useQuery<Transaction[]>({
     queryKey: ["transaction"],
-    queryFn: () => transactionsApi.list({ portfolioId: '1' }),
+    queryFn: () => transactionsApi.list({ portfolioId: "1" }),
     enabled: API_ENABLED,
     staleTime: 5 * 60_000,
   });
 
   const portfolio = API_ENABLED ? portfolioQuery.data : seedPortfolio;
   const recentTransactions = transactionsQuery.data;
+
+  const upcomingDividends = portfolio?.upcomingDividend;
+  const _monthlyDividends = portfolio?.monthlyDividends;
 
   // Holdings for this portfolio: prefer backend-provided `portfolio.holdings`,
   // otherwise deterministically partition the seed data for demo mode.
@@ -149,16 +150,16 @@ function PortfolioDetailPage() {
     const raw =
       portfolio.holdings && portfolio.holdings.length > 0
         ? portfolio.holdings.map((h) => ({
-          symbol: h.symbol,
-          name: h.fullName,
-          sector: h.sector,
-          qty: Number(h.quantity),
-          avgPrice: Number(h.avgPrice),
-          currentPrice: h.currentPrice,
-          annualDividend: h.annualDividend,
-          dividendYield: Number(h.yield),
-          yieldOnCost: h.yoc,
-        }))
+            symbol: h.symbol,
+            name: h.fullName,
+            sector: h.sector,
+            qty: Number(h.quantity),
+            avgPrice: Number(h.avgPrice),
+            currentPrice: h.currentPrice,
+            annualDividend: h.annualDividend,
+            dividendYield: Number(h.yield).toFixed(2),
+            yieldOnCost: h.yoc,
+          }))
         : API_ENABLED
           ? []
           : seedHoldings.filter((_, i) => i % Math.max(seedList.length, 1) === idx);
@@ -184,6 +185,13 @@ function PortfolioDetailPage() {
     return portfolioGrowth.slice(-map[tf]);
   }, [tf]);
 
+  const mappedMonthlyDividends = (_monthlyDividends ?? []).map((d) => {
+    return {
+      month: monthLabels[Number(d.month) - 1],
+      amount: Number(d.gross),
+    };
+  });
+
   const allocations = useMemo(() => {
     const build = (metric: "marketValue" | "invested") => {
       const total = portfolioHoldings.reduce((s, h) => s + (h[metric] ?? 0), 0);
@@ -203,15 +211,23 @@ function PortfolioDetailPage() {
     const current = hasData
       ? build("marketValue")
       : {
-        arr: sectorAllocation.map((s) => ({ name: s.name, value: s.value * 10_000, pct: s.value })),
-        total: sectorAllocation.reduce((s, x) => s + x.value * 10_000, 0),
-      };
+          arr: sectorAllocation.map((s) => ({
+            name: s.name,
+            value: s.value * 10_000,
+            pct: s.value,
+          })),
+          total: sectorAllocation.reduce((s, x) => s + x.value * 10_000, 0),
+        };
     const cost = hasData
       ? build("invested")
       : {
-        arr: sectorAllocation.map((s) => ({ name: s.name, value: s.value * 8_000, pct: s.value })),
-        total: sectorAllocation.reduce((s, x) => s + x.value * 8_000, 0),
-      };
+          arr: sectorAllocation.map((s) => ({
+            name: s.name,
+            value: s.value * 8_000,
+            pct: s.value,
+          })),
+          total: sectorAllocation.reduce((s, x) => s + x.value * 8_000, 0),
+        };
 
     // Stable color assignment across modes: sort sectors alphabetically
     const sectors = Array.from(
@@ -226,7 +242,11 @@ function PortfolioDetailPage() {
   const activeAlloc = allocMode === "current" ? allocations.current : allocations.cost;
   const allocation = activeAlloc.arr;
 
-  if (API_ENABLED && (portfolioQuery.isLoading || portfolioQuery.isFetching) && !portfolioQuery.data) {
+  if (
+    API_ENABLED &&
+    (portfolioQuery.isLoading || portfolioQuery.isFetching) &&
+    !portfolioQuery.data
+  ) {
     return (
       <div className="flex items-center justify-center py-24 text-muted-foreground">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -270,28 +290,33 @@ function PortfolioDetailPage() {
   const positive = profit >= 0;
 
   // Derived numbers
-  const marketValue = portfolioHoldings.reduce((s, h) => s + h.marketValue, 0) || portfolio.portfolioNetworth;
-  const costBasis = portfolioHoldings.reduce((s, h) => s + h.invested, 0) || portfolio.portfolioCost;
+  const marketValue =
+    portfolioHoldings.reduce((s, h) => s + h.marketValue, 0) || portfolio.portfolioNetworth;
+
+  const costBasis =
+    portfolioHoldings.reduce((s, h) => s + h.invested, 0) || portfolio.portfolioCost;
+
   const unrealized = marketValue - costBasis;
   const unrealizedPct = costBasis > 0 ? (unrealized / costBasis) * 100 : 0;
-  const annualDividend =
-    portfolioHoldings.reduce((s, h) => s + h.qty * h.annualDividend, 0) || portfolio.annualDividendIncome;
-  const upcomingTotal = upcomingDividends.reduce((s, d) => s + d.total, 0);
+  const annualDividend = portfolio.annualDividendIncome;
+  console.log({ annualDividend });
+
+  const upcomingTotal = upcomingDividends?.reduce((s, d) => s + d.total, 0);
   const currentYield = marketValue > 0 ? (annualDividend / marketValue) * 100 : portfolio.yield;
   const yieldOnCost = costBasis > 0 ? (annualDividend / costBasis) * 100 : portfolio.yield * 1.3;
 
   const topHoldings = [...portfolioHoldings]
     .sort((a, b) => b.marketValue - a.marketValue)
     .slice(0, 5);
+
   const totalMv = portfolioHoldings.reduce((s, h) => s + h.marketValue, 0);
 
   const bestStock = [...portfolioHoldings].sort((a, b) => b.plPct - a.plPct)[0];
   const worstStock = [...portfolioHoldings].sort((a, b) => a.plPct - b.plPct)[0];
 
-
   const handleDelete = async () => {
     try {
-      // if (API_ENABLED) await portfoliosApi.remove(portfolio.id);
+      // if (API_ENABLED) await portfoliosApi.remove(portfolio.id);q  1
       toast.success(`"${portfolio.name}" deleted`);
       navigate({ to: "/portfolio" });
     } catch (err) {
@@ -449,7 +474,7 @@ function PortfolioDetailPage() {
             />
             <StatCard
               label="Upcoming Dividend"
-              value={pkr(upcomingTotal)}
+              value={pkr(upcomingTotal ?? 0)}
               icon={<CalendarDays className="h-4 w-4" />}
               sub="next 30 days"
             />
@@ -784,8 +809,8 @@ function PortfolioDetailPage() {
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { label: "Annual Income", value: pkr(annualDividend) },
-                  { label: "Upcoming", value: pkr(upcomingTotal) },
-                  { label: "Next Payment", value: upcomingDividends[0]?.payDate ?? "—" },
+                  { label: "Upcoming", value: pkr(upcomingTotal ?? 0) },
+                  // { label: "Next Payment", value: upcomingDividends?[0]?.payDate ?? "—" },
                   { label: "Lifetime Received", value: pkr(portfolio.annualDividendIncome * 4) },
                   { label: "Current Yield", value: `${currentYield.toFixed(2)}%` },
                   { label: "Yield on Cost", value: `${yieldOnCost.toFixed(2)}%` },
@@ -871,7 +896,9 @@ function PortfolioDetailPage() {
                   <TableBody>
                     {recentTransactions?.slice(0, 5).map((t, i) => (
                       <TableRow key={i}>
-                        <TableCell className="text-xs whitespace-nowrap">{toISO(t.purchaseDate)}</TableCell>
+                        <TableCell className="text-xs whitespace-nowrap">
+                          {toISO(t.purchaseDate)}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <StockLogo symbol={t.stock.symbol} size={22} />
@@ -918,7 +945,7 @@ function PortfolioDetailPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {upcomingDividends.slice(0, 5).map((d) => (
+                    {upcomingDividends?.slice(0, 5).map((d) => (
                       <TableRow key={d.symbol}>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -1009,9 +1036,7 @@ function PortfolioDetailPage() {
                         <TableCell className="text-right tabular-nums">
                           {h.invested.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TableCell>
-                        <TableCell className="text-right tabular-nums">
-                          {h.currentPrice}
-                        </TableCell>
+                        <TableCell className="text-right tabular-nums">{h.currentPrice}</TableCell>
                         <TableCell className="text-right tabular-nums font-semibold">
                           {h.marketValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </TableCell>
@@ -1107,7 +1132,7 @@ function PortfolioDetailPage() {
             />
             <StatCard
               label="Upcoming"
-              value={pkr(upcomingTotal)}
+              value={pkr(upcomingTotal ?? 0)}
               icon={<CalendarDays className="h-4 w-4" />}
             />
             <StatCard
@@ -1134,10 +1159,12 @@ function PortfolioDetailPage() {
                     <TableHead>Pay Date</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
                     <TableHead className="text-right">Est. Total</TableHead>
+                    <TableHead className="text-right">After Tax</TableHead>
+                    <TableHead className="text-right">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {upcomingDividends.map((d) => (
+                  {upcomingDividends?.map((d) => (
                     <TableRow key={d.symbol}>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -1154,6 +1181,10 @@ function PortfolioDetailPage() {
                       <TableCell className="text-right tabular-nums font-medium">
                         {pkr(d.total)}
                       </TableCell>
+                      <TableCell className="text-right tabular-nums font-medium">
+                        {pkr(d.afterTax)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">{d.status}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1165,7 +1196,7 @@ function PortfolioDetailPage() {
             <h3 className="font-semibold mb-4">Monthly Dividend Income</h3>
             <div className="h-[260px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyDividends}>
+                <BarChart data={mappedMonthlyDividends}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                   <XAxis dataKey="month" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis

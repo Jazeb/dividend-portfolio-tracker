@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePortfolioDTO } from './dto/createPortfolio.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Holding, Portfolio } from 'generated/prisma/client';
+import { Portfolio } from 'generated/prisma/client';
 import { DividendService } from 'src/dividend/dividend.service';
 import { PortfolioCalculator } from './calculators/portfolio-calculator';
+import { toISO } from '../utils/helper';
 
 @Injectable()
 export class PortfolioService {
@@ -15,16 +16,22 @@ export class PortfolioService {
   async getPortfolioById(portfolioId: string, profileId) {
     const portfolio = await this.prismaService.portfolio.findFirst({
       where: { id: Number(portfolioId), profileId: Number(profileId) },
-      include: { holdings: { include: { stocks: { include: { sector: true } } } } },
+      include: { holdings: { include: { stocks: { include: { sector: true, dividendDeclaration: true } } } } },
     });
+
+    if (!portfolio) return;
+
     const summary = this.getPortfolioSummary(portfolio);
+    const upcomingDividends = this.getUpcomingDividends(portfolio?.holdings);
+    const monthlyDividends = await this.getMonthlyDividends(portfolio.id);
     const data = {
       ...summary,
       description: portfolio?.description,
       strategy: portfolio?.strategy,
       holdings: this.mapHoldings(portfolio?.holdings),
       createdAt: portfolio?.createdAt,
-      upcomingDividend: 0,
+      upcomingDividend: upcomingDividends,
+      monthlyDividends,
     };
     return data;
   }
@@ -114,5 +121,51 @@ export class PortfolioService {
         profile: { connect: { id: Number(profileId) } },
       },
     });
+  }
+
+  async getMonthlyDividends(portfolioId: number) {
+    const year = new Date().getFullYear();
+
+    const startOfYear = new Date(year, 0, 1); // 2026-01-01
+    const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999); // 2026-12-31
+
+    const result = await this.prismaService.$queryRaw<{ month: number; gross: number }[]>`
+      SELECT
+          m.month,
+          COALESCE(SUM(h.quantity * dd."dividendPerShare"), 0) AS gross
+      FROM generate_series(1, 12) AS m(month)
+      LEFT JOIN "DividendDeclaration" dd
+          ON EXTRACT(MONTH FROM dd."paymentDate") = m.month
+          AND dd."paymentDate" BETWEEN ${startOfYear} AND ${endOfYear}
+      LEFT JOIN "Holding" h
+          ON h."stockId" = dd."stockId"
+          AND h."portfolioId" = ${portfolioId}
+      GROUP BY m.month
+      ORDER BY m.month;
+    `;
+
+    return result;
+  }
+
+  getUpcomingDividends(holdings) {
+    return holdings
+      .map(h => {
+        const stocks = h.stocks;
+        const declaration = stocks.dividendDeclaration.find(d => new Date(d.exDividendDate) > new Date());
+        if (!declaration) return;
+        const total = declaration.dividendPerShare * h.quantity;
+        const afterTax = total * 0.85;
+        return {
+          symbol: stocks.symbol,
+          company: stocks.fullName,
+          amount: declaration.dividendPerShare,
+          exDate: toISO(declaration.exDividendDate),
+          payDate: toISO(declaration.paymentDate),
+          total: total,
+          status: declaration.status,
+          afterTax: afterTax,
+        };
+      })
+      .filter(d => d);
   }
 }

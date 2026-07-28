@@ -91,7 +91,7 @@ export class DividendService {
       include: { holdings: { include: { stocks: { include: { sector: true } } } } },
     });
 
-    const upcommingDividends = this.getUpcomingDividends(dividendPayments);
+    const upcommingDividends = this._getUpcomingDividends(dividendPayments);
     const dividendHistory = this.getDividendHistory(dividendPayments);
 
     const summary = this.getSummaryData(portfolio);
@@ -216,7 +216,7 @@ export class DividendService {
     return Number.isNaN(currentYield) ? 0 : currentYield;
   }
 
-  getUpcomingDividends(upcoming) {
+  private _getUpcomingDividends(upcoming) {
     return upcoming.map(payment => {
       const d = payment.declaration;
 
@@ -278,6 +278,10 @@ export class DividendService {
         status: payment.status,
       };
     });
+  }
+
+  async getUpcomingDividends(portfolioId?: string) {
+    return this.prismaService.dividendDeclaration.findMany();
   }
 
   // async getUpcomingDividends(): Promise<any[]> {

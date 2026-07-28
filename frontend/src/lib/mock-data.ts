@@ -210,10 +210,13 @@ export const sectorAllocation = [
   { name: "Other", value: 5 },
 ];
 
-export const monthlyDividends = monthLabels.map((m, i) => ({
-  month: m,
-  amount: [18, 42, 15, 68, 24, 55, 22, 71, 34, 88, 28, 62][i] * 1000,
-}));
+export const monthlyDividends = monthLabels.map((m, i) => {
+  const returnValues = {
+    month: m,
+    amount: [18, 42, 15, 68, 24, 55, 22, 71, 34, 88, 28, 62][i] * 1000,
+  };
+  return returnValues;
+});
 
 export const upcomingDividends = [
   {

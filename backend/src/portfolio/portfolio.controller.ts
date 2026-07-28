@@ -7,8 +7,6 @@ import { Portfolio } from 'generated/prisma/client';
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
 
-  
-
   @Get('/byProfile')
   getPortfoliosByProfile(@Headers('UserId') userId: string): Promise<Portfolio[]> {
     return this.portfolioService.getPortfolioByProfile(userId);
@@ -25,11 +23,7 @@ export class PortfolioController {
   }
 
   @Get(':id')
-  getPortfolioById(
-    @Param('id') portfolioId: string, 
-    @Headers('UserId') userId: string
-  ) {
-    console.log({portfolioId, userId})
+  getPortfolioById(@Param('id') portfolioId: string, @Headers('UserId') userId: string) {
     return this.portfolioService.getPortfolioById(portfolioId, userId);
   }
 }

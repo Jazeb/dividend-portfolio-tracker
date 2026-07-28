@@ -24,7 +24,6 @@ export interface Stock {
 
 export type TxType = "Buy" | "Sell" | "Dividend" | "Bonus" | "Rights" | "Split" | "Transfer";
 
-
 export interface Transaction {
   id: string;
   purchaseDate: string;
@@ -80,6 +79,8 @@ export interface Portfolio {
   yield: number;
   createdAt: string;
   holdings?: Holding[];
+  upcomingDividend?: UpcomingDividend[];
+  monthlyDividends?: MonthlyDividend[];
 }
 
 export interface DividendHistory {
@@ -97,27 +98,18 @@ export interface DividendHistory {
 
 export interface UpcomingDividend {
   symbol: string;
-  fullName: string;
-  eligibleShares: string;
-  dividendPerShare: string;
-  grossDividend: string;
-  taxAmount: string;
-  netDividend: string;
-  paymentDate: string;
+  company: string;
+  amount: string; // e.g. "PKR 3.5/sh"
+  exDate: string;
+  payDate: string;
+  total: number;
+  afterTax: number;
   status: string;
-  exDividendDate: string;
-
-  // symbol: string;
-  // company: string;
-  // amount: string; // e.g. "PKR 3.5/sh"
-  // exDate: string;
-  // payDate: string;
-  // total: number;
 }
 
 export interface MonthlyDividend {
   month: string;
-  amount: number;
+  gross: string;
 }
 
 export interface DividendGrowthPoint {

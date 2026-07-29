@@ -32,7 +32,7 @@ export interface Transaction {
   quantity: number;
   buyingPrice: number;
   totalBuyingPrice: number;
-  portfolioId: string;
+  portfolioId: number | string;
   broker?: string;
   stock: Stock;
 }
@@ -120,4 +120,117 @@ export interface DividendGrowthPoint {
 export interface SectorAllocation {
   name: string;
   value: number;
+}
+
+export type UpcomingRow = {
+  id: string;
+  symbol: string;
+  company: string;
+  dps: number;
+  shares: number;
+  gross: number;
+  tax: number;
+  net: number;
+  exDate: string;
+  bookClosure: string;
+  payDate: string;
+  status: "Upcoming" | "Processing";
+};
+
+export type HistoryRow = {
+  id: string;
+  symbol: string;
+  company: string;
+  dps: number;
+  shares: number;
+  gross: number;
+  tax: number;
+  net: number;
+  exDate: string;
+  bookClosure: string;
+  payDate: string;
+  status: "Paid";
+};
+
+export interface DividendGrowthPoint {
+  year: string;
+  amount: number;
+}
+
+export interface SectorAllocation {
+  name: string;
+  value: number;
+}
+
+export interface UpcomingDividend {
+  symbol: string;
+  company: string;
+  amount: string;
+  exDate: string;
+  payDate: string;
+  total: number;
+}
+
+// ----- Portfolio-scoped dashboard --------------------------------
+
+export type DividendItemStatus = "UPCOMING" | "PROCESSING" | "PAID";
+
+export interface DividendSummary {
+  annualIncome: number;
+  monthlyIncome: number;
+  lifetimeIncome: number;
+  upcomingDividend: number;
+  yield: number;
+  yieldOnCost: number;
+}
+
+export interface DividendItem {
+  id: string;
+  stock: string;
+  company: string;
+  eligibleShares: number;
+  dividendPerShare: number;
+  grossDividend: number;
+  taxAmount: number;
+  netDividend: number;
+  paymentDate: string;
+  exDividendDate: string;
+  bookClosureDate: string;
+  status: DividendItemStatus;
+}
+
+export interface DividendStockBreakdown {
+  symbol: string;
+  company: string;
+  annualIncome: number;
+  yield: number;
+  yieldOnCost: number;
+  contribution: number;
+}
+
+export interface DividendSectorBreakdown {
+  sector: string;
+  annualIncome: number;
+}
+
+export interface DividendCalendarItem {
+  stock: string;
+  paymentDate: string;
+  dividendPerShare: number;
+}
+
+export interface DividendIncomeTrendPoint {
+  month: string;
+  income: number;
+}
+
+export interface DividendDashboard {
+  summary: DividendSummary;
+  upcoming: DividendItem[];
+  history: DividendItem[];
+  breakdownByStock: DividendStockBreakdown[];
+  breakdownBySector: DividendSectorBreakdown[];
+  calendar: DividendCalendarItem[];
+  incomeTrend: DividendIncomeTrendPoint[];
+  monthlyDividends: MonthlyDividend[];
 }

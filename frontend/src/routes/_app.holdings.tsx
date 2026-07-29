@@ -42,9 +42,7 @@ function HoldingsPage() {
   const portfoliosQuery = useQuery<Portfolio[]>({
     queryKey: ["portfolios"],
     queryFn: () => portfoliosApi.getByProfile(),
-    enabled: API_ENABLED,
-    // initialData: API_ENABLED ? undefined : SEED_PORTFOLIOS,
-    // placeholderData: SEED_PORTFOLIOS,
+    enabled: true,
     staleTime: 5 * 60_000,
   });
 
@@ -52,8 +50,6 @@ function HoldingsPage() {
     queryKey: ["holdings"],
     queryFn: () => holdingsApi.list(portfolioFilter),
     enabled: API_ENABLED,
-    // initialData: API_ENABLED ? undefined : (seedHoldings as Holding[]),
-    // placeholderData: seedHoldings as Holding[],
     retry: 1,
   });
 
@@ -71,14 +67,14 @@ function HoldingsPage() {
 
   // Deterministically assign each holding to a portfolio (mirrors dividends page)
   const holdingsWithPortfolio = holdings;
-  // useMemo(
-  //   () =>
-  //     holdings.map((h, i) => ({
-  //       ...h,
-  //       portfolioId: portfolios[i % portfolios.length].id,
-  //     })),
-  //   [holdings],
-  // );
+  useMemo(
+    () =>
+      holdings.map((h, i) => ({
+        ...h,
+        portfolioId: portfolios[i % portfolios.length].id,
+      })),
+    [holdings, portfolios],
+  );
 
   // const filteredHoldings = useMemo(
   //   () =>
@@ -148,7 +144,7 @@ function HoldingsPage() {
       ) : (
         <Card className="card-elevated overflow-hidden">
           <div className="flex flex-wrap items-center gap-2 p-4 border-b">
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
+            <div className="relative flex-1 min-w-50 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search stocks…" className="pl-9 h-9" />
             </div>
@@ -189,14 +185,10 @@ function HoldingsPage() {
                   </TableRow>
                 ) : (
                   filteredHoldings.map((h) => {
-                    // const mv = h.quantity * h.stocks.currentPrice;
-                    // const pl = (h.stocks.currentPrice - h.avgPrice) * h.quantity;
                     const plPct =
                       ((h.currentPrice - Number(h.avgPrice)) / Number(h.avgPrice)) * 100;
 
                     const positive = h.marketValue >= 0;
-                    // const yieldOnCost = ((h.stocks.annualDividend / h.avgPrice) * 100).toFixed(2);
-                    // const invested = h.quantity * h.avgPrice;
 
                     return (
                       <TableRow key={h.symbol} className="cursor-pointer group">

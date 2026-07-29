@@ -33,10 +33,7 @@ import { Label } from "@/components/ui/label";
 // import { Plus, Search, Download, Filter, ArrowRightLeft, Loader2 } from "lucide-react";
 import { portfolios } from "@/lib/mock-data";
 import { toast } from "sonner";
-import {
-  transactionsApi,
-  type CreateTransactionDto,
-} from "@/lib/api/transactions";
+import { transactionsApi, type CreateTransactionDto } from "@/lib/api/transactions";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -134,7 +131,7 @@ function TransactionsPage() {
 
   const filtered = useMemo(() => {
     return txs.filter((t) => {
-      if (portfolioFilter !== "all" && t.portfolioId !== portfolioFilter) return false;
+      if (portfolioFilter !== "all" && t.portfolioId !== Number(portfolioFilter)) return false;
       if (typeFilter !== "All" && t.transactionType !== typeFilter.toUpperCase()) return false;
       if (search && !t.stock.symbol.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
@@ -163,7 +160,7 @@ function TransactionsPage() {
       quantity,
       buyingPrice,
       totalBuyingPrice: noValueTypes.includes(form.transactionType) ? 0 : quantity * buyingPrice,
-      portfolioId: String(form.portfolioId),
+      portfolioId: form.portfolioId,
       broker: form.broker,
       symbol: form.stock.symbol,
       // toPortfolioId: form.transactionType === "Transfer" ? form.toPortfolioId : undefined,

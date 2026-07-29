@@ -35,6 +35,7 @@ import {
   Trophy,
   AlertTriangle,
   Info,
+  Sparkles,
 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
@@ -128,7 +129,7 @@ function PortfolioDetailPage() {
 
   const transactionsQuery = useQuery<Transaction[]>({
     queryKey: ["transaction"],
-    queryFn: () => transactionsApi.list({ portfolioId: "1" }),
+    queryFn: () => transactionsApi.list({ portfolioId: id }),
     enabled: API_ENABLED,
     staleTime: 5 * 60_000,
   });
@@ -186,13 +187,6 @@ function PortfolioDetailPage() {
     return portfolioGrowth.slice(-map[tf]);
   }, [tf]);
 
-  const mappedMonthlyDividends = (_monthlyDividends ?? []).map((d) => {
-    return {
-      month: monthLabels[Number(d.month) - 1],
-      amount: Number(d.gross),
-    };
-  });
-
   const allocations = useMemo(() => {
     const build = (metric: "marketValue" | "invested") => {
       const total = portfolioHoldings.reduce((s, h) => s + (h[metric] ?? 0), 0);
@@ -208,27 +202,29 @@ function PortfolioDetailPage() {
       return { arr, total };
     };
 
-    const hasData = portfolioHoldings.length > 0;
-    const current = hasData
-      ? build("marketValue")
-      : {
-          arr: sectorAllocation.map((s) => ({
-            name: s.name,
-            value: s.value * 10_000,
-            pct: s.value,
-          })),
-          total: sectorAllocation.reduce((s, x) => s + x.value * 10_000, 0),
-        };
-    const cost = hasData
-      ? build("invested")
-      : {
-          arr: sectorAllocation.map((s) => ({
-            name: s.name,
-            value: s.value * 8_000,
-            pct: s.value,
-          })),
-          total: sectorAllocation.reduce((s, x) => s + x.value * 8_000, 0),
-        };
+    const current = build("marketValue");
+    const cost = build("invested");
+
+    // const hasData = portfolioHoldings.length > 0;
+    // ?
+    // : {
+    //     arr: sectorAllocation.map((s) => ({
+    //       name: s.name,
+    //       value: s.value * 10_000,
+    //       pct: s.value,
+    //     })),
+    //     total: sectorAllocation.reduce((s, x) => s + x.value * 10_000, 0),
+    //   };
+
+    // ?
+    // : {
+    //     arr: sectorAllocation.map((s) => ({
+    //       name: s.name,
+    //       value: s.value * 8_000,
+    //       pct: s.value,
+    //     })),
+    //     total: sectorAllocation.reduce((s, x) => s + x.value * 8_000, 0),
+    //   };
 
     // Stable color assignment across modes: sort sectors alphabetically
     const sectors = Array.from(
@@ -283,6 +279,33 @@ function PortfolioDetailPage() {
           <Link to="/portfolio">Back to Portfolios</Link>
         </Button>
       </Card>
+    );
+  }
+
+  const isEmpty =
+    !portfolio.portfolioCost || !portfolio.holdingsCount || !portfolio.portfolioNetworth;
+
+  if (isEmpty) {
+    return (
+      <>
+        <Card className="card-elevated p-12 text-center flex flex-col items-center gap-4">
+          <div className="h-14 w-14 rounded-2xl gradient-primary grid place-items-center">
+            <Coins className="h-7 w-7 text-primary-foreground" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">
+              No dividend data available for this portfolio.
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Add transactions to start tracking dividend payments.
+            </p>
+          </div>
+          <Button className="gap-2">
+            <Sparkles className="h-4 w-4" />
+            Add Transactions
+          </Button>
+        </Card>
+      </>
     );
   }
 
@@ -894,28 +917,39 @@ function PortfolioDetailPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {recentTransactions?.slice(0, 5).map((t, i) => (
-                      <TableRow key={i}>
-                        <TableCell className="text-xs whitespace-nowrap">
-                          {toISO(t.purchaseDate)}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <StockLogo symbol={t.stock.symbol} size={22} />
-                            <span className="font-medium text-sm">{t.stock.symbol}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className="font-normal">
-                            {t.transactionType}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
-                        <TableCell className="text-right tabular-nums font-medium">
-                          {pkr(t.totalBuyingPrice)}
+                    {recentTransactions?.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={5}
+                          className="text-center text-sm text-muted-foreground py-8"
+                        >
+                          No recent transactions yet.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      recentTransactions?.slice(0, 5).map((t, i) => (
+                        <TableRow key={i}>
+                          <TableCell className="text-xs whitespace-nowrap">
+                            {toISO(t.purchaseDate)}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <StockLogo symbol={t.stock.symbol} size={22} />
+                              <span className="font-medium text-sm">{t.stock.symbol}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className="font-normal">
+                              {t.transactionType}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
+                          <TableCell className="text-right tabular-nums font-medium">
+                            {pkr(t.totalBuyingPrice)}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
@@ -945,26 +979,37 @@ function PortfolioDetailPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {upcomingDividends?.slice(0, 5).map((d) => (
-                      <TableRow key={d.symbol}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <StockLogo symbol={d.symbol} size={22} />
-                            <span className="font-medium text-sm">{d.symbol}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-xs whitespace-nowrap">{d.payDate}</TableCell>
-                        <TableCell className="text-right tabular-nums">{pkr(d.total)}</TableCell>
-                        <TableCell className="text-right tabular-nums">
-                          {pkr(d.total * 0.85)}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="font-normal">
-                            Upcoming
-                          </Badge>
+                    {upcomingDividends?.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={5}
+                          className="text-center text-sm text-muted-foreground py-8"
+                        >
+                          No recent dividends yet.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      upcomingDividends?.slice(0, 5).map((d) => (
+                        <TableRow key={d.symbol}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <StockLogo symbol={d.symbol} size={22} />
+                              <span className="font-medium text-sm">{d.symbol}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-xs whitespace-nowrap">{d.payDate}</TableCell>
+                          <TableCell className="text-right tabular-nums">{pkr(d.total)}</TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            {pkr(d.total * 0.85)}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="font-normal">
+                              Upcoming
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
@@ -1092,29 +1137,42 @@ function PortfolioDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recentTransactions?.map((t, i) => (
-                    <TableRow key={i}>
-                      <TableCell className="text-xs whitespace-nowrap">{t.purchaseDate}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <StockLogo symbol={t.stock.symbol} size={22} />
-                          <span className="font-medium text-sm">{t.stock.symbol}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="font-normal">
-                          {t.transactionType}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        {Number(t.purchaseDate).toFixed(2)}
-                      </TableCell>
-                      <TableCell className="text-right tabular-nums font-medium">
-                        {pkr(t.totalBuyingPrice)}
+                  {recentTransactions?.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        className="text-center text-sm text-muted-foreground py-8"
+                      >
+                        No recent transactions yet.
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    recentTransactions?.map((t, i) => (
+                      <TableRow key={i}>
+                        <TableCell className="text-xs whitespace-nowrap">
+                          {t.purchaseDate}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <StockLogo symbol={t.stock.symbol} size={22} />
+                            <span className="font-medium text-sm">{t.stock.symbol}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary" className="font-normal">
+                            {t.transactionType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {Number(t.purchaseDate).toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums font-medium">
+                          {pkr(t.totalBuyingPrice)}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </div>

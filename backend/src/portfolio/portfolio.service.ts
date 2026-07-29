@@ -23,7 +23,7 @@ export class PortfolioService {
 
     const summary = this.getPortfolioSummary(portfolio);
     const upcomingDividends = this.getUpcomingDividends(portfolio?.holdings);
-    const monthlyDividends = await this.getMonthlyDividends(portfolio.id);
+    const monthlyDividends = await this.dividendService.getMonthlyDividends(portfolio.id);
     const data = {
       ...summary,
       description: portfolio?.description,
@@ -54,39 +54,6 @@ export class PortfolioService {
     //   pct = holding.totalCost > 0 ? (profit / holding.totalCost) * 100 : 0;
     //   // dividendYield = holding.stocks.dividendYield
     // });
-  }
-
-  getPortfolioPerformaceByPortfolioId(portfolioId: string, userId: string) {
-    return {
-      dividend: {
-        annualIncome: 240000,
-        yieldOnCost: 8,
-        currentYield: 9,
-        growth: 13,
-      },
-      capital: {
-        marketValue: 500000,
-        unrealizedGain: 30000,
-        realizedGain: 4000,
-        totalReturn: 90000,
-      },
-      portfolioGrowth: [{ month: '4', cost: 100000, marketValue: 40000 }],
-      annualDividendGrowth: [{ year: 2026, income: 50000, projected: true }],
-      monthlyDividendIncome: [{ month: 'Aug', income: 45000 }],
-      incomeByStock: [{ symbol: 'MEBL', income: 60000, percentage: 5 }],
-      insights: {
-        highestContributor: 56,
-        highestYieldOnCost: 56,
-        largestCapitalGain: 56,
-        largestPosition: 56,
-      },
-      health: {
-        dividendTarget: 60000,
-        currentDividend: 30000,
-        diversificationScore: 56,
-        holdingPeriodYears: 20,
-      },
-    };
   }
 
   getPortfolioSummary(portfolio) {
@@ -154,30 +121,6 @@ export class PortfolioService {
         profile: { connect: { id: Number(profileId) } },
       },
     });
-  }
-
-  async getMonthlyDividends(portfolioId: number) {
-    const year = new Date().getFullYear();
-
-    const startOfYear = new Date(year, 0, 1); // 2026-01-01
-    const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999); // 2026-12-31
-
-    const result = await this.prismaService.$queryRaw<{ month: number; gross: number }[]>`
-      SELECT
-          m.month,
-          COALESCE(SUM(h.quantity * dd."dividendPerShare"), 0) AS gross
-      FROM generate_series(1, 12) AS m(month)
-      LEFT JOIN "DividendDeclaration" dd
-          ON EXTRACT(MONTH FROM dd."paymentDate") = m.month
-          AND dd."paymentDate" BETWEEN ${startOfYear} AND ${endOfYear}
-      LEFT JOIN "Holding" h
-          ON h."stockId" = dd."stockId"
-          AND h."portfolioId" = ${portfolioId}
-      GROUP BY m.month
-      ORDER BY m.month;
-    `;
-
-    return result;
   }
 
   getUpcomingDividends(holdings) {

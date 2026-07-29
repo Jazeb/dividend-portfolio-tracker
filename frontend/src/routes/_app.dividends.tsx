@@ -61,13 +61,14 @@ import {
   YAxis,
 } from "recharts";
 import { portfolios as seedPortfolios, pkr, monthLabels } from "@/lib/mock-data";
-import { dividendsApi, type DividendDashboard, type DividendItem } from "@/lib/api/dividends";
+import { dividendsApi } from "@/lib/api/dividends";
 import { portfoliosApi } from "@/lib/api/portfolios";
 import { buildMockDividendDashboard } from "@/lib/mock/dividend-dashbord";
 import { cn } from "@/lib/utils";
 
-import { Portfolio } from "@/types";
+import { Portfolio, UpcomingRow, HistoryRow, DividendDashboard, DividendItem } from "@/types";
 import { StockLogo } from "@/components/StockLogo";
+import { chartColors } from "@/lib/constants";
 
 // const API_ENABLED = false;
 const API_ENABLED = Boolean((import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim());
@@ -85,47 +86,6 @@ export const Route = createFileRoute("/_app/dividends")({
     ],
   }),
 });
-
-const chartColors = [
-  "#10b981",
-  "#3b82f6",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#0ea5e9",
-  "#ec4899",
-  "#64748b",
-];
-
-type UpcomingRow = {
-  id: string;
-  symbol: string;
-  company: string;
-  dps: number;
-  shares: number;
-  gross: number;
-  tax: number;
-  net: number;
-  exDate: string;
-  bookClosure: string;
-  payDate: string;
-  status: "Upcoming" | "Processing";
-};
-
-type HistoryRow = {
-  id: string;
-  symbol: string;
-  company: string;
-  dps: number;
-  shares: number;
-  gross: number;
-  tax: number;
-  net: number;
-  exDate: string;
-  bookClosure: string;
-  payDate: string;
-  status: "Paid";
-};
 
 const statusStyles: Record<string, string> = {
   Paid: "bg-success/12 text-success border-success/20",
@@ -201,7 +161,7 @@ function mapHistory(items: DividendItem[]): HistoryRow[] {
 
 // ---- Component ---------------------------------------------------------
 function DividendsPage() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string>();
   const [historySearch, setHistorySearch] = useState("");
   const [historyStatus, setHistoryStatus] = useState<string>("all");
   const [historySort, setHistorySort] = useState<"date-desc" | "date-asc" | "net-desc">(
@@ -218,20 +178,25 @@ function DividendsPage() {
     queryKey: ["portfolios"],
     queryFn: () => portfoliosApi.list(),
     enabled: API_ENABLED,
-    // initialData: API_ENABLED ? undefined : (seedPortfolios as Portfolio[]),
-    // placeholderData: seedPortfolios as Portfolio[],
     retry: 1,
     staleTime: 5 * 60_000,
   });
 
   const portfolios: Portfolio[] = portfoliosQuery.data ?? (seedPortfolios as Portfolio[]);
 
+  const activePortfolio = portfolios.find((p) => p.id === Number(selectedId));
+
   // Auto-select first portfolio once available.
   useEffect(() => {
-    if (!selectedId && portfolios.length > 0) {
-      setSelectedId(portfolios[0].id);
-    }
+    if (!selectedId && portfolios.length > 0) setSelectedId(String(portfolios[0].id));
   }, [selectedId, portfolios]);
+
+  // Reset paging when switching portfolios.
+  useEffect(() => {
+    setPage(1);
+    setHistorySearch("");
+    setHistoryStatus("all");
+  }, [selectedId]);
 
   // --- Dashboard (per portfolio, cached) ---
   const dashboardQuery = useQuery<DividendDashboard>({
@@ -245,39 +210,17 @@ function DividendsPage() {
     retry: 1,
   });
 
-  // --- Dashboard (per portfolio, cached) ---
-  // const upcomingQuery = useQuery<DividendDashboard>({
-  //   queryKey: ["dividends", selectedId],
-  //   queryFn: () => {
-  //     if (!selectedId) throw new Error("No portfolio selected");
-  //     return API_ENABLED
-  //       ? dividendsApi.upcoming(selectedId)
-  //       : Promise.resolve(buildMockDividendDashboard(selectedId));
-  //   },
-  //   enabled: !!selectedId,
-  //   staleTime: 5 * 60_000,
-  //   retry: 1,
-  // });
-
-  // Reset paging when switching portfolios.
-  useEffect(() => {
-    setPage(1);
-    setHistorySearch("");
-    setHistoryStatus("all");
-  }, [selectedId]);
-
-  const activePortfolio = portfolios.find((p) => p.id === selectedId);
   const isLoading = dashboardQuery.isLoading || dashboardQuery.isFetching;
   const isError = dashboardQuery.isError;
 
   const dashboard = dashboardQuery.data;
+  const monthlyDividends = dashboard?.monthlyDividends;
 
   const upcomingRows = useMemo(
     () => (dashboard ? mapUpcoming(dashboard.upcoming) : []),
     [dashboard],
   );
-  console.log("upcomingRows");
-  console.log(upcomingRows);
+
   const historyRows = useMemo(() => (dashboard ? mapHistory(dashboard.history) : []), [dashboard]);
 
   const filteredUpcoming = useMemo(() => {
@@ -365,17 +308,13 @@ function DividendsPage() {
   };
 
   const PortfolioSelector = (
-    <Select
-      value={selectedId ?? undefined}
-      onValueChange={setSelectedId}
-      disabled={isLoading && !dashboard}
-    >
-      <SelectTrigger className="h-9 w-[240px]">
+    <Select value={selectedId} onValueChange={setSelectedId} disabled={isLoading && !dashboard}>
+      <SelectTrigger className="h-9 w-60">
         <SelectValue placeholder="Select portfolio" />
       </SelectTrigger>
       <SelectContent>
         {portfolios.map((p) => (
-          <SelectItem key={p.id} value={p.id}>
+          <SelectItem key={p.id} value={String(p.id)}>
             {p.name}
           </SelectItem>
         ))}
@@ -471,9 +410,31 @@ function DividendsPage() {
     );
   }
 
-  const nextMonth = Math.round(summary.annualIncome / 12);
-  const nextQuarter = Math.round(summary.annualIncome / 4);
-  const nextYearProjected = Math.round(summary.annualIncome * 1.12);
+  // const nextMonth = Math.round(summary.annualIncome / 12);
+  // const nextQuarter = Math.round(summary.annualIncome / 4);
+  // const nextYearProjected = Math.round(summary.annualIncome * 1.12);
+
+  // const _monthlyDividends = [
+  //   { month: 1, gross: 100000 },
+  //   { month: 2, gross: 200000 },
+  //   { month: 3, gross: 300000 },
+  //   { month: 4, gross: 400000 },
+  //   { month: 5, gross: 500000 },
+  //   { month: 6, gross: 600000 },
+  //   { month: 7, gross: 700000 },
+  //   { month: 8, gross: 800000 },
+  //   { month: 9, gross: 900000 },
+  //   { month: 10, gross: 1000000 },
+  //   { month: 11, gross: 1100000 },
+  //   { month: 12, gross: 1200000 },
+  // ];
+
+  const mappedMonthlyDividends = (monthlyDividends ?? []).map((d) => {
+    return {
+      month: monthLabels[Number(d.month) - 1],
+      amount: Number(d.gross),
+    };
+  });
 
   return (
     <>
@@ -496,7 +457,7 @@ function DividendsPage() {
         className={cn("transition-opacity duration-200", dashboardQuery.isFetching && "opacity-60")}
       >
         {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
           <StatCard
             label="Annual Income"
             value={pkr(summary?.annualIncome || 0)}
@@ -514,11 +475,11 @@ function DividendsPage() {
             sub={`${filteredUpcoming.length} events`}
             icon={<Clock className="h-4 w-4" />}
           />
-          <StatCard
+          {/* <StatCard
             label="Lifetime Income"
             value={pkr(summary.lifetimeIncome || 0)}
             icon={<Wallet className="h-4 w-4" />}
-          />
+          /> */}
           <StatCard
             label="Yield"
             value={`${summary?.yield}%`}
@@ -716,33 +677,30 @@ function DividendsPage() {
         {/* Income Trend + Sector Income */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           <Card className="card-elevated lg:col-span-2">
+            {/* <h3 className="font-semibold mb-4">Monthly Dividend Income</h3> */}
             <CardHeader>
-              <CardTitle className="text-base">Dividend Income Trend</CardTitle>
-              <CardDescription>Monthly income across the year</CardDescription>
+              <CardTitle className="text-base">Monthly Income</CardTitle>
+              <CardDescription>Per month income for current year</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={260}>
-                <LineChart data={dashboard.incomeTrend}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
-                  <XAxis dataKey="month" tickLine={false} axisLine={false} className="text-xs" />
+            <div className="h-65">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={mappedMonthlyDividends}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                  <XAxis dataKey="month" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis
+                    fontSize={11}
                     tickLine={false}
                     axisLine={false}
-                    className="text-xs"
                     tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`}
                   />
-                  <Tooltip contentStyle={{ borderRadius: 12 }} formatter={(v: number) => pkr(v)} />
-                  <Line
-                    type="monotone"
-                    dataKey="income"
-                    stroke="#10b981"
-                    strokeWidth={2.5}
-                    dot={{ r: 3, fill: "#10b981" }}
-                    activeDot={{ r: 5 }}
+                  <Tooltip
+                    formatter={(v: number) => pkr(v)}
+                    contentStyle={{ borderRadius: 10, fontSize: 12 }}
                   />
-                </LineChart>
+                  <Bar dataKey="amount" fill="hsl(160 65% 45%)" radius={[6, 6, 0, 0]} />
+                </BarChart>
               </ResponsiveContainer>
-            </CardContent>
+            </div>
           </Card>
 
           <Card className="card-elevated">
@@ -770,7 +728,7 @@ function DividendsPage() {
         </div>
 
         {/* Projections */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <ProjectionCard
             label="Next Month"
             amount={nextMonth}
@@ -787,7 +745,7 @@ function DividendsPage() {
             amount={nextYearProjected}
             hint="+12% growth assumption"
           />
-        </div>
+        </div> */}
 
         {/* Breakdown by Stock */}
         <Card className="card-elevated mb-6">

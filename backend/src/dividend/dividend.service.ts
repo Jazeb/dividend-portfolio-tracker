@@ -91,11 +91,14 @@ export class DividendService {
       include: { holdings: { include: { stocks: { include: { sector: true } } } } },
     });
 
+    if (!portfolio) return [];
+
     const upcommingDividends = this._getUpcomingDividends(dividendPayments);
     const dividendHistory = this.getDividendHistory(dividendPayments);
 
     const summary = this.getSummaryData(portfolio);
     summary.upcomingDividend = this.calculatecommulativeUpcomingDividend(upcommingDividends);
+    const monthlyDividends = await this.getMonthlyDividends(portfolio.id);
 
     const breakdownByStocks = this.calculateBreakdownByStock(portfolio);
     const breakdownBySector = this.calculateBrealdownBySector(portfolio);
@@ -106,6 +109,7 @@ export class DividendService {
       history: dividendHistory,
       breakdownByStock: breakdownByStocks,
       breakdownBySector: breakdownBySector,
+      monthlyDividends,
       calendar: [],
       incomeTrend: [],
     };
@@ -282,6 +286,30 @@ export class DividendService {
 
   async getUpcomingDividends(portfolioId?: string) {
     return this.prismaService.dividendDeclaration.findMany();
+  }
+
+  async getMonthlyDividends(portfolioId: number) {
+    const year = new Date().getFullYear();
+
+    const startOfYear = new Date(year, 0, 1); // 2026-01-01
+    const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999); // 2026-12-31
+
+    const result = await this.prismaService.$queryRaw<{ month: number; gross: number }[]>`
+      SELECT
+          m.month,
+          COALESCE(SUM(h.quantity * dd."dividendPerShare"), 0) AS gross
+      FROM generate_series(1, 12) AS m(month)
+      LEFT JOIN "DividendDeclaration" dd
+          ON EXTRACT(MONTH FROM dd."paymentDate") = m.month
+          AND dd."paymentDate" BETWEEN ${startOfYear} AND ${endOfYear}
+      LEFT JOIN "Holding" h
+          ON h."stockId" = dd."stockId"
+          AND h."portfolioId" = ${portfolioId}
+      GROUP BY m.month
+      ORDER BY m.month;
+    `;
+
+    return result;
   }
 
   // async getUpcomingDividends(): Promise<any[]> {

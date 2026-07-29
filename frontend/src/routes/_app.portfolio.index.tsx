@@ -59,8 +59,8 @@ function PortfolioPage() {
   const portfolios: PortfolioDashboard[] = portfoliosQuery.data ?? seedPortfolios;
 
   // Local additions used only when the API is not configured.
-  const [localExtras, setLocalExtras] = useState<Portfolio[]>([]);
-  const allPortfolios = API_ENABLED ? portfolios : [...portfolios, ...localExtras];
+  // const [localExtras, setLocalExtras] = useState<Portfolio[]>([]);
+  const allPortfolios = portfolios; //API_ENABLED ? portfolios : [...portfolios, ...localExtras];
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
@@ -102,24 +102,10 @@ function PortfolioPage() {
       description: form.description.trim(),
     };
 
-    if (API_ENABLED) createMutation.mutate(dto);
-    else {
-      const newPortfolio: Portfolio = {
-        ...dto,
-        id: Date.now(),
-        portfolioCost: 0,
-        holdingsCount: 0,
-        portfolioNetworth: 0,
-        portfolioProfit: 0,
-        profitPercent: 0,
-        annualDividendIncome: 0,
-        yield: 0,
-      };
-      setLocalExtras((prev) => [...prev, newPortfolio]);
-      toast.success(`"${name}" portfolio created`);
-      setOpen(false);
-      reset();
-    }
+    createMutation.mutate(dto);
+    toast.success(`"${name}" portfolio created`);
+    setOpen(false);
+    reset();
   };
 
   const isLoading = API_ENABLED && portfoliosQuery.isLoading;

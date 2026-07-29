@@ -22,13 +22,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search, Download, SlidersHorizontal, Columns3, Loader2 } from "lucide-react";
-import { holdings as seedHoldings, seedPortfolios } from "@/lib/mock-data";
 
 import { holdingsApi } from "@/lib/api/holdings";
 import { portfoliosApi } from "@/lib/api/portfolios";
 import { StockLogo } from "@/components/StockLogo";
 import { Portfolio, Holding } from "@/types";
-const SEED_PORTFOLIOS: Portfolio[] = seedPortfolios as Portfolio[];
 
 export const Route = createFileRoute("/_app/holdings")({
   component: HoldingsPage,
@@ -59,10 +57,10 @@ function HoldingsPage() {
     retry: 1,
   });
 
-  const portfolios: Portfolio[] = portfoliosQuery.data ?? SEED_PORTFOLIOS;
-  const holdings: Holding[] = holdingsQuery.data ?? (seedHoldings as Holding[]);
+  const portfolios: Portfolio[] = portfoliosQuery?.data ?? [];
+  const holdings: Holding[] = holdingsQuery.data ?? [];
 
-  function portfolioName(id: string) {
+  function portfolioName(id: number) {
     return portfolios.find((p) => p.id === id)?.name;
   }
 
@@ -97,9 +95,7 @@ function HoldingsPage() {
       : holdingsWithPortfolio.filter((h) => h.id === Number(portfolioFilter));
   }, [holdingsWithPortfolio, portfolioFilter]);
 
-  const activePortfolio = portfolios.find((p) => p.id === portfolioFilter);
-
-  console.log({ activePortfolio });
+  const activePortfolio = portfolios.find((p) => p.id === Number(portfolioFilter));
 
   return (
     <>
@@ -119,7 +115,7 @@ function HoldingsPage() {
               <SelectContent>
                 <SelectItem value="all">All Portfolios</SelectItem>
                 {portfolios.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
+                  <SelectItem key={p.id} value={String(p.id)}>
                     {portfolioName(p.id)}
                   </SelectItem>
                 ))}
@@ -193,10 +189,11 @@ function HoldingsPage() {
                   </TableRow>
                 ) : (
                   filteredHoldings.map((h) => {
-                    console.log({ h });
                     // const mv = h.quantity * h.stocks.currentPrice;
                     // const pl = (h.stocks.currentPrice - h.avgPrice) * h.quantity;
-                    const plPct = ((h.currentPrice - Number(h.avgPrice)) / Number(h.avgPrice)) * 100;
+                    const plPct =
+                      ((h.currentPrice - Number(h.avgPrice)) / Number(h.avgPrice)) * 100;
+
                     const positive = h.marketValue >= 0;
                     // const yieldOnCost = ((h.stocks.annualDividend / h.avgPrice) * 100).toFixed(2);
                     // const invested = h.quantity * h.avgPrice;

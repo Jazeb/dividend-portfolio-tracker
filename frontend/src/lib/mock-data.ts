@@ -1,5 +1,3 @@
-import { Portfolio, PortfolioDashboard } from "@/types";
-
 export type Holding = {
   symbol: string;
   name: string;

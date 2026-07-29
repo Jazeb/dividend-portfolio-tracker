@@ -356,7 +356,7 @@ function PortfolioDetailPage() {
               </div>
               <div className="text-xs text-muted-foreground flex items-center gap-3">
                 <span className="inline-flex items-center gap-1">
-                  <CalendarDays className="h-3 w-3" /> Created {toISO(portfolio.createdAt)}
+                  <CalendarDays className="h-3 w-3" /> Created {toISO(String(portfolio.createdAt))}
                 </span>
                 <span>·</span>
                 <span>{portfolio.holdingsCount} holdings</span>
@@ -436,7 +436,7 @@ function PortfolioDetailPage() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="holdings">Holdings</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="dividends">Dividends</TabsTrigger>
+          {/* <TabsTrigger value="dividends">Dividends</TabsTrigger> */}
           <TabsTrigger value="performance">Performance</TabsTrigger>
         </TabsList>
 
@@ -793,7 +793,7 @@ function PortfolioDetailPage() {
           </Card>
 
           {/* Dividend Summary + Goals */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card className="card-elevated p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold">Dividend Summary</h3>
@@ -866,7 +866,7 @@ function PortfolioDetailPage() {
                 })}
               </div>
             </Card>
-          </div>
+          </div> */}
 
           {/* Recent Transactions + Recent Dividends */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

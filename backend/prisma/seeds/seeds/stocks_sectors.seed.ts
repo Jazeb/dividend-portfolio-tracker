@@ -1,5 +1,5 @@
-import { PrismaClient } from '../../generated/prisma/client';
-import rows from './psx_stocks_with_sector.json';
+import { PrismaClient } from '../../../generated/prisma/client';
+import rows from '../jsonData/psx_stocks_with_sector.json';
 
 export async function seedStocksAndSectors(prisma: PrismaClient) {
   // 1. Collect unique sector names (preserving first-seen order)

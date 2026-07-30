@@ -1,9 +1,9 @@
-import { PrismaClient } from '../../generated/prisma/client';
-import stocks from './psx_stocks.json';
+import { PrismaClient } from '../../../generated/prisma/client';
+import stocks from '../jsonData/psx_stocks.json';
 
 export async function seedStocks(prisma: PrismaClient) {
   console.log('🌱 Starting database seeding...');
-  console.log(stocks);
+
   for (const stock of stocks) {
     await prisma.stock.upsert({
       where: {

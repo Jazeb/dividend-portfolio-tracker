@@ -1,2 +1,2 @@
-export * from './profile.seed';
-export * from './stocks_sectors.seed';
+export * from './seeds/profile.seed';
+export * from './seeds/stocks_sectors.seed';

@@ -294,10 +294,10 @@ function PortfolioDetailPage() {
           </div>
           <div>
             <h2 className="text-lg font-semibold">
-              No dividend data available for this portfolio.
+              No holdings or transactions for this portfolio
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Add transactions to start tracking dividend payments.
+              Add transactions to start tracking portfolio.
             </p>
           </div>
           <Button className="gap-2">
@@ -1165,10 +1165,10 @@ function PortfolioDetailPage() {
                         </TableCell>
                         <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
                         <TableCell className="text-right tabular-nums">
-                          {Number(t.purchaseDate).toFixed(2)}
+                          {Number(t.buyingPrice).toFixed(2)}
                         </TableCell>
                         <TableCell className="text-right tabular-nums font-medium">
-                          {pkr(t.totalBuyingPrice)}
+                          {pkr(Number(t.totalBuyingPrice))}
                         </TableCell>
                       </TableRow>
                     ))

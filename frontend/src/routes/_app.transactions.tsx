@@ -30,8 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-// import { Plus, Search, Download, Filter, ArrowRightLeft, Loader2 } from "lucide-react";
-import { portfolios } from "@/lib/mock-data";
+import { pkr } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { transactionsApi, type CreateTransactionDto } from "@/lib/api/transactions";
 
@@ -315,7 +314,7 @@ function TransactionsPage() {
                   <TableCell className="text-right tabular-nums">{t.quantity}</TableCell>
                   <TableCell className="text-right tabular-nums">{t.buyingPrice || "—"}</TableCell>
                   <TableCell className="text-right tabular-nums font-medium">
-                    {t.totalBuyingPrice ? `PKR ${t.totalBuyingPrice.toLocaleString()}` : "—"}
+                  {pkr(t.totalBuyingPrice)}
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{t.broker ?? "—"}</TableCell>
                 </TableRow>

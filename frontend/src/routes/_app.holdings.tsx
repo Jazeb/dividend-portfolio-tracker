@@ -188,7 +188,7 @@ function HoldingsPage() {
                     const plPct =
                       ((h.currentPrice - Number(h.avgPrice)) / Number(h.avgPrice)) * 100;
 
-                    const positive = h.marketValue >= 0;
+                    const positive = plPct >= 0;
 
                     return (
                       <TableRow key={h.symbol} className="cursor-pointer group">

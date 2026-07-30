@@ -111,7 +111,7 @@ function toDisplayStatus(s: DividendItem["status"]): UpcomingRow["status"] | "Pa
 }
 
 function mapUpcoming(items: DividendItem[]): UpcomingRow[] {
-  return items.map((u) => {
+  return (items ?? []).map((u) => {
     const pay = new Date(u.paymentDate);
     const ex = new Date(pay);
     ex.setDate(ex.getDate() - 15);
@@ -136,7 +136,7 @@ function mapUpcoming(items: DividendItem[]): UpcomingRow[] {
 }
 
 function mapHistory(items: DividendItem[]): HistoryRow[] {
-  return items.map((u) => {
+  return (items ?? []).map((u) => {
     const pay = new Date(u.paymentDate);
     const ex = new Date(pay);
     ex.setDate(ex.getDate() - 15);
@@ -250,9 +250,10 @@ function DividendsPage() {
   const pagedHistory = filteredHistory.slice((page - 1) * pageSize, page * pageSize);
 
   const sectorPie = useMemo(() => {
-    if (!dashboard) return [] as { name: string; value: number }[];
-    const total = dashboard.breakdownBySector.reduce((s, x) => s + x.annualIncome, 0) || 1;
-    return dashboard.breakdownBySector.map((s) => ({
+    console.log({dashboard})
+    if (!dashboard || !Array(dashboard).length) return [] as { name: string; value: number }[];
+    const total = dashboard?.breakdownBySector?.reduce((s, x) => s + x.annualIncome, 0) || 1;
+    return dashboard?.breakdownBySector?.map((s) => ({
       name: s.sector,
       value: Math.round((s.annualIncome / total) * 100),
     }));
@@ -380,10 +381,7 @@ function DividendsPage() {
   }
 
   const { summary } = dashboard;
-  const isEmpty =
-    dashboard.breakdownByStock.length === 0 &&
-    dashboard.history.length === 0 &&
-    dashboard.upcoming.length === 0;
+  const isEmpty = !summary || !dashboard.breakdownBySector;
 
   if (isEmpty) {
     return (

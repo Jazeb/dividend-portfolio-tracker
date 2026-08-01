@@ -15,6 +15,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ───────────── ENUMS ─────────────
+
 enum TransactionType {
   BUY
   SELL
@@ -40,6 +42,7 @@ enum DividendQuarter {
 
 enum DividendStatus {
   ANNOUNCED
+  UPCOMING
   CANCELLED
   PAID
 }
@@ -71,6 +74,13 @@ model Profile {
   updatedAt DateTime @default(now())
 }
 
+model Sector {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  icon      String
+  stocks    Stock[]
+}
+
 model Stock {
   id        Int      @id @default(autoincrement())
   fullName  String
@@ -81,36 +91,30 @@ model Stock {
   dividendYield   Decimal?   @db.Decimal(18,4)
   annualDividend  Decimal?   @db.Decimal(18,4)
 
-  transactions Transaction[]    // 1 stock may have many transactions
-  holdings    Holding[]
+  transactions  Transaction[]    // 1 stock may have many transactions
+  holdings      Holding[]
   dividendDeclaration  DividendDeclaration[]
 
   sectorId   Int
-  sector   Sector         @relation(fields: [sectorId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-}
-
-model Sector {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  icon      String
-
-  stocks     Stock[]
+  sector     Sector       @relation(fields: [sectorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
 
 model Transaction {
-  id String @id @default(cuid())
-  
+  id                  String        @id @default(cuid())
   quantity            Decimal       @db.Decimal(18,4)
   buyingPrice         Decimal       @db.Decimal(18,4)
   totalBuyingPrice    Decimal       @db.Decimal(18,4)
   broker              String
+  purchaseDate        DateTime      @db.Date 
+  commission          Decimal       @default(0) @db.Decimal(18, 4)
+  taxes               Decimal       @default(0) @db.Decimal(18, 4)
+  notes               String?
+
   fundingSource       FundingSource @default(CASH)
+  transactionType     TransactionType
 
 
   stockId   Int
@@ -122,8 +126,6 @@ model Transaction {
   profileId   Int
   profile     Profile         @relation(fields: [profileId], references: [id])
 
-  purchaseDate     DateTime     @db.Date 
-  transactionType  TransactionType
   
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
